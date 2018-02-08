@@ -111,32 +111,33 @@ module.exports = (app, passport) => {
 
     /*------------ JOIN PROJECT END ----------------*/ 
 
-
-
     app.get('/', (req, res) => {
         res.render('index');
     });
 
-    /*------------- Login View ------------------*/
+    /*------------- LOGIN VIEW ------------------*/
     app.get('/login', (req, res) => {
         res.render('login', {
             message: req.flash('loginMessage')
         });
     });
 
-    /*----------------- LOGIN ------------------*/
+    /*----------------- LOGIN --------------------*/
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile',
         failureRedirect: '/login',
         failureFlash: true
     }));
 
-    /*------------- Registro View ------------------*/
-    app.get('/signup', (req, res) => {
+    /*------- REGISTRO VIEW ONLY SUPER ADMIN -------
+    app.get('/signup', isLoggedIn, (req, res) => {
         res.render('signup', {
             message: req.flash('signupMessage')
         });
-    });
+    });*/
+
+    //Vista simple para SignUp (Todos los usuarios)
+
 
     /*----------------- REGISTRO POST---------------*/
     app.post('/signup', passport.authenticate('local-signup', {
@@ -145,31 +146,42 @@ module.exports = (app, passport) => {
         failureFlash: true
     }));
 
-    /*--------------- Despligue Perfil -------------*/
+    /*--------------- VIEW PERFIL -------------*/
     app.get('/profile', isLoggedIn, (req, res) => {
         res.render('profile', {
             user: req.user
         });
     });
 
-    /*--------------- Cerrar Sesión ---------------*/
+    /*---------------- LOGOUT -----------------*/
     app.get('/logout', (req, res) => {
         req.logout();
         res.redirect('/');
     });
 
-    /*--------------- Validación Login -------------*/
+    /*----------- LOGIN VALIDATION -------------*/
     function isLoggedIn(req, res, next) {
         if(req.isAuthenticated()){
-            return next();
+            return next(); 
         }
-        return res.redirect('/');
+        return  res.send('Debe estar autenticado');
+        //Next: Crear View para decir que debe estar autenticado
+        //return res.redirect('/');
     }
 
-    //prueba
-    app.get('/prueba', (req, res) => {
-        res.send('Prueba');
-    });
-
+    /* ----------- LOGIN SUPER ADMIN ------------*/
+    //Autentica a SuperAdmin comprobando que req.user.sa exista
     
+    app.get('/signup', isLoggedIn, (req, res) => {
+            if(req.user.sa){
+            res.render('signup', {
+                user: req.user,
+                message: req.flash('signupMessage')
+            });
+            console.log("Si es super");
+            }else{
+            res.send("NO");
+            console.log("No autorizado");
+        }
+    });
 };
