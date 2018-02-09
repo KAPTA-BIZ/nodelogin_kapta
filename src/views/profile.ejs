@@ -18,18 +18,28 @@
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body">
-              <h3 class="card-title"><span class="fa fa-user"></span> Local</h3>
+              <h3 class="card-title"><span class="fa fa-user"></span> Instructor</h3>
               <p>
-                <strong>id</strong> : <%= user._id %> <br>
+                <strong>id</strong> : <% iduser=user._id %><%= iduser %> <br>
                 <strong>email</strong> : <%= user.local.email %> <br>
-                <strong>password</strong> : <%= user.local.password %>
+                <strong>password</strong> : <%= user.local.password %> <br>
+                <strong>Super admin</strong> : <% if (user.sa == 1){ %> Si <% }else {%> No <% } %> <br>
               </p>
               <a href="/logout" class="btn btn-light btn-sm">
                 Cerrar Sesión
               </a>
+              <% if (user.sa == 1){ %>
+              <a href="/signup" class="btn btn-light btn-sm">
+                Registrar Instructor
+              </a>
+              <% } %>
+              <a href="/new" class="btn btn-light btn-sm">
+                Registrar participante
+              </a>
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </body>

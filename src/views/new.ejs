@@ -25,11 +25,8 @@
             <form action="/new" method="post">
               <div class="form-group">
                 <label for="email">Id participante</label>
-                <input type="text" name="email" class="form-control" required>
-              </div>
-              <div style="display:none" class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" class="form-control" value="123" required>
+                <input type="text" name="access_code" class="form-control" required>
+                <input type="text" name="id_inst" value="<% iduser=user._id %><%= iduser %>" style="display:none">
               </div>
               <input type="submit" class="btn btn-dark btn-lg" value="Registrame">
             </form>
