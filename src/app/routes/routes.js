@@ -153,13 +153,14 @@ module.exports = (app, passport) => {
         });
     });
 
-    /*---------------- LOGOUT -----------------*/
+    
+    /*------------------ LOGOUT ------------------*/
     app.get('/logout', (req, res) => {
         req.logout();
         res.redirect('/');
     });
 
-    /*----------- LOGIN VALIDATION -------------*/
+    /*-----------  FUNCIONLOGIN VALIDATION -------------*/
     function isLoggedIn(req, res, next) {
         if(req.isAuthenticated()){
             return next(); 
@@ -169,19 +170,92 @@ module.exports = (app, passport) => {
         //return res.redirect('/');
     }
 
+
     /* ----------- LOGIN SUPER ADMIN ------------*/
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     
     app.get('/signup', isLoggedIn, (req, res) => {
-            if(req.user.sa){
-            res.render('signup', {
-                user: req.user,
-                message: req.flash('signupMessage')
-            });
-            console.log("Si es super");
-            }else{
-            res.send("NO");
-            console.log("No autorizado");
+        if(req.user.sa){
+        res.render('signup', {
+            user: req.user,
+            message: req.flash('signupMessage')
+        });
+        console.log("Si es super");
         }
+        res.sendStatus(404);
+        console.log("No autorizado");
     });
-};
+
+    /* ----------- REGISTRAR INSTRUCTOR -------------*/
+
+    app.get('/new', isLoggedIn, (req, res) => {
+        res.render('new', {
+            message: req.flash('signupMessage')
+        });
+    }) 
+
+
+    /*----- CONSULTA JSON COLLECCION testSchemas ----*/
+    
+    app.get('/new/:id', function(req, res){
+        console.log("entro a new");
+        TestSchema.findOne({access_code: req.params.id})
+        //TestSchema.find({},'access_code')
+        .exec(function(err, testSchemas){
+            if(err){
+                console.log("Error retrieving");
+        }else{
+            res.json(testSchemas);
+            }
+        });
+    });
+
+    /* --------- REGISTRAR NUEVO ACCESS CODE (PRUEBA NO SE USA) ------- */
+
+    app.post('/new', function(req, res){
+        console.log('Ingreso');
+        var newTestSchema = new TestSchema();
+        newTestSchema.access_code = req.body.access_code;
+        newTestSchema.id_inst = req.body.id_inst;
+        newTestSchema.save(function(err, register){
+            if(err){
+                console.log('Error al guardar');
+            }else{
+                res.json(register);
+            }
+        });
+     });
+
+
+    /*---------- UPDATE id_inst FIND access_code ----------*/
+    
+    app.put('/new/:id', function(req, res){
+        console.log('Update participante');
+        TestSchema.findOneAndUpdate({access_code: req.params.id},
+        {
+            $set: {id_inst: req.body.id_inst}
+        },
+        {
+            new: true
+        },
+        function(err, updateTest){
+            if(err){
+                res.send("Error actualizando");
+            }else{
+                res.json(updateTest);
+                }
+            }
+        )
+    });
+    
+    /*
+
+    app.post('/new', passport.authenticate('consulta', {
+        successRedirect: '/new',
+        failureRedirect: '/new',
+        failureFlash: true
+    }));
+
+    */
+
+}
