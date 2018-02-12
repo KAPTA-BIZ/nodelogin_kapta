@@ -87,11 +87,14 @@ module.exports = (app, passport) => {
       }));
 
 
-    app.get ('/get_all_available', function (req, res) {
-        request (get_all_available, function (error, response, body) {
+    app.get ('/get_all_available', (req, res) => {
+        request (get_all_available, (error, response, body) => {
+             
             if (!error && response.statusCode === 200) {
               var cleanBody = JSON.parse(body);
+              //console.log(cleanBody);
               res.json(cleanBody);
+              storageLinkTest(cleanBody)
             }
             return console.log(error);
         });
@@ -321,8 +324,6 @@ module.exports = (app, passport) => {
                     )
                 }
         });
-        
-        
     });
     
     /*
