@@ -24,61 +24,39 @@ var storageTestHook = require('./storage/StorageTestHook');
 
 mongoose.Promise = global.Promise;
 
-const forge = require('node-forge');
+var forge = require('node-forge');
 
 module.exports = (app, passport) => {
 
 
 
-    /*------------ JOIN PROJECT START---------------*/ 
+    /*------------------------- JOIN PROJECT START----------------------------*/ 
 
     app.get('/', (req,res,next) => {
         //res.render('home/index.jsx', {foo: 'bar'});
         res.render('index');
       });
 
-    /*CONEXION WEBHOOK END*/
+    /*------------CONEXION WEBHOOK START------------*/
 
     app.use(bodyParser.json())
     
     app.post('/', (req,res) => {
         var jsonData = req.body;
         var secret = 'Yu92voJl59q4Bwp';
-        var headerHmacSignature = req.get("X-Classmarker-Hmac-Sha256");
-        var verified = verifyData(jsonData,headerHmacSignature,secret);
-        //var hash = crypto.createHmac('sha256', secret).update('X-Classmarker-Hmac-Sha256').digest('hex');
+        var verified = crypto.createHmac('sha256', secret).update('X-Classmarker-Hmac-Sha256').digest('hex');
 
         if(verified){
             console.log(req.body);
             res.sendStatus(200);
-            //storageTestHook(jsonData);
-            //storageHook(jsonData);
           }else{
             res.sendStatus(500);
           }
     });
     
+    /*------------CONEXION WEBHOOK END------------*/
     
-    var verifyData = function(jsonData,headerHmacSignature, secret)
-    {
-        var jsonHmac = computeHmac(jsonData, secret);
-        return jsonHmac == headerHmacSignature;
-    };
-
-    var computeHmac = function(jsonData, secret){
-        var hmac = forge.hmac.create();
-        hmac.start('sha256', secret);
-        var jsonString = JSON.stringify(jsonData);
-        var jsonBytes = new Buffer(jsonString, 'ascii');
-        hmac.update(jsonBytes);
-        return forge.util.encode64(hmac.digest().bytes());
-    };
     
-    /*CONEXION WEBHOOK END*/
-
-
-  
-
     app.get('/dashboard', (req,res) => {
         res.send('Dashboard');
       });
@@ -138,7 +116,7 @@ module.exports = (app, passport) => {
       });
 
 
-    /*------------ JOIN PROJECT END ----------------*/ 
+    /*-------------------------- JOIN PROJECT END ---------------------------*/ 
 
     app.get('/', (req, res) => {
         res.render('index');
