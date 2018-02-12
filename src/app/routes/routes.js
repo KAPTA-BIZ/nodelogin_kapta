@@ -24,6 +24,8 @@ var storageTestHook = require('./storage/StorageTestHook');
 
 mongoose.Promise = global.Promise;
 
+const forge = require('node-forge');
+
 module.exports = (app, passport) => {
 
 
@@ -35,20 +37,47 @@ module.exports = (app, passport) => {
         res.render('index');
       });
 
+    /*CONEXION WEBHOOK END*/
 
-    app.post('/', (req,res,next) => {
+    app.use(bodyParser.json())
+    
+    app.post('/', (req,res) => {
         var jsonData = req.body;
         var secret = 'Yu92voJl59q4Bwp';
-        var hash = crypto.createHmac('sha256', secret).update('X-Classmarker-Hmac-Sha256').digest('hex');
+        var headerHmacSignature = req.get("X-Classmarker-Hmac-Sha256");
+        var verified = verifyData(jsonData,headerHmacSignature,secret);
+        //var hash = crypto.createHmac('sha256', secret).update('X-Classmarker-Hmac-Sha256').digest('hex');
 
-        if(hash){
+        if(verified){
+            console.log(req.body);
             res.sendStatus(200);
-            storageTestHook(jsonData);
-            storageHook(jsonData);
+            //storageTestHook(jsonData);
+            //storageHook(jsonData);
           }else{
             res.sendStatus(500);
           }
     });
+    
+    
+    var verifyData = function(jsonData,headerHmacSignature, secret)
+    {
+        var jsonHmac = computeHmac(jsonData, secret);
+        return jsonHmac == headerHmacSignature;
+    };
+
+    var computeHmac = function(jsonData, secret){
+        var hmac = forge.hmac.create();
+        hmac.start('sha256', secret);
+        var jsonString = JSON.stringify(jsonData);
+        var jsonBytes = new Buffer(jsonString, 'ascii');
+        hmac.update(jsonBytes);
+        return forge.util.encode64(hmac.digest().bytes());
+    };
+    
+    /*CONEXION WEBHOOK END*/
+
+
+  
 
     app.get('/dashboard', (req,res) => {
         res.send('Dashboard');

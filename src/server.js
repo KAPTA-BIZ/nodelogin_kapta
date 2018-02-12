@@ -12,9 +12,7 @@ const session = require('express-session');
 
 const { url } = require('./config/database');
 
-mongoose.connect(url, {
-    useMongoClient: true
-});
+mongoose.connect(url);
 
 require('./config/passport')(passport);
 
