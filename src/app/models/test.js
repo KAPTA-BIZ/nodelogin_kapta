@@ -13,4 +13,3 @@ var TestSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model('TestSchema', TestSchema);
-//3er parametro es el nombre de la colleccion, seguir asi

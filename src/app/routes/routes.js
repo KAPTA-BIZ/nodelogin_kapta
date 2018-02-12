@@ -21,6 +21,7 @@ var storageLinkTest = require('./storage/StorageLinkTest');
 var storageTest = require('./storage/StorageTest');
 var storageHook = require('./storage/StorageHook');
 var storageTestHook = require('./storage/StorageTestHook');
+var storageTestWh = require('./storageWebHook/StorageTestWh');
 
 mongoose.Promise = global.Promise;
 
@@ -47,7 +48,8 @@ module.exports = (app, passport) => {
         var verified = crypto.createHmac('sha256', secret).update('X-Classmarker-Hmac-Sha256').digest('hex');
 
         if(verified){
-            console.log(req.body);
+            //Guardar test Web Hook
+            storageTestWh(jsonData);
             res.sendStatus(200);
           }else{
             res.sendStatus(500);
@@ -116,7 +118,7 @@ module.exports = (app, passport) => {
       });
 
 
-    /*-------------------------- JOIN PROJECT END ---------------------------*/ 
+    /*-------------------------- JOIN PROJECT END ----------------------------*/ 
 
     app.get('/', (req, res) => {
         res.render('index');
