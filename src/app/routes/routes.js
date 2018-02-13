@@ -198,12 +198,13 @@ module.exports = (app, passport) => {
     function lista(req, res, next) {
 
         var id = req.user.id;
+        //nuevo objeto clase test, para buscar test asociados
         var newTestSchema = new TestSchema();
-
+        
+        //busqueda de test asociados con id_inst=id
         TestSchema.find({id_inst: id}, function(err, test){
             if(err){
                 console.log(err);
-                    console.log(err); 
                 }
                 if(!test){
                     console.log("no hay inscritos")
@@ -211,22 +212,14 @@ module.exports = (app, passport) => {
                 }else{
                     //esto se muestra
                     res.json(test);
-                    return next();
+                    //res.render('list')
+                    
                 }
         });
     }
 
 
-    /* --------------- REGISTRAR INSTRUCTOR -------------*/
-    //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
     
-    app.get('/list', isLoggedIn, lista, (req, res) => {
-        res.render('list', {
-            user: req.user
-        });
-    }) 
-
-
     /* ---------------- LOGIN SUPER ADMIN --------------*/
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     
@@ -329,10 +322,14 @@ module.exports = (app, passport) => {
     });
     
     /*-------------- REGISTRAR LINK --------------*/
+    //Se accede por GET al id del instructor y se lo pasa a la vista 
+    //en modo Hidden para ser pasado por POST a la siguiente ruta 
     
-    app.get('/newlink', isLoggedIn, (req, res) => {
+    app.get('/newlink/:id', isLoggedIn, (req, res) => {
         res.render('new_link', {
-            user: req.user,
+            //paso ID instructor
+            user: req.params.id,
+            //Mensaje predefinido
             message: req.flash('signupMessage')
         });
     }) 
@@ -378,10 +375,18 @@ module.exports = (app, passport) => {
     });
     
     
+    /*-------------------- VISTA INSTRUCTOR ---------------------*/
     
+    //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
     
-    
-    
+    app.get('/list', isLoggedIn, lista, (req, res) => {
+        res.render('list', {
+        });
+    }) 
+
+
+
+    /*------------------------------------------------------------------------*/
     
     /*
     app.post('/new', passport.authenticate('consulta', {
