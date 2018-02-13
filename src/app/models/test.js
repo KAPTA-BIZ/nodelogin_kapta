@@ -9,7 +9,8 @@ var TestSchema = mongoose.Schema({
     time_started:String,
     time_finished:String,
     duration:String,
-    id_inst: String
+    id_inst: String,
+    link_url_id: String
 });
 
 module.exports = mongoose.model('TestSchema', TestSchema);

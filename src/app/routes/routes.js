@@ -13,6 +13,7 @@ var UserSchema = require('../models/user.js');
 var TestSchema = require('../models/test.js');
 var HookSchema = require('../models/hook.js');
 var LinkSchema = require('../models/linkTest.js');
+var LSchema = require('../models/link.js');
 var GroupSchema = require('../models/group.js');
 var get_all_available = require('../../classmarker/all');
 var get_links = require('../../classmarker/links');
@@ -89,16 +90,16 @@ module.exports = (app, passport) => {
 
     app.get ('/get_all_available', (req, res) => {
         request (get_all_available, (error, response, body) => {
-             
             if (!error && response.statusCode === 200) {
               var cleanBody = JSON.parse(body);
               //console.log(cleanBody);
-              res.json(cleanBody);
+              //res.json(cleanBody);
               storageLinkTest(cleanBody)
             }
             return console.log(error);
         });
       });
+      
 
     app.get ('/get_links', function (req, res) {
         request (get_links, function (error, response, body) {
@@ -208,6 +209,7 @@ module.exports = (app, passport) => {
                     console.log("no hay inscritos")
                     return next();
                 }else{
+                    //esto se muestra
                     res.json(test);
                     return next();
                 }
@@ -220,7 +222,7 @@ module.exports = (app, passport) => {
     
     app.get('/list', isLoggedIn, lista, (req, res) => {
         res.render('list', {
-            user: req.user.id_inst
+            user: req.user
         });
     }) 
 
@@ -242,8 +244,8 @@ module.exports = (app, passport) => {
 
     /* --------------- REGISTRAR INSTRUCTOR -------------*/
     
-    app.get('/new', isLoggedIn, (req, res) => {
-        res.render('new', {
+    app.get('/newpart', isLoggedIn, (req, res) => {
+        res.render('new_part', {
             user: req.user,
             message: req.flash('signupMessage')
         });
@@ -290,7 +292,7 @@ module.exports = (app, passport) => {
 
     /*----------- VERIFICA SI EXISTE EL ACCESS CODE  -----------*/
 
-    app.post('/new', function(req, res){
+    app.post('/newpart', function(req, res){
         console.log('Update participante');
 
         var newTestSchema = new TestSchema();
@@ -326,8 +328,62 @@ module.exports = (app, passport) => {
         });
     });
     
-    /*
+    /*-------------- REGISTRAR LINK --------------*/
+    
+    app.get('/newlink', isLoggedIn, (req, res) => {
+        res.render('new_link', {
+            user: req.user,
+            message: req.flash('signupMessage')
+        });
+    }) 
+    
+    
+    /*--------------- VERIFICA SI EXISTE LINK  --------------*/
+    //Se busca link_url_id
+    
+    app.post('/newlink', function(req, res){
+        console.log('LINK UPDATE');
 
+        var newLSchema = new LSchema();
+        var link_url_id = req.body.link_url_id;
+        
+        LSchema.findOne({link_url_id: link_url_id}, function(err, link){
+            if(err){
+                console.log(err);
+                    console.log(err); 
+                }
+                if(!link){
+                    console.log("no existe")
+                }else{
+                    console.log("si existe");
+                    /*----------- SI EXISTE, SE HAYA EL DOC Y SE ACTUALIZA -------*/
+                    newLSchema.link_url_id = req.body.link_url_id;
+                    LSchema.findOneAndUpdate({link_url_id: req.body.link_url_id},
+                    {
+                        $set: {id_inst: req.body.id_inst}
+                    },
+                    {
+                        new: true
+                    },
+                    function(err, updateTest){
+                        if(err){
+                            res.send("Error actualizando");
+                        }else{
+                            res.json(updateTest);
+                            }
+                        }
+                    )
+                }
+        });
+    });
+    
+    
+    
+    
+    
+    
+    
+    /*
     app.post('/new', passport.authenticate('consulta', {
         successRedirect: '/new',
         failureRedirect: '/new',

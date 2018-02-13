@@ -11,7 +11,8 @@ function storeTestWh(test){
             points_available:test.result.points_available,
             time_started:test.result.time_started,
             time_finished:test.result.time_finished,
-            duration:test.result.duration
+            duration:test.result.duration,
+            link_url_id:test.link.link_url_id
             
         });	
         

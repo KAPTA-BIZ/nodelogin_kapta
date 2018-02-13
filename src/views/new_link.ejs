@@ -22,13 +22,13 @@
             <% } %>
 
             <!-- form -->
-            <form action="/new" method="post">
+            <form action="/newlink" method="post">
               <div class="form-group">
-                <label for="email">Id participante</label>
-                <input type="text" name="access_code" class="form-control" required>
-                <input type="text" name="id_inst" value="<% iduser=user._id %><%= iduser %>" style="display:none">
+                <label for="email">URL link</label>
+                <input type="text" name="link_url_id" class="form-control" required>
+                <input type="text" name="id_inst" value="<% iduser=user._id %><%= iduser %>" style="display:none" >
               </div>
-              <input type="submit" class="btn btn-dark btn-lg" value="Registrame">
+              <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
             </form>
 
             <hr>
