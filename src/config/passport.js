@@ -42,7 +42,6 @@ module.exports = function(passport){
     passport.use('local-login', new LocalStrategy ({
         usernameField: 'email',
         passwordField: 'password',
-        ka: 'ka',
         passReqToCallback: true
     },
     function(req, email, password, done){
@@ -54,7 +53,9 @@ module.exports = function(passport){
             if(!user.validatePassword(password)){
                 return done(null, false, req.flash('loginMessage', 'Password incorrecto'));
             }
+            
             return done(null, user);
+            
         })
     }));
 

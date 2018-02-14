@@ -139,12 +139,6 @@ module.exports = (app, passport) => {
         });
     });
 
-    /*----------------- LOGIN --------------------*/
-    app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile',
-        failureRedirect: '/login',
-        failureFlash: true
-    }));
 
     /*------- REGISTRO VIEW ONLY SUPER ADMIN -------
     app.get('/signup', isLoggedIn, (req, res) => {
@@ -168,11 +162,30 @@ module.exports = (app, passport) => {
     
 
     /*------------------- VIEW PERFIL ------------------*/
-    app.get('/profile', isLoggedIn, (req, res) => {
-        if(req.user)
-            console.log(req.user.sa)
-        res.render('profile', { user: req.user });
+    app.get('/profile', isLoggedIn, (req, res, next) => {
+        
+        var resultArray = [];
+        mongo.connect(url, function(err, db){
+            assert.equal(null, err);
+            var cursor = db.collection('users').find();
+            
+            cursor.forEach(function(doc, err){
+                assert.equal(null, err);
+                resultArray.push(doc);
+                
+            }, function(){
+                db.close();
+                console.log(req.user)
+                console.log(resultArray)
+                res.render('profile', { user: req.user, items: resultArray });
+            });
+        });
+        
     });
+    
+  
+
+
 
     /*------------------- VIEW PERFIL ------------------*/
     app.get('/statistics', isLoggedIn, (req, res) => {
@@ -190,6 +203,7 @@ module.exports = (app, passport) => {
     });
 
     /*-----------  FUNCIONLOGIN VALIDATION -------------*/
+    
     function isLoggedIn(req, res, next) {
         if(req.isAuthenticated()){
             return next(); 
@@ -198,7 +212,16 @@ module.exports = (app, passport) => {
         //Next: Crear View para decir que debe estar autenticado
         //return res.redirect('/');
     }
-
+    
+    /*---------------------- LOGIN ---------------------*/
+    
+    app.post('/login', passport.authenticate('local-login', {
+        successRedirect: '/profile',
+        failureRedirect: '/login',
+        failureFlash: true,
+        
+        
+    }));
 
     /* ------- FUNCION PARA ENCONTRAR INSCRITOS --------*/
 
@@ -232,16 +255,11 @@ module.exports = (app, passport) => {
     
     app.get('/signup', isLoggedIn, (req, res) => {
         //prueba temporal, aun no sirve user.sa
-        if(req.user.sa){
-        //if(req.user.sa){
+        
         res.render('signup', {
             user: req.user,
             message: req.flash('signupMessage')
         });
-        console.log("Si es super");
-        }
-        res.sendStatus(404);
-        console.log("No autorizado");
     });
 
     /* --------------- REGISTRAR INSTRUCTOR -------------*/
@@ -410,7 +428,7 @@ module.exports = (app, passport) => {
     
     //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
     
-    app.get('/link_inst/:id', function(req, res, nexxt) {
+    app.get('/link_inst/:id', function(req, res, next) {
         var resultArray = [];
         mongo.connect(url, function(err, db){
             
