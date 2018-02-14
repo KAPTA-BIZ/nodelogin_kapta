@@ -451,6 +451,29 @@ module.exports = (app, passport) => {
     });
 
 
+    /*-------------------- VISTA DE TEST POR LINK ---------------------*/
+    
+    
+    app.get('/list_test/:id', function(req, res, next) {
+        var resultArray = [];
+        mongo.connect(url, function(err, db){
+            
+            assert.equal(null, err);
+            //realizo busqueda en colección de test
+            var cursor = db.collection('testschemas').find();
+            
+            cursor.forEach(function(doc, err){
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, 
+            
+            function(){
+                db.close();
+                console.log(resultArray)
+                res.render('list_test', {items: resultArray, url: req.params.id });
+            });
+        });
+    });
 
     /*------------------------------------------------------------------------*/
     

@@ -11,14 +11,12 @@
 			<div class="card-body">
                 <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
 				<h1>
-				<span class="fa fa-block"></span>LISTA LINKS de <%= id_inst %></h1>
+				<span class="fa fa-block"></span>Test del link <%= url %></h1>
 				<table class="table">
 				  
                         <thead>
                           <tr>
-                            <th>Link</th>
-                            <th>Opcion 1</th>
-                            <th>Opcion 2</th>
+                            <th>Presentados</th>
                             
                           </tr>
                         </thead>
@@ -26,10 +24,8 @@
                           <% items.forEach(function(item) { %> 
                           <tr>
                             <!-- Filtrar id_inst con id capturado del instructor -->
-                            <% if((item.id_inst)==(id_inst)){ %>
-                                <td><%= item.link_url_id %></td>
-                                <td><a href=""><button>Eliminar link</button></a></td>
-                                <td><a href="/list_test/<%= item.link_url_id %>"><button>Ver test</button></a></td>
+                            <% if((item.link_url_id)==(url)){ %>
+                                <td><%= item.test_id %></td>
                           </tr>
                           <% }}); %>
                         </tbody>
