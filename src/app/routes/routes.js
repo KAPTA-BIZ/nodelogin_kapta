@@ -23,8 +23,12 @@ var storageTest = require('./storage/StorageTest');
 var storageHook = require('./storage/StorageHook');
 var storageTestHook = require('./storage/StorageTestHook');
 var storageTestWh = require('./storageWebHook/StorageTestWh');
+var mongo = require('mongodb');
+var assert = require('assert');
 
 mongoose.Promise = global.Promise;
+
+const { url } = require('../../config/database');
 
 var forge = require('node-forge');
 
@@ -156,11 +160,16 @@ module.exports = (app, passport) => {
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/profile',
         failureRedirect: '/signup',
-        failureFlash: true
+        failureFlash: true,
+        //Session false para que no inicie sesión al crear una cuenta
+        session: false
     }));
+    
+    
 
     /*------------------- VIEW PERFIL ------------------*/
     app.get('/profile', isLoggedIn, (req, res) => {
+        console.log(req.user)
         res.render('profile', {
             user: req.user,
             //sesion: req.session.nuevaSesion
@@ -224,7 +233,9 @@ module.exports = (app, passport) => {
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     
     app.get('/signup', isLoggedIn, (req, res) => {
-        if(req.user.sa){
+        //prueba temporal, aun no sirve user.sa
+        if(req.user.local.email){
+        //if(req.user.sa){
         res.render('signup', {
             user: req.user,
             message: req.flash('signupMessage')
@@ -347,7 +358,6 @@ module.exports = (app, passport) => {
         LSchema.findOne({link_url_id: link_url_id}, function(err, link){
             if(err){
                 console.log(err);
-                    console.log(err); 
                 }
                 if(!link){
                     console.log("no existe")
@@ -379,10 +389,23 @@ module.exports = (app, passport) => {
     
     //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
     
-    app.get('/list', isLoggedIn, lista, (req, res) => {
-        res.render('list', {
+    app.get('/list', function(req, res, nexxt) {
+        var resultArray = [];
+        mongo.connect(url, function(err, db){
+            assert.equal(null, err);
+            var cursor = db.collection('users').find();
+            
+            
+            cursor.forEach(function(doc, err){
+                assert.equal(null, err);
+                resultArray.push(doc);
+                console.log(resultArray);
+            }, function(){
+                db.close();
+                res.render('list', {items: resultArray});
+            });
         });
-    }) 
+    });
 
 
 

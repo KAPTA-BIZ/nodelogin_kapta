@@ -24,6 +24,8 @@
                 <strong>email</strong> : <%= user.local.email %> <br>
                 <strong>password</strong> : <%= user.local.password %> <br>
                 <strong>Super admin</strong> : <% if (user.sa == 1){ %> Si <% }else {%> No <% } %> <br>
+                <strong>sa</strong> : <%= user.sa %> <br>
+                <strong>variable</strong> : <%= user.variable %> <br>
               </p>
               <a href="/logout" class="btn btn-light btn-sm">
                 Cerrar Sesión
@@ -33,6 +35,11 @@
                 Registrar Instructor
               </a>
               <% } %>
+              <!-- Botoon prueba -->
+              <a href="/signup" class="btn btn-light btn-sm">
+                Registrar Instructor
+              </a>
+              
               <a href="/newpart" class="btn btn-light btn-sm">
                 Registrar participante
               </a>

@@ -10,26 +10,32 @@
 		<div class="card text-center mt-5">
 			<div class="card-body">
                 <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
-				<h1><span class="fa fa-block"></span>LISTA USUARIOS</h1><p>Instructor: <%= user.local.email %></p>
+				<h1>
+				<span class="fa fa-block"></span>LISTA USUARIOS</h1>
 				<table class="table">
+				  
                         <thead>
                           <tr>
                             <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Pass</th>
+                            <th>Opción</th>
                           </tr>
                         </thead>
                         <tbody>
+                          <% items.forEach(function(item) { %> 
                           <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <% if(item.local) {%>
+                            <!-- Muestra solo instructores -->
+                              <% if(!item.sa){ %>
+                                <td><%= item._id %></td>
+                                <td><%= item.local.email%></td>
+                                <td><%= item.local.password %></td>
+                                <td><a href=""><button>Asociar Link</button></a></td>
                           </tr>
-                          
+                          <% }}}); %>
                         </tbody>
-                      </table>
+          </table>
 			</div>
 		</div>
 	</div>
