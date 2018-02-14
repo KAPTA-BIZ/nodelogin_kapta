@@ -169,11 +169,9 @@ module.exports = (app, passport) => {
 
     /*------------------- VIEW PERFIL ------------------*/
     app.get('/profile', isLoggedIn, (req, res) => {
-        console.log(req.user)
-        res.render('profile', {
-            user: req.user,
-            //sesion: req.session.nuevaSesion
-        });
+        if(req.user)
+            console.log(req.user.sa)
+        res.render('profile', { user: req.user });
     });
 
     /*------------------- VIEW PERFIL ------------------*/
@@ -234,7 +232,7 @@ module.exports = (app, passport) => {
     
     app.get('/signup', isLoggedIn, (req, res) => {
         //prueba temporal, aun no sirve user.sa
-        if(req.user.local.email){
+        if(req.user.sa){
         //if(req.user.sa){
         res.render('signup', {
             user: req.user,
@@ -403,6 +401,33 @@ module.exports = (app, passport) => {
             }, function(){
                 db.close();
                 res.render('list', {items: resultArray});
+            });
+        });
+    });
+    
+    
+    /*-------------------- VISTA DE LINKS POR INSTRUCTOR ---------------------*/
+    
+    //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
+    
+    app.get('/link_inst/:id', function(req, res, nexxt) {
+        var resultArray = [];
+        mongo.connect(url, function(err, db){
+            
+            assert.equal(null, err);
+            var cursor = db.collection('lschemas').find();
+            /*PENDIENTE ENVIAR DATOS A PARTIR DEL ID */
+            
+            cursor.forEach(function(doc, err){
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, 
+            
+            function(){
+                db.close();
+                console.log("ID INSTRUCTOR" + req.params.id)
+                console.log(resultArray)
+                res.render('links_instructor', {items: resultArray, id_inst: req.params.id });
             });
         });
     });

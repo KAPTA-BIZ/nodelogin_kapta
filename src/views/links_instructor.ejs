@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Authentication with Node</title>
+	<% include partials/head %>
+</head>
+<body>
+
+	<div class="container">
+		<div class="card text-center mt-5">
+			<div class="card-body">
+                <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
+				<h1>
+				<span class="fa fa-block"></span>LISTA LINKS de <%= id_inst %></h1>
+				<table class="table">
+				  
+                        <thead>
+                          <tr>
+                            <th>Link</th>
+                            <th>Opcion</th>
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% items.forEach(function(item) { %> 
+                         <tr>
+                            <!-- Filtrar id_inst con id capturado del instructor -->
+                            <% if((item.id_inst)==(id_inst)){ %>
+                                <td><%= item.link_url_id %></td>
+                                <td><a href=""><button>Eliminar link</button></a></td>
+                                
+                          </tr>
+                          <% }}); %>
+                        </tbody>
+          </table>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

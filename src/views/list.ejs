@@ -11,15 +11,15 @@
 			<div class="card-body">
                 <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
 				<h1>
-				<span class="fa fa-block"></span>LISTA USUARIOS</h1>
-				<table class="table">
-				  
+				<span class="fa fa-block"></span>LISTA USUARIOS DE </h1>
+				<table class="table"> 
                         <thead>
                           <tr>
                             <th>#</th>
                             <th>Email</th>
                             <th>Pass</th>
-                            <th>Opción</th>
+                            <th>Opción 1</th>
+                            <th>Opción 2</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -31,7 +31,9 @@
                                 <td><%= item._id %></td>
                                 <td><%= item.local.email%></td>
                                 <td><%= item.local.password %></td>
-                                <td><a href=""><button>Asociar Link</button></a></td>
+                                <!-- Se envia por GET el id del instructor -->
+                                <td><a href="/newlink/<%= item._id %>"><button>Asociar Link</button></a></td>
+                                <td><a href="/link_inst/<%= item._id %>"><button>Ver Links</button></a></td>
                           </tr>
                           <% }}}); %>
                         </tbody>
