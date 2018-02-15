@@ -15,6 +15,7 @@ var HookSchema = require('../models/hook.js');
 var LinkSchema = require('../models/linkTest.js');
 var LSchema = require('../models/link.js');
 var GroupSchema = require('../models/group.js');
+var Categories = require('../models/categories.js');
 var get_all_available = require('../../classmarker/all');
 var get_links = require('../../classmarker/links');
 var get_groups = require('../../classmarker/groups');
@@ -442,23 +443,64 @@ module.exports = (app, passport) => {
   
     
     app.get('/list_test/:id', function(req, res){
-        
-        TestSchema.find({link_url_id: req.params.id})
-        //TestSchema.find({},'access_code')
-        .exec(function(err, result){
+    
+        Categories.find().exec(function(err, resultCat){
+            if(err){
+                console.log("Error retrieving");
+        }else{
+            TestSchema.find({link_url_id: req.params.id}).exec(function(err, result){
             if(err){
                 console.log("Error retrieving");
         }else{
             //console.log(result.category_results)
             //res.json(result);
             //console.log(result)
-            console.log(result)
-            res.render('list_test', {item: result, url: req.params.id})
+            // console.log("ANDRESSSSSS" + result)
+            //console.log(result.category_results)
+            //res.json(result);
+            //console.log(result)
+            // console.log("IBARRAAAA" + resultCat)
+            res.render('list_test', {cat: resultCat, item: result, url: req.params.id})
+            }});
             }
         });
     });
     
-
+    
+    
+    
+    // app.post('/prueba',function(req,res){
+    //     var id_link=req.body.id_link;
+    //     console.log("User name = "+id_link);
+    //     res.end("yes");
+    // });
+    
+    /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
+    
+    app.get('/search', function(req, res){
+        if(req.query.search){
+            const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            Categories.find({name: regex}, function(err, allCategories){
+                if(err){
+                    console.log(err);
+                }else{
+                    res.render("list_test_b", {categories: allCategories});
+                }
+            })
+        }else{
+        Categories.fin({}, function(err, allCategories){
+            if(err){
+                console.log(err);
+            }else{
+                res.render("list_test_b", {categories: allCategories})
+            }
+        })}
+    })
+    
+    
+    function escapeRegex(text){
+        return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    };
     /*------------------------------------------------------------------------*/
     
     /*

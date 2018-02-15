@@ -12,12 +12,12 @@
 		  
 		  <!-- form busqueda categorias START -->
 		  
-		  <form action="/search" method="GET" class="form-inline">
+		  <form action="search" method="GET" class="form-inline">
           <label class="mr-sm-2" for="inlineFormCustomSelect">Categoria...</label>
           <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
               <option selected>Choose...</option>
-              <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
-              <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
+              <% long_cat = categories.length; for(i=0; i<long_cat; i++) { %>  
+              <option value="<%= categories[i].name %>"><%= categories[i].name %></option>
               <% } %>
           </select>
             <button type="submit" class="btn btn-primary">Buscar</button>
@@ -28,8 +28,8 @@
 			<div class="card-body">
           <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
 				<h1>
-				<span class="fa fa-block"></span>Test del link <%= url %></h1>
-				<table class="table">
+				<span class="fa fa-block"></span>Test del link</h1>
+		<table class="table">
           <thead>
           <tr>
             <th>Access Code</th>
