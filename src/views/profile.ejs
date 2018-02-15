@@ -15,15 +15,13 @@
         <div class="col-sm-12">
           <div class="card">
             <div class="card-body">
-              <h3 class="card-title"><span class="fa fa-user"></span> Instructor</h3>
+              <h3 class="card-title"><span class="fa fa-user"></span><%sa=user.sa; if(sa==1){%> SuperAdmin <% }else{ %> Instructor <% } %></h3>
               <p>
                 <strong>id</strong> : <% iduser=user._id %><%= iduser %> <br>
                 <strong>email</strong> : <%= user.local.email %> <br>
                 <strong>password</strong> : <%= user.local.password %> <br>
                 
-                <% items.forEach(function(item) { if((item.local.email)== (user.local.email)){ %> <% sa=item.sa %>  <% } }); %>
-                <strong>Super admin</strong> : <% if (sa == 1){ %> Si <% }else {%> No <% } %> <br>
-               
+                
               </p>
               <a href="/logout" class="btn btn-light btn-sm">
               <button class="btn btn-danger">
@@ -41,12 +39,13 @@
               <a href="/signup" class="btn btn-light btn-sm">
                 Registrar Instructor
               </a>-->
-              
+              <% if (sa != 1){ %>
               <a href="/newpart" class="btn btn-light btn-sm">
               <button class="btn btn-primary">
                 Registrar participante
               </button>
               </a>
+              <% } %>
               
               <% if (sa == 1){ %>
               <a href="/list" class="btn btn-light btn-sm">

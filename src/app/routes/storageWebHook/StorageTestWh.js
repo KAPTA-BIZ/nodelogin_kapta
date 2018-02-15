@@ -12,11 +12,15 @@ function storeTestWh(test){
             time_started:test.result.time_started,
             time_finished:test.result.time_finished,
             duration:test.result.duration,
-            link_url_id:test.link.link_url_id
+            link_url_id:test.link.link_url_id,
+            category_results: test.category_results
+            
             
         });	
         
-        console.log(Save);
+        //console.log(Save.category_results)
+        
+        
         
         Save.save(function (err, testAdded){		
             console.log("----- test Added ----- " + testAdded.test_id)		

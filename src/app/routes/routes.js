@@ -55,6 +55,7 @@ module.exports = (app, passport) => {
         if(verified){
             //Guardar test Web Hook
             storageTestWh(jsonData);
+            //console.log(jsonData)
             res.sendStatus(200);
           }else{
             res.sendStatus(500);
@@ -162,28 +163,12 @@ module.exports = (app, passport) => {
     
 
     /*------------------- VIEW PERFIL ------------------*/
-    app.get('/profile', isLoggedIn, (req, res, next) => {
-        
-        var resultArray = [];
-        mongo.connect(url, function(err, db){
-            assert.equal(null, err);
-            var cursor = db.collection('users').find();
-            
-            cursor.forEach(function(doc, err){
-                assert.equal(null, err);
-                resultArray.push(doc);
-                
-            }, function(){
-                db.close();
-                console.log(req.user)
-                console.log(resultArray)
-                res.render('profile', { user: req.user, items: resultArray });
-            });
-        });
-        
-    });
     
-  
+    app.get('/profile', isLoggedIn, (req, res) => {
+        res.render('profile', {
+            user: req.user
+        });
+    });
 
 
 
@@ -254,12 +239,12 @@ module.exports = (app, passport) => {
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     
     app.get('/signup', isLoggedIn, (req, res) => {
-        //prueba temporal, aun no sirve user.sa
-        
-        res.render('signup', {
-            user: req.user,
-            message: req.flash('signupMessage')
-        });
+        if(req.user.sa==1){
+        res.render('signup', { user: req.user, message: req.flash('signupMessage') });
+        console.log("Si es super");
+        }
+        console.log("No autorizado");
+        res.sendStatus(404);
     });
 
     /* --------------- REGISTRAR INSTRUCTOR -------------*/
@@ -424,6 +409,7 @@ module.exports = (app, passport) => {
     });
     
     
+    
     /*-------------------- VISTA DE LINKS POR INSTRUCTOR ---------------------*/
     
     //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
@@ -453,27 +439,25 @@ module.exports = (app, passport) => {
 
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     
+  
     
-    app.get('/list_test/:id', function(req, res, next) {
-        var resultArray = [];
-        mongo.connect(url, function(err, db){
-            
-            assert.equal(null, err);
-            //realizo busqueda en colección de test
-            var cursor = db.collection('testschemas').find();
-            
-            cursor.forEach(function(doc, err){
-                assert.equal(null, err);
-                resultArray.push(doc);
-            }, 
-            
-            function(){
-                db.close();
-                console.log(resultArray)
-                res.render('list_test', {items: resultArray, url: req.params.id });
-            });
+    app.get('/list_test/:id', function(req, res){
+        
+        TestSchema.find({link_url_id: req.params.id})
+        //TestSchema.find({},'access_code')
+        .exec(function(err, result){
+            if(err){
+                console.log("Error retrieving");
+        }else{
+            //console.log(result.category_results)
+            //res.json(result);
+            //console.log(result)
+            console.log(result)
+            res.render('list_test', {item: result, url: req.params.id})
+            }
         });
     });
+    
 
     /*------------------------------------------------------------------------*/
     
