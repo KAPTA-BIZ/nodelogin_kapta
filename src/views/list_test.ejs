@@ -10,10 +10,13 @@
 	  
 		<div class="card text-center mt-5">
 		  
-		  <!-- form busqueda categorias START -->
-		  
-		  <form action="/search" method="GET" class="form-inline">
-          <label class="mr-sm-2" for="inlineFormCustomSelect">Categoria...</label>
+	<!-- form busqueda categorias START -->
+	
+	<div class="row">
+	  
+  <div class="col-4">
+    <form action="/search" method="GET">
+          <label for="exampleInputEmail1">Buscar por categoria</label><br>
           <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
               <option selected>Choose...</option>
               <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
@@ -23,9 +26,30 @@
           <input type="text" value="<%= url %>" name="id" style="display:none">
             <button type="submit" class="btn btn-primary">Buscar</button>
       </form>
-      
-     <!-- form busqueda categorias END -->
-     
+  </div>
+  
+  <!-- form busqueda categorias END -->
+  
+  <!-- form busqueda Fecha START -->
+  
+  <div class="col-8">
+    <form action="/date" method="GET">
+      <label for="exampleInputEmail1">Buscar por fecha</label><br>
+        <div class="input-group input-daterange">
+            <div class="input-group-addon">Desde</div>
+            <input type="date"name="start"  class="form-control">
+            <div class="input-group-addon">Hasta</div>
+            <input type="date" name="end" class="form-control">
+            <input type="text" value="<%= url %>" name="id" style="display:none">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+  </div>
+    
+    <!-- form busqueda Fecha END -->
+    
+  </div>
+  
 			<div class="card-body">
           <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
 				<h1>
@@ -38,7 +62,6 @@
             <th>Puntos Obtenidos</th>
             <th>Tiempo</th>
             <th>Categoría(s)</th>
-          </tr>
           </thead>
           <tbody>
           <% item.forEach(function(items) { %> 

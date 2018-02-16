@@ -415,7 +415,7 @@ module.exports = (app, passport) => {
     
     //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
     
-    app.get('/link_inst/:id', function(req, res, next) {
+    app.get('/link_inst/:id', isLoggedIn, function(req, res, next) {
         var resultArray = [];
         mongo.connect(url, function(err, db){
             
@@ -432,7 +432,7 @@ module.exports = (app, passport) => {
                 db.close();
                 console.log("ID INSTRUCTOR" + req.params.id)
                 console.log(resultArray)
-                res.render('links_instructor', {items: resultArray, id_inst: req.params.id });
+                res.render('links_instructor', {items: resultArray, id_inst: req.params.id, user: req.user});
             });
         });
     });
@@ -466,9 +466,6 @@ module.exports = (app, passport) => {
             }
         });
     });
-    
-    
-    
     
     // app.post('/prueba',function(req,res){
     //     var id_link=req.body.id_link;
@@ -521,7 +518,45 @@ module.exports = (app, passport) => {
         })}
     })
     
-    /*----------------------SEARCH FUNCIONALIDAD ---------------------------*/
+    /*------------------------ BUSQUEDA POR FECHA ----------------------------*/
+    
+    
+    app.get('/date', function(req, res){
+        date_start=req.query.start
+        date_end=req.query.end
+        var date_start = (new Date(date_start)/1000);
+        var date_end = (new Date(date_end)/1000);
+        //console.log(date_start)
+        //console.log(date_end)
+        var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
+        TestSchema.find(search_date).exec(function(err, resultDate){
+            if(err){
+                console.log("Error retrieving");
+                }else{
+                    //console.log(req.query.search)
+                    //res.render("list_test_b", {categories: allCategories});
+                    TestSchema.find().exec(function(err, resultCat){
+                    if(err){
+                        console.log("Error retrieving");
+                    }else{
+                        console.log(resultDate)
+                        var long
+                        (resultDate==0)?long=1:long=0
+                        res.render("list_test", 
+                        {
+                            cat: resultCat, item: resultDate, url: req.query.id, val: long
+                        });
+                       }
+                     //Close TestSchema.find
+                     //Close Categories else
+                  })//Close Categories.find()
+                }
+                
+        })
+        
+    })
+    
+    /*------------------------SEARCH FUNCIONALIDAD ---------------------------*/
     
     function escapeRegex(text){
         return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -536,5 +571,18 @@ module.exports = (app, passport) => {
     }));
 
     */
+    
+    // function Consultas(req, res, next) {
 
+    //     var id = req.query.id
+        
+    //     Categories.find().exec(function(err, resultCat){
+    //         if(err){
+    //             console.log("Error retrieving");
+    //     }else{
+    //         res.render('list_test', {cat: resultCat, item: resultCat, url: req.params.id})
+    //         }
+    //     });
+        
+    // }
 }
