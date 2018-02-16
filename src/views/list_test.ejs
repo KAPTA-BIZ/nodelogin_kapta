@@ -18,8 +18,9 @@
               <option selected>Choose...</option>
               <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
               <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
-              <% } %>
+              <% }%>
           </select>
+          <input type="text" value="<%= url %>" name="id" style="display:none">
             <button type="submit" class="btn btn-primary">Buscar</button>
       </form>
       
@@ -30,6 +31,7 @@
 				<h1>
 				<span class="fa fa-block"></span>Test del link <%= url %></h1>
 				<table class="table">
+				  <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
           <thead>
           <tr>
             <th>Access Code</th>
@@ -54,8 +56,9 @@
             <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
             <%= items.category_results[i].name %><br> <% } %>  
             </td><% } %>
-            <% }}); %>
+            <% } }); %>
           </tbody>
+          <% } %>
           </table>
 			</div>
 		</div>

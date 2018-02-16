@@ -460,7 +460,8 @@ module.exports = (app, passport) => {
             //res.json(result);
             //console.log(result)
             // console.log("IBARRAAAA" + resultCat)
-            res.render('list_test', {cat: resultCat, item: result, url: req.params.id})
+            var long=0
+            res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long})
             }});
             }
         });
@@ -477,18 +478,41 @@ module.exports = (app, passport) => {
     
     /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
     
-    app.get('/search', function(req, res){
+    app.get('/search/', function(req, res){
         if(req.query.search){
+            //console.log(req.query.search)
+            console.log(req.query.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             Categories.find({name: regex}, function(err, allCategories){
                 if(err){
                     console.log(err);
                 }else{
-                    res.render("list_test_b", {categories: allCategories});
+                    //console.log(req.query.search)
+                    //res.render("list_test_b", {categories: allCategories});
+                    console.log("CATEGORIA CONSULTADA" + allCategories)
+                    Categories.find().exec(function(err, resultCat){
+                    if(err){
+                        console.log("Error retrieving");
+                    }else{
+                    TestSchema.find({'category_results.name': req.query.search}).exec(function(err, result){
+                    if(err){
+                        console.log("Error retrieving");
+                    }else{
+                        var long
+                        (result==0)?long=1:long=0
+                        res.render("list_test", 
+                        {
+                            cat: resultCat, allcat: allCategories, item: result, url: req.query.id, val: long
+                        });
+                       }
+                     })//Close TestSchema.find
+                    } //Close Categories else
+                  })//Close Categories.find()
                 }
             })
         }else{
-        Categories.fin({}, function(err, allCategories){
+        //Si no hay query enviada retorna todas las categorias
+        Categories.find({}, function(err, allCategories){
             if(err){
                 console.log(err);
             }else{
@@ -497,6 +521,7 @@ module.exports = (app, passport) => {
         })}
     })
     
+    /*----------------------SEARCH FUNCIONALIDAD ---------------------------*/
     
     function escapeRegex(text){
         return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
