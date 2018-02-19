@@ -21,48 +21,80 @@
                 <strong>email</strong> : <%= user.local.email %> <br>
                 <strong>password</strong> : <%= user.local.password %> <br>
                 
-                
               </p>
+              
               <a href="/logout" class="btn btn-light btn-sm">
               <button class="btn btn-danger">
                 Cerrar Sesión
                 </button>
               </a>
+              
+              <!-- OPCIONES SUPERADMIN -->
+              
               <% if (sa == 1){ %>
               <a href="/signup" class="btn btn-light btn-sm">
                 <button class="btn btn-default">
                 Registrar Instructor
                 </button>
               </a>
+              
+              <a href="/list" class="btn btn-light btn-sm">
+                <button class="btn btn-success">
+                Ver Lista Instructores
+                </button>
+              </a> 
+              
+              <a href="/categories" class="btn btn-light btn-sm">
+                <button class="btn btn-primary">
+                Ver Categorias
+                </button>
+              </a> 
+              <br><br>
+              <hr>
+                <form action="/adminsearch">
+                  <label for="example-search-input" class="col-12 col-form-label">Ingrese su busqueda por "ACCESS CODE, link o Test"</label>
+                  <div class="form-group row" >
+                      <div class="col-8">
+                      <input class="form-control" type="search" name="search" placeholder="Ingrese su busqueda">
+                  </div>
+                  <div class="col-2">
+                     <button>Buscar</button>
+                  </div>
+                  </div>
+                </form>
+              
+         
               <% } %>
-              <!-- Botoon prueba 
-              <a href="/signup" class="btn btn-light btn-sm">
-                Registrar Instructor
-              </a>-->
-              <% if (sa != 1){ %>
+              
+              <!-- OPCIONES INSTRUCTOR -->
+              
+              <% if (sa == 0){ %>
               <a href="/newpart" class="btn btn-light btn-sm">
               <button class="btn btn-primary">
                 Registrar participante
               </button>
               </a>
-              <% } %>
               
-              <% if (sa == 1){ %>
-              <a href="/list" class="btn btn-light btn-sm">
-                <button class="btn btn-success">
-                Ver Lista Instructores
-                </button>
-              <% } %>
-              
-              <% if (sa != 1){ %>
               <a href="/link_inst/<%= iduser %>" class="btn btn-light btn-sm">
                 <button class="btn btn-success">
                 Ver mis links
                 </button>
               </a>
+              
+              <a href="/list_part" class="btn btn-light btn-sm">
+                <button class="btn btn-success">
+                Ver Participantes asociados
+                </button>
+              </a>
+              
                <% } %>
+               
             </div>
           </div>
+          <br>
+          
+          
+         
         </div>
       </div>
       </div>

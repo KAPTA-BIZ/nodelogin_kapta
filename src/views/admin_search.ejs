@@ -14,24 +14,6 @@
 	
 	<div class="row">
 	  
-  <div class="col-4">
-    <form action="/search" method="GET">
-          <label for="exampleInputEmail1">Buscar por categoria</label><br>
-          <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
-              <option selected>Choose...</option>
-              <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
-              <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
-              <% }%>
-          </select>
-          <input type="text" value="<%= url %>" name="id" style="display:none">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-      </form>
-  </div>
-  
-  <!-- form busqueda categorias END -->
-  
-  <!-- form busqueda Fecha START -->
-  
   <div class="col-8">
     <form action="/date" method="GET">
       <label for="exampleInputEmail1">Buscar por fecha</label><br>
@@ -40,7 +22,7 @@
             <input type="date"name="start"  class="form-control">
             <div class="input-group-addon">Hasta</div>
             <input type="date" name="end" class="form-control">
-            <input type="text" value="<%= url %>" name="id" style="display:none">
+            <input type="text" value="<%= 1 %>" name="admin" style="display:none">
         </div>
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
@@ -53,7 +35,7 @@
 			<div class="card-body">
           <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
 				<h1>
-				<span class="fa fa-block"></span>Test del link <%= url %></h1>
+				<span class="fa fa-block"></span>Test del link <%=  %></h1>
 				<table class="table">
 				  <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
           <thead>
@@ -62,13 +44,16 @@
             <th>Puntos Obtenidos</th>
             <th>Tiempo</th>
             <th>Categoría(s)</th>
+            <th>Link</th>
+            <th>Instructor</th>
+            <th>Fecha</th>
           </thead>
           <tbody>
-          <% item.forEach(function(items) { %> 
+          <% result.forEach(function(items) { %> 
           <tr>
           <!-- Filtrar id_inst con id capturado del instructor -->
           
-          <% if((items.link_url_id)==(url)){ %>
+         
             <td><%= items.access_code %></td>
             <td><%= items.points_scored %></td>
             <td><%= items.duration %> </td>
@@ -77,7 +62,28 @@
             <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
             <%= items.category_results[i].name %><br> <% } %>  
             </td><% } %>
-            <% } }); %>
+            <td><%= items.link_url_id %></td>
+            <td>
+            <%longUser=(User.length); for(i=0; i<longUser; i++){ if((User[i].id)==(items.id_inst)){%>
+            <%= User[i].local.email %><% }} %>  
+            </td>
+            <td>
+                <% function timeConverter(UNIX_timestamp)
+                {
+                   var a = new Date(UNIX_timestamp * 1000);
+                   var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                   var year = a.getFullYear();
+                   var month = months[a.getMonth()];
+                   var date = a.getDate();
+                   var hour = a.getHours();
+                   var min = a.getMinutes();
+                   var sec = a.getSeconds();
+                   var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+                   return time;
+                }
+                %><%= timeConverter(items.time_started) %>
+            </td>
+            <% }); %>
           </tbody>
           <% } %>
           </table>

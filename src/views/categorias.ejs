@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Authentication with Node</title>
+	<% include partials/head %>
+</head>
+<body>
+	<div class="container">
+		<div class="card text-center mt-5">
+			<div class="card-body">
+          <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
+				<h1>
+				<span class="fa fa-block"></span>Categorias</h1>
+				<table class="table"> 
+            <thead>
+                <tr>
+                  <th>Nombre</th>
+                </tr>
+            </thead>
+            <tbody>
+                  <% categorias.forEach(function(categoria) { %> 
+                <tr>
+                  <!-- Muestra solo instructores -->
+                  <td><%= categoria.name %></td>
+                  <!-- Se envia por GET el id del instructor -->
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

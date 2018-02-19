@@ -18,8 +18,6 @@
                           <tr>
                             <th>Link</th>
                             <th>Opcion 1</th>
-                            <th>Opcion 2</th>
-                            
                           </tr>
                         </thead>
                         <tbody>
@@ -28,7 +26,6 @@
                             <!-- Filtrar id_inst con id capturado del instructor -->
                             <% if((item.id_inst)==(id_inst)){ %>
                                 <td><%= item.link_url_id %></td>
-                                <td><a href=""><button>Eliminar link</button></a></td>
                                 <td><a href="/list_test/<%= item.link_url_id %>"><button>Ver test</button></a></td>
                           </tr>
                           <% }}); %>

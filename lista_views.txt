@@ -1,0 +1,32 @@
+
+/*--------------- Listas para el Front -----------------------*/
+
+1.  index: Vista con botón de Login
+
+2.  Login: Vista con formulario para inicio de sesión
+    Ruta: 
+        Renderizar vista: /login
+        POST: LOGIN POST: /login
+        
+3.  Profile: Vista del perfil del Usuario, se filtra por Instructor (user.sa=0) y Super usuario(user.sa=1)
+    Ruta:
+        Renderizar: /profile
+
+    3.1 Opciones para superAdmin:
+            3.1.1 Registrar Instructor => ruta: /signup
+            3.1.2 Ver lista instructores => ruta: /list
+            
+    3.2 Opciones para Instructor:
+    
+            3.2.1 Ver mis links => ruta: /link_inst/ +id de instructor
+                  Renderiza los links asociados al id del instructor en sesión
+                  
+                  Opciones:
+                     3.2.1.1 Ver Test => ruta: /list_test + url del link
+                     3.2.1.2 Busqueda por Categoria  => ruta: /search
+                     3.2.1.3 Busqueda por Fecha => ruta: /date
+                     
+            3.2.2 Registrar participante => ruta: /newpart
+            
+            3.2.3 Registrar participante => ruta: /newpart
+    

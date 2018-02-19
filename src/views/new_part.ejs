@@ -29,8 +29,9 @@
                 <input type="text" name="id_inst" value="<% iduser=user._id %><%= iduser %>" style="display:none">
               </div>
               <input type="submit" class="btn btn-dark btn-lg" value="Registrame">
-            </form>
-
+            </form><br>
+            <% if(participante!=""){ %> Participante con Access Code: <b> <%= participante.access_code %> </b> Registrado <%}%>
+            <br><a href="list_part">Ver lista participantes</a>
             <hr>
             <div class="text-center">
               

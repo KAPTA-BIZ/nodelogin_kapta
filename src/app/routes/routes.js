@@ -27,6 +27,7 @@ var storageTestWh = require('./storageWebHook/StorageTestWh');
 var mongo = require('mongodb');
 var assert = require('assert');
 
+
 mongoose.Promise = global.Promise;
 
 const { url } = require('../../config/database');
@@ -199,7 +200,7 @@ module.exports = (app, passport) => {
         //return res.redirect('/');
     }
     
-    /*---------------------- LOGIN ---------------------*/
+    /*-------------------- LOGIN POST ----------------------*/
     
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile',
@@ -229,13 +230,11 @@ module.exports = (app, passport) => {
                     //esto se muestra
                     res.json(test);
                     //res.render('list')
-                    
                 }
         });
     }
 
 
-    
     /* ---------------- LOGIN SUPER ADMIN --------------*/
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     
@@ -248,13 +247,10 @@ module.exports = (app, passport) => {
         res.sendStatus(404);
     });
 
-    /* --------------- REGISTRAR INSTRUCTOR -------------*/
+    /* --------------- REGISTRAR PARTICIPANTE -------------*/
     
     app.get('/newpart', isLoggedIn, (req, res) => {
-        res.render('new_part', {
-            user: req.user,
-            message: req.flash('signupMessage')
-        });
+        res.render('new_part', {user: req.user, message: req.flash('signupMessage'), participante: ""});
     }) 
 
 
@@ -296,9 +292,10 @@ module.exports = (app, passport) => {
 
     /*------------- UPDATE id_inst FIND access_code ------------*/
 
-    /*----------- VERIFICA SI EXISTE EL ACCESS CODE  -----------*/
 
-    app.post('/newpart', function(req, res){
+    /*-------------- REGISTRAR PARTICIPANTE POST  ----------------*/
+
+    app.post('/newpart', isLoggedIn, function(req, res){
         console.log('Update participante');
 
         var newTestSchema = new TestSchema();
@@ -326,7 +323,8 @@ module.exports = (app, passport) => {
                         if(err){
                             res.send("Error actualizando");
                         }else{
-                            res.json(updateTest);
+                            //res.json(updateTest);
+                            res.render('new_part', {user: req.user, participante: updateTest, message: req.flash('signupMessage')})
                             }
                         }
                     )
@@ -436,11 +434,20 @@ module.exports = (app, passport) => {
             });
         });
     });
-
-
-    /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     
-  
+    
+    /*-------------------- VISTA PARTICIPANTES POR INSTRUCTOR ---------------------*/
+    
+   
+    
+    app.get('/list_part/', isLoggedIn, (req, res, next) => {
+        TestSchema.find({id_inst: req.user.id}).exec(function Consulta(err, result){
+            err?console.log("Error retrieving"):console.log(result); res.render('list_participantes', {participantes: result})
+        });
+    })
+    
+    
+    /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     
     app.get('/list_test/:id', function(req, res){
     
@@ -518,14 +525,38 @@ module.exports = (app, passport) => {
         })}
     })
     
-    /*------------------------ BUSQUEDA POR FECHA ----------------------------*/
     
+    /*-------------------    BUSQUEDA PARA ADMIN  -------------------------*/
+    
+    app.get('/adminsearch/', function(req, res){
+        if(req.query.search){
+            //console.log(req.query.search)
+            console.log(req.query.id)
+            const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, function(err, allCategories){
+                if(err){
+                    console.log(err);
+                }else{
+                    var long
+                    (allCategories==0)?long=1:long=0
+                    UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                    err?console.log("Error retrieving"):(res.render('admin_search', {result: allCategories, val: long, User: resultUser}))})
+                }
+            })
+        }
+    })
+    
+    
+    
+    /*------------------------ BUSQUEDA POR FECHA ----------------------------*/
     
     app.get('/date', function(req, res){
         date_start=req.query.start
         date_end=req.query.end
-        var date_start = (new Date(date_start)/1000);
-        var date_end = (new Date(date_end)/1000);
+        
+        //Se suma 86400 para obtener el día completo
+        var date_start = ((new Date(date_start)/1000)+86400);
+        var date_end = ((new Date(date_end)/1000)+86400);
         //console.log(date_start)
         //console.log(date_end)
         var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
@@ -542,18 +573,33 @@ module.exports = (app, passport) => {
                         console.log(resultDate)
                         var long
                         (resultDate==0)?long=1:long=0
-                        res.render("list_test", 
-                        {
-                            cat: resultCat, item: resultDate, url: req.query.id, val: long
-                        });
+                        //Captura de variable query.admin para validar si la busqueda la hace admin
+                        //si es admin renderiza admin_search, si no renderiza list_test
+                        //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
+                        req.query.admin?UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
+                        err?console.log("Error retrieving"):(res.render('admin_search', {result: resultDate, val: long, User: resultUser}))}):
+                        (res.render("list_test", {cat: resultCat, item: resultDate, url: req.query.id, val: long}))
                        }
                      //Close TestSchema.find
                      //Close Categories else
                   })//Close Categories.find()
                 }
-                
         })
         
+    })
+    
+    /*-------------------------- VER CATEGORIAS ------------------------------*/
+    
+    app.get('/categories', isLoggedIn, (req, res) => {
+        Categories.find().exec((err, result) => {
+            err?console.log("Error retrieving"):console.log(result); res.render('categorias', {categorias: result})
+        })
+    })
+    
+    app.get('/list_part/', isLoggedIn, (req, res, next) => {
+        TestSchema.find({id_inst: req.user.id}).exec((err, result) => {
+            err?console.log("Error retrieving"):console.log(result); res.render('list_participantes', {participantes: result})
+        });
     })
     
     /*------------------------SEARCH FUNCIONALIDAD ---------------------------*/
