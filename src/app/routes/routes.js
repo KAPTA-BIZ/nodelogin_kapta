@@ -239,12 +239,7 @@ module.exports = (app, passport) => {
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     
     app.get('/signup', isLoggedIn, (req, res) => {
-        if(req.user.sa==1){
-        res.render('signup', { user: req.user, message: req.flash('signupMessage') });
-        console.log("Si es super");
-        }
-        console.log("No autorizado");
-        res.sendStatus(404);
+        req.user.sa==1?(res.render('signup', { user: req.user, message: req.flash('signupMessage')})):(res.sendStatus(404))
     });
 
     /* --------------- REGISTRAR PARTICIPANTE -------------*/
@@ -301,17 +296,8 @@ module.exports = (app, passport) => {
         var newTestSchema = new TestSchema();
         var access_code = req.body.access_code;
         
-        TestSchema.findOne({access_code: access_code}, function(err, test){
-            if(err){
-                console.log(err);
-                    console.log(err); 
-                }
-                if(!test){
-                    console.log("no existe")
-                }else{
-                    console.log("si existe");
-                    /*----------- SI EXISTE, SE HAYA EL DOC Y SE ACTUALIZA -------*/
-                    newTestSchema.access_code = req.body.access_code;
+        TestSchema.findOne({access_code: access_code}, (err, test) => {
+            err?console.log(err):newTestSchema.access_code = req.body.access_code;
                     TestSchema.findOneAndUpdate({access_code: req.body.access_code},
                     {
                         $set: {id_inst: req.body.id_inst}
@@ -319,16 +305,10 @@ module.exports = (app, passport) => {
                     {
                         new: true
                     },
-                    function(err, updateTest){
-                        if(err){
-                            res.send("Error actualizando");
-                        }else{
-                            //res.json(updateTest);
-                            res.render('new_part', {user: req.user, participante: updateTest, message: req.flash('signupMessage')})
-                            }
+                    (err, updateTest) => {
+                        err?res.send("Error actualizando"):res.render('new_part', {user: req.user, participante: updateTest, message: req.flash('signupMessage')})
                         }
-                    )
-                }
+                    ) 
         });
     });
     
@@ -347,15 +327,17 @@ module.exports = (app, passport) => {
     
     
     /*--------------- VERIFICA SI EXISTE LINK  --------------*/
-    //Se busca link_url_id
+    //Se busca link_url_id en la colección LSChema (links), si no existe se anuncia, si existe se
+    //entra a buscar y actualizar segun el id enviado, se actualiza el campo id_inst con el id de instructor
+    //para sincronizar link con instructor
     
-    app.post('/newlink', function(req, res){
+    app.post('/newlink', isLoggedIn, (req, res) => {
         console.log('LINK UPDATE');
 
         var newLSchema = new LSchema();
         var link_url_id = req.body.link_url_id;
         
-        LSchema.findOne({link_url_id: link_url_id}, function(err, link){
+        LSchema.findOne({link_url_id: link_url_id}, (err, link) => {
             if(err){
                 console.log(err);
                 }
@@ -372,12 +354,8 @@ module.exports = (app, passport) => {
                     {
                         new: true
                     },
-                    function(err, updateTest){
-                        if(err){
-                            res.send("Error actualizando");
-                        }else{
-                            res.json(updateTest);
-                            }
+                    (err, updateTest) => {
+                        err?res.send("Error actualizando"):res.json(updateTest)
                         }
                     )
                 }
@@ -387,52 +365,22 @@ module.exports = (app, passport) => {
     
     /*-------------------- VISTA INSTRUCTOR ---------------------*/
     
-    //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
-    
-    app.get('/list', function(req, res, nexxt) {
-        var resultArray = [];
-        mongo.connect(url, function(err, db){
-            assert.equal(null, err);
-            var cursor = db.collection('users').find();
-            
-            
-            cursor.forEach(function(doc, err){
-                assert.equal(null, err);
-                resultArray.push(doc);
-                console.log(resultArray);
-            }, function(){
-                db.close();
-                res.render('list', {items: resultArray});
-            });
-        });
-    });
+    //busqueda general de usuarios para despliegue de lista
+    app.get('/list', isLoggedIn, (req, res) => {
+        UserSchema.find().exec((err, resultArray) => {
+            err?console.log(err):res.render('list', {items: resultArray})
+        })
+    })
     
     
     
     /*-------------------- VISTA DE LINKS POR INSTRUCTOR ---------------------*/
     
-    //Usa funcion isLoggedIn para acceder a id, luego lista y busca id_inst = id
     
-    app.get('/link_inst/:id', isLoggedIn, function(req, res, next) {
-        var resultArray = [];
-        mongo.connect(url, function(err, db){
-            
-            assert.equal(null, err);
-            var cursor = db.collection('lschemas').find();
-            /*PENDIENTE ENVIAR DATOS A PARTIR DEL ID */
-            
-            cursor.forEach(function(doc, err){
-                assert.equal(null, err);
-                resultArray.push(doc);
-            }, 
-            
-            function(){
-                db.close();
-                console.log("ID INSTRUCTOR" + req.params.id)
-                console.log(resultArray)
-                res.render('links_instructor', {items: resultArray, id_inst: req.params.id, user: req.user});
-            });
-        });
+    app.get('/link_inst/:id', isLoggedIn, (req, res) => {
+        LSchema.find().exec((err, resultArray) => {
+            err?console.log(err):res.render('links_instructor', {items: resultArray, user: req.user, id_inst: req.params.id})
+        })
     });
     
     
@@ -448,25 +396,19 @@ module.exports = (app, passport) => {
     
     
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
+    //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
+    //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
     
-    app.get('/list_test/:id', function(req, res){
+    app.get('/list_test/:id', isLoggedIn, (req, res) => {
     
-        Categories.find().exec(function(err, resultCat){
+        Categories.find().exec((err, resultCat) => {
             if(err){
                 console.log("Error retrieving");
         }else{
-            TestSchema.find({link_url_id: req.params.id}).exec(function(err, result){
+            TestSchema.find({link_url_id: req.params.id}).exec((err, result) => {
             if(err){
                 console.log("Error retrieving");
         }else{
-            //console.log(result.category_results)
-            //res.json(result);
-            //console.log(result)
-            // console.log("ANDRESSSSSS" + result)
-            //console.log(result.category_results)
-            //res.json(result);
-            //console.log(result)
-            // console.log("IBARRAAAA" + resultCat)
             var long=0
             res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long})
             }});
@@ -474,15 +416,10 @@ module.exports = (app, passport) => {
         });
     });
     
-    // app.post('/prueba',function(req,res){
-    //     var id_link=req.body.id_link;
-    //     console.log("User name = "+id_link);
-    //     res.end("yes");
-    // });
     
     /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
     
-    app.get('/search/', function(req, res){
+    app.get('/search/', isLoggedIn, (req, res) => {
         if(req.query.search){
             //console.log(req.query.search)
             console.log(req.query.id)
@@ -491,14 +428,12 @@ module.exports = (app, passport) => {
                 if(err){
                     console.log(err);
                 }else{
-                    //console.log(req.query.search)
-                    //res.render("list_test_b", {categories: allCategories});
                     console.log("CATEGORIA CONSULTADA" + allCategories)
-                    Categories.find().exec(function(err, resultCat){
+                    Categories.find().exec((err, resultCat) => {
                     if(err){
                         console.log("Error retrieving");
                     }else{
-                    TestSchema.find({'category_results.name': req.query.search}).exec(function(err, result){
+                    TestSchema.find({'category_results.name': req.query.search}).exec((err, result) => {
                     if(err){
                         console.log("Error retrieving");
                     }else{
@@ -516,7 +451,7 @@ module.exports = (app, passport) => {
             })
         }else{
         //Si no hay query enviada retorna todas las categorias
-        Categories.find({}, function(err, allCategories){
+        Categories.find({}, (err, allCategories) => {
             if(err){
                 console.log(err);
             }else{
@@ -528,12 +463,11 @@ module.exports = (app, passport) => {
     
     /*-------------------    BUSQUEDA PARA ADMIN  -------------------------*/
     
-    app.get('/adminsearch/', function(req, res){
-        if(req.query.search){
-            //console.log(req.query.search)
+    app.get('/adminsearch/', isLoggedIn, (req, res) => {
+        if((req.query.search)&&(req.user.sa==1)){
             console.log(req.query.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-            TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, function(err, allCategories){
+            TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
                 if(err){
                     console.log(err);
                 }else{
@@ -543,6 +477,8 @@ module.exports = (app, passport) => {
                     err?console.log("Error retrieving"):(res.render('admin_search', {result: allCategories, val: long, User: resultUser}))})
                 }
             })
+        }else{
+            (res.sendStatus(404))
         }
     })
     
@@ -550,7 +486,7 @@ module.exports = (app, passport) => {
     
     /*------------------------ BUSQUEDA POR FECHA ----------------------------*/
     
-    app.get('/date', function(req, res){
+    app.get('/date', isLoggedIn, function(req, res){
         date_start=req.query.start
         date_end=req.query.end
         
