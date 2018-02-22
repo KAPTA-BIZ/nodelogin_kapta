@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
+    "build:dev": "./node_modules/.bin/webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,6 +23,7 @@
     "express": "4.16.2",
     "express-graphql": "0.6.11",
     "express-react-engine": "1.0.0",
+    "express-react-views": "^0.10.5",
     "express-session": "1.15.6",
     "forge": "^2.3.0",
     "graphql": "0.11.7",
@@ -34,9 +36,18 @@
     "node-forge": "^0.7.1",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
-    "react": "16.1.1",
-    "react-dom": "16.1.1",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
     "request": "2.83.0",
     "serve-favicon": "2.4.5"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.10",
+    "webpack": "^3.11.0"
   }
 }

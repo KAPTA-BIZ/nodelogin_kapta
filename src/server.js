@@ -17,8 +17,12 @@ mongoose.connect(url);
 require('./config/passport')(passport);
 
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'build'));
+// app.set('view engine', 'js');
+app.set('views', __dirname + '/views/Components');
+app.set('view engine','jsx');
+app.engine('jsx', require('express-react-views').createEngine());
+
 
 //middlewares
 app.use(morgan('dev'));
@@ -37,7 +41,7 @@ app.use(flash());
 require('./app/routes/routes')(app, passport);
 
 //static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
 
 app.listen(app.get('port'), () => {
     console.log('server on port', app.get('port'));
