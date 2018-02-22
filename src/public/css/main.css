@@ -1,7 +1,73 @@
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('/fonts/segoeui/SegoeUI.eot');
+  src: url('/fonts/segoeui/SegoeUI.eot?#iefix') format('embedded-opentype'),
+      url('/fonts/segoeui/SegoeUI.woff2') format('woff2'),
+      url('/fonts/segoeui/SegoeUI.woff') format('woff'),
+      url('/fonts/segoeui/SegoeUI.ttf') format('truetype'),
+      url('/fonts/segoeui/SegoeUI.svg#SegoeUI') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Segoe UI Bold';
+  src: url('/fonts/segoeui/SegoeUI-Bold.eot');
+  src: url('/fonts/segoeui/SegoeUI-Bold.eot?#iefix') format('embedded-opentype'),
+      url('/fonts/segoeui/SegoeUI-Bold.woff2') format('woff2'),
+      url('/fonts/segoeui/SegoeUI-Bold.woff') format('woff'),
+      url('/fonts/segoeui/SegoeUI-Bold.ttf') format('truetype'),
+      url('/fonts/segoeui/SegoeUI-Bold.svg#SegoeUI-Bold') format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Segoe UI Italic';
+  src: url('/fonts/segoeui/SegoeUI-Italic.eot');
+  src: url('/fonts/segoeui/SegoeUI-Italic.eot?#iefix') format('embedded-opentype'),
+      url('/fonts/segoeui/SegoeUI-Italic.woff2') format('woff2'),
+      url('/fonts/segoeui/SegoeUI-Italic.woff') format('woff'),
+      url('/fonts/segoeui/SegoeUI-Italic.ttf') format('truetype'),
+      url('/fonts/segoeui/SegoeUI-Italic.svg#SegoeUI-Italic') format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Segoe UI Light';
+  src: url('/fonts/segoeui/SegoeUI-Light.eot');
+  src: url('/fonts/segoeui/SegoeUI-Light.eot?#iefix') format('embedded-opentype'),
+      url('/fonts/segoeui/SegoeUI-Light.woff2') format('woff2'),
+      url('/fonts/segoeui/SegoeUI-Light.woff') format('woff'),
+      url('/fonts/segoeui/SegoeUI-Light.ttf') format('truetype'),
+      url('/fonts/segoeui/SegoeUI-Light.svg#SegoeUI-Light') format('svg');
+  font-weight: 300;
+  font-style: normal;
+}
+
+h1,h2{
+  font-family: 'Segoe UI Bold';
+}
+h3,h4,h5{
+  font-family: 'Segoe UI';
+}
+p,a,span,i{
+  font-family: 'Segoe UI Light';
+}
 body{
   text-align: center;
-  background: linear-gradient(rgba(196, 102, 0, 0.6), #ff5423);
-  height: 100vh;
+  background-image: url('/img/bg_kapta.jpg');
+  background-repeat: no-repeat;
+}
+body::before{
+  content: '';
+  position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-image: linear-gradient(rgba(196, 102, 0, 0.1), #ff5423);
 }
 
 form input[type=password]:focus:not([readonly]),

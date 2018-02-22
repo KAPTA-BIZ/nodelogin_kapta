@@ -3,17 +3,22 @@
 <head>
 	<title>Authentication with Node</title>
 	<% include partials/head %>
+	<style>
+	.card{
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+	</style>
+
 </head>
 
 <body>
-	<div className="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png"></div>
+
 	<div class="container">
 		<div class="card text-center mt-5">
 			<div class="card-body">
 				<img src=/img/kapta.png height="70" alt="logo de K@PTA"/>
 				<h1><span class="fa fa-block"></span>Classmarker K@PTA</h1>
 				<p>Inicia Sesión para continuar</p>
-				<!--<p>Login or Register</p>-->
 				<a href="/login" class="btn btn-light">
 					<span class="fa fa-user"></span> Iniciar Sesión
 				</a>
@@ -21,8 +26,10 @@
 			</div>
 		</div>
 	</div>
-<script>
-	console.log($('.sidebar'))
-</script>
+	<script src="/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+	<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="/js/chartist.min.js"></script>
+	<script src="/js/bootstrap-notify.js"></script>
+	<script src="/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
 </body>
 </html>
