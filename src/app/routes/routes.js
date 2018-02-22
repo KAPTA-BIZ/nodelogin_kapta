@@ -195,7 +195,7 @@ module.exports = (app, passport) => {
         if(req.isAuthenticated()){
             return next(); 
         }
-        return  res.send('Debe estar autenticado');
+        return  res.redirect('/');
         //Next: Crear View para decir que debe estar autenticado
         //return res.redirect('/');
     }
@@ -205,9 +205,7 @@ module.exports = (app, passport) => {
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile',
         failureRedirect: '/login',
-        failureFlash: true,
-        
-        
+        failureFlash: true    
     }));
 
     /* ------- FUNCION PARA ENCONTRAR INSCRITOS --------*/
