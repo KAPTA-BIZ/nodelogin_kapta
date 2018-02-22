@@ -4,27 +4,25 @@
 	<title>Authentication with Node</title>
 	<% include partials/head %>
 </head>
-<body>
 
+<body>
+	<div className="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png"></div>
 	<div class="container">
 		<div class="card text-center mt-5">
 			<div class="card-body">
-                <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
-				<h1><span class="fa fa-block"></span>CLASS-KAPTA</h1>
+				<img src=/img/kapta.png height="70" alt="logo de K@PTA"/>
+				<h1><span class="fa fa-block"></span>Classmarker K@PTA</h1>
+				<p>Inicia Sesión para continuar</p>
 				<!--<p>Login or Register</p>-->
 				<a href="/login" class="btn btn-light">
-					<span class="fa fa-user"></span> Login
+					<span class="fa fa-user"></span> Iniciar Sesión
 				</a>
-				
-				<!--
-				<a href="/signup" class="btn btn-light">
-					<span class="fa fa-user"></span> Registro
-				</a>
-				Registro unicamente realizado por super admin
-				-->
+
 			</div>
 		</div>
 	</div>
-
+<script>
+	console.log($('.sidebar'))
+</script>
 </body>
 </html>

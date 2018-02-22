@@ -1,0 +1,13 @@
+body{
+  text-align: center;
+  background: linear-gradient(rgba(196, 102, 0, 0.6), #ff5423);
+  height: 100vh;
+}
+
+form input[type=password]:focus:not([readonly]),
+form input[type=email]:focus:not([readonly]) {
+  border-bottom: 1px solid #ff5423;
+  box-shadow: 0 1px 0 0 #ff5423; }
+  form input[type=password]:focus:not([readonly]) + label,
+  form input[type=email]:focus:not([readonly]) + label {
+    color: #ff5423; }
