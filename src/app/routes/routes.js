@@ -408,6 +408,7 @@ module.exports = (app, passport) => {
                 console.log("Error retrieving");
         }else{
             var long=0
+            console.log(long, result, req)
             res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long})
             }});
             }
