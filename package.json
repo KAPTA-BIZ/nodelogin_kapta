@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
+    "client":"cd src/client/ && npm run build",
     "build:dev": "./node_modules/.bin/webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
