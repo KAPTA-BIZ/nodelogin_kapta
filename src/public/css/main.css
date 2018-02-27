@@ -47,19 +47,23 @@
 }
 
 h1,h2{
-  font-family: 'Segoe UI Bold';
+  font-family: 'Segoe UI Bold' !important;
 }
 h3,h4,h5{
-  font-family: 'Segoe UI';
+  font-family: 'Segoe UI' !important;
 }
-p,a,span,i{
-  font-family: 'Segoe UI Light';
+p,a,span{
+  font-family: 'Segoe UI Light' !important;
 }
 .left-logo img{
   width: 300px;
   height: auto;
 }
-.login img{
+.logo img{
+  width: 100%;
+  height: auto;
+}
+.login img, .signup img{
   width: 100%;
 }
 #bg-cont{
@@ -81,6 +85,8 @@ p,a,span,i{
 	left: 0;
 	background-image: linear-gradient(rgba(196, 102, 0, 0.1), #ff5423);
 }
+
+
 
 
 form input[type=password]:focus:not([readonly]),
