@@ -3,26 +3,38 @@
 <head>
 	<title>Authentication with Node</title>
 	<% include partials/head %>
+	<style>
+	.container{
+		margin-top: 30vh;
+	}
+	.card{
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+	</style>
+
 </head>
 
 <body>
-	<div className="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png"></div>
-	<div class="container">
-		<div class="card text-center mt-5">
-			<div class="card-body">
-				<img src=/img/kapta.png height="70" alt="logo de K@PTA"/>
-				<h1><span class="fa fa-block"></span>Classmarker K@PTA</h1>
-				<p>Inicia Sesión para continuar</p>
-				<!--<p>Login or Register</p>-->
-				<a href="/login" class="btn btn-light">
-					<span class="fa fa-user"></span> Iniciar Sesión
-				</a>
-
+	<section id="bg-cont">
+		<div class="container">
+				<div class="card text-center mt-5">
+					<div class="card-body">
+						<div class="row">
+							<div class="col left-logo" style="border-right: 1px solid rgba(0,0,0,.1);">
+									<img src=/img/logo/kapta.png alt="logo de K@PTA"/>
+									<hr />
+									<img src=/img/logo/classmarker.png  alt="logo de K@PTA"/>
+							</div>
+							<div class="col">
+									<h3 style="margin-top: 5vh;">Inicia Sesión para continuar.</h3>
+									<a href="/login" class="btn btn-light">
+										Iniciar Sesión
+									</a>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
-<script>
-	console.log($('.sidebar'))
-</script>
+	</section>
 </body>
 </html>

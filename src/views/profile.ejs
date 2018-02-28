@@ -6,98 +6,211 @@
     <% include partials/head %>
   </head>
   <body>
-    <div class="container">
-      <header class="text-center">
-        <h1>Perfil</h1>
-      </header>
-      <hr>
-      <div class="container">
-        <div class="col-sm-12">
-          <div class="card">
-            <div class="card-body">
-              <h3 class="card-title"><span class="fa fa-user"></span><%sa=user.sa; if(sa==1){%> SuperAdmin <% }else{ %> Instructor <% } %></h3>
-              <p>
-                <strong>id</strong> : <% iduser=user._id %><%= iduser %> <br>
-                <strong>email</strong> : <%= user.local.email %> <br>
-                <strong>password</strong> : <%= user.local.password %> <br>
+
+
+    <div class="main-panel">
+        <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+            <div class=" container-fluid  ">
+                <a class="navbar-brand" href="#"> 
+                    
+                    <% sa=user.sa; 
+                    if(sa==1){%> 
+                        Administrador 
+                    <% }else{ %>
+                    <p>
+                        <strong>Instructor</strong> : <% iduser=user.local.email %><%= iduser %> <br>    
+                    </p>
+
+                    <% } %> 
                 
-              </p>
-              
-              <a href="/logout" class="btn btn-light btn-sm">
-              <button class="btn btn-danger">
-                Cerrar Sesión
-                </button>
-              </a>
-              
-              <!-- OPCIONES SUPERADMIN -->
-              
-              <% if (sa == 1){ %>
-              <a href="/signup" class="btn btn-light btn-sm">
-                <button class="btn btn-default">
-                Registrar Instructor
-                </button>
-              </a>
-              
-              <a href="/list" class="btn btn-light btn-sm">
-                <button class="btn btn-success">
-                Ver Lista Instructores
-                </button>
-              </a> 
-              
-              <a href="/categories" class="btn btn-light btn-sm">
-                <button class="btn btn-primary">
-                Ver Categorias
-                </button>
-              </a> 
-              <br><br>
-              <hr>
-                <form action="/adminsearch">
-                  <label for="example-search-input" class="col-12 col-form-label">Ingrese su busqueda por "ACCESS CODE, link o Test"</label>
-                  <div class="form-group row" >
-                      <div class="col-8">
-                      <input class="form-control" type="search" name="search" placeholder="Ingrese su busqueda">
-                  </div>
-                  <div class="col-2">
-                     <button>Buscar</button>
-                  </div>
-                  </div>
-                </form>
-              
-         
-              <% } %>
-              
-              <!-- OPCIONES INSTRUCTOR -->
-              
-              <% if (sa == 0){ %>
-              <a href="/newpart" class="btn btn-light btn-sm">
-              <button class="btn btn-primary">
-                Registrar participante
-              </button>
-              </a>
-              
-              <a href="/link_inst/<%= iduser %>" class="btn btn-light btn-sm">
-                <button class="btn btn-success">
-                Ver mis links
-                </button>
-              </a>
-              
-              <a href="/list_part" class="btn btn-light btn-sm">
-                <button class="btn btn-success">
-                Ver Participantes asociados
-                </button>
-              </a>
-              
-               <% } %>
-               
+                </a>
+                
+                <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="dropdown">
+                                <i class="nc-icon nc-palette"></i>
+                                <span class="d-lg-none">Dashboard</span>
+                            </a>
+                        </li>
+                        <!--
+                        <li class="dropdown nav-item">
+                            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                <i class="nc-icon nc-planet"></i>
+                                <span class="notification">5</span>
+                                <span class="d-lg-none">Notification</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Notification 1</a>
+                                <a class="dropdown-item" href="#">Notification 2</a>
+                                <a class="dropdown-item" href="#">Notification 3</a>
+                                <a class="dropdown-item" href="#">Notification 4</a>
+                                <a class="dropdown-item" href="#">Another notification</a>
+                            </ul>
+                        </li>
+                        -->
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="no-icon">Cuenta</span>
+                            </a>
+                        </li>
+                        <!--
+                        <li class="nav-item dropdown">
+                            <a href="/menu" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="no-icon">Menu</span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <% if (sa == 1){ %>
+                                <a class="dropdown-item" href="#">Registrar Instructor</a>
+                                <a class="dropdown-item" href="#">Instructores</a>
+                                <a class="dropdown-item" href="#">Categorias</a>
+                                <% } %>
+                                <% if (sa == 0){ %>
+                                <a class="dropdown-item" href="#">Registrar Participante</a>
+                                <a class="dropdown-item" href="#">Mis links</a>
+                                <a class="dropdown-item" href="#">Mis participantes</a>
+                                <% } %>
+                            </div>
+                        </li>
+                    -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">
+                                <span class="no-icon">Salir</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-          </div>
-          <br>
-          
-          
-         
+        </nav>
+
+        <div class="content">
+
+
+            <div class="col-sm-12">
+                <div class="card">
+                <div class="card-body">
+                    <p>
+                    Bienvenido <strong><%= user.local.email %></strong> <br>
+                    </p>
+
+                    <% if (user.sa == 1){ %>
+                    <a href="/signup" class="btn btn-light btn-sm">
+        
+                    Registrar Instructor
+
+                    </a>
+                    
+                    <a href="/list" class="btn btn-light btn-sm">
+                    Ver Lista Instructores
+                    </a> 
+                    
+                    <a href="/categories" class="btn btn-light btn-sm">
+                    Ver Categorias
+                    </a> 
+                    <form action="/adminsearch">
+                    <div class="form-group row" >
+                        <div class="col-8">
+                        <input class="form-control" type="search" name="search" placeholder="Buscar link o test o access code" />
+                        </div>
+                    <div class="col-2">
+                        <button class="btn btn-light">Buscar</button>
+                    </div>
+                    </div>
+                    </form>
+                    
+            
+                    <% } %>
+                    
+                    <% if (user.sa == 0){ %>
+                    <a href="/newpart" class="btn btn-light btn-sm">
+                    Registrar participante
+                    </a>
+                    <a href="/link_inst/<%= user._id %>" class="btn btn-light btn-sm">
+                    Ver mis links
+                    </a>
+                    <a href="/list_part" class="btn btn-light btn-sm">
+                    Ver Participantes asociados
+                    </a>
+                    
+                    <% } %>
+                    
+                </div>
+                </div>                 
+            </div>
+
         </div>
-      </div>
-      </div>
     </div>
+
+    <div style="position:fixed;" class="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png">
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="https://www.kapta.biz" rel="noopener noreferrer" target="_blank"  className="simple-text">
+                    <img src="/img/logo/kapta_white.png" alt="logo de K@PTA"/>
+                </a>
+            </div>
+            <ul class="nav">
+                <% if (sa == 1){ %>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/profile">
+                        <i class="nc-icon nc-notes"></i>
+                        <p>Resumen</p>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="/list">
+                        <i class="nc-icon nc-circle-09"></i>
+                        <p>Instructores</p>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="/categories">
+                        <i class="nc-icon nc-chart-pie-35"></i>
+                        <p>Categorias</p>
+                    </a>
+                </li>
+                <% } %>
+                        
+                <% if (sa == 0){ %>
+
+
+                    <li class="nav-item active">
+                            <a class="nav-link" href="/profile">
+                                <i class="nc-icon nc-notes"></i>
+                                <p>Resumen</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="./profile">
+                                <i class="nc-icon nc-circle-09"></i>
+                                    <p>Mi perfil</p>
+                                </a>
+                            </li>
+                        <li>
+                            <a class="nav-link" href="/link_inst/<%= user._id %>">
+                                <i class="nc-icon nc-attach-87"></i>
+                                <p>Mis links</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="/list_part">
+                                <i class="nc-icon nc-badge"></i>
+                                <p>Mis participantes</p>
+                            </a>
+                        </li>
+
+                <% } %>
+
+                <li class="nav-item active active-pro">
+                    <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">
+                        <i class="nc-icon nc-bag"></i>
+                        <p>Acerca de K@PTA</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
   </body>
 </html>
