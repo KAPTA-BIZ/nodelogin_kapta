@@ -106,7 +106,7 @@
                         <div class="col-md-12">
                             <div class="card strpied-tabled-with-hover">
                                 <div class="card-header ">
-                                    <h4 class="card-title">Test del link <%= url %></h4>
+                                    <h4 class="card-title">Test del link <% if(link[0]) { %><%= link[0].link_name %><% } else{ %><%= url %><% } %></h4>
                                     <p class="card-category">Lista de resultados del test.</p>
                                 </div>
                                 <div class="card-body table-full-width table-responsive">
