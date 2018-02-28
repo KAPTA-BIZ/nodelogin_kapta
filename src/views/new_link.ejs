@@ -6,38 +6,53 @@
     <% include partials/head %>
   </head>
   <body class="signup">
-    <div class="container">
-      <div class="col-sm-6 mx-auto">
-        <div class="card mt-5">
-          <div class="card-body">
-            <!-- messages -->
-            <h1 class="text-center">
-              <img width="60px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
-              <span class="fa fa-sign-in"></span> Registro
-            </h1>
-            <% if (message.length > 0) { %>
-              <div class="alert alert-danger">
-                <%= message %>
-              </div>
-            <% } %>
+      <section id="bg-cont">
 
-            <!-- form -->
-            <form action="/newlink" method="post">
-              <div class="form-group">
-                <label for="email">URL link</label>
-                <input type="text" name="link_url_id" class="form-control" required>
-                <input type="text" name="id_inst" value="<% user %><%= user %>"  >
-              </div>
-              <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
-            </form>
 
-            <hr>
-            <div class="text-center">
-              
+          <div class="container">
+              <div class="col-sm-6 mx-auto">
+                <div class="card mt-5">
+                  <div class="card-body">
+                    <!-- messages -->
+
+                        <div class="col-sm-12 ">
+                          <div class="row">
+                            <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
+                                <img src=/img/logo/kapta.png alt="logo de K@PTA"/>
+                            </div>
+                            <div class="col login-img">
+                                <img src=/img/logo/classmarker.png  alt="logo de K@PTA"/>
+                            </div>
+                          </div>
+                        </div>
+                        <hr />
+                        <div class="col-sm-12" style="margin-top: 20px;">
+                          <h1>Registrar link</h1>
+                        </div>
+                    <% if (message.length > 0) { %>
+                      <div class="alert alert-danger">
+                        <%= message %>
+                      </div>
+                    <% } %>
+        
+                    <!-- form -->
+                    <form action="/newlink" method="post">
+                      <div class="form-group">
+                        <label for="email">URL link</label>
+                        <input type="text" name="link_url_id" class="form-control" required>
+                      </div>
+                      <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
+                    </form>
+        
+                    <hr>
+                    <div class="text-center">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+
+      </section>
   </body>
 </html>
