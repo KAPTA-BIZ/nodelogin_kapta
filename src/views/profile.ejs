@@ -18,18 +18,13 @@
                         Administrador 
                     <% }else{ %>
                     <p>
-                        <strong>Instructor</strong> : <% iduser=user._id %><%= iduser %> <br>    
+                        <strong>Instructor</strong> : <% iduser=user.local.email %><%= iduser %> <br>    
                     </p>
 
                     <% } %> 
                 
                 </a>
                 
-                <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-bar burger-lines"></span>
-                    <span class="navbar-toggler-bar burger-lines"></span>
-                    <span class="navbar-toggler-bar burger-lines"></span>
-                </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navigation">
                     <ul class="nav navbar-nav mr-auto">
                         <li class="nav-item">
@@ -57,7 +52,7 @@
                     </ul>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#pablo">
+                            <a class="nav-link" href="#">
                                 <span class="no-icon">Cuenta</span>
                             </a>
                         </li>
@@ -130,21 +125,13 @@
                     
                     <% if (user.sa == 0){ %>
                     <a href="/newpart" class="btn btn-light btn-sm">
-                    <button class="btn btn-primary">
                     Registrar participante
-                    </button>
                     </a>
-                    
-                    <a href="/link_inst/<%= user.iduser %>" class="btn btn-light btn-sm">
-                    <button class="btn btn-success">
+                    <a href="/link_inst/<%= user._id %>" class="btn btn-light btn-sm">
                     Ver mis links
-                    </button>
                     </a>
-                    
                     <a href="/list_part" class="btn btn-light btn-sm">
-                    <button class="btn btn-success">
                     Ver Participantes asociados
-                    </button>
                     </a>
                     
                     <% } %>
@@ -188,30 +175,36 @@
                 <% if (sa == 0){ %>
 
 
-                <li class="nav-item active">
-                        <a class="nav-link" href="dashboard.html">
-                            <i class="nc-icon nc-notes"></i>
-                            <p>Resumen</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="./user.html">
-                            <i class="nc-icon nc-circle-09"></i>
-                                <p>Mi perfil</p>
+                    <li class="nav-item active">
+                            <a class="nav-link" href="/profile">
+                                <i class="nc-icon nc-notes"></i>
+                                <p>Resumen</p>
                             </a>
                         </li>
-                    <li>
-                        <a class="nav-link" href="./user.html">
-                            <i class="nc-icon nc-circle-09"></i>
-                            <p>Estadísticas</p>
-                        </a>
-                    </li>
+                        <li>
+                            <a class="nav-link" href="./profile">
+                                <i class="nc-icon nc-circle-09"></i>
+                                    <p>Mi perfil</p>
+                                </a>
+                            </li>
+                        <li>
+                            <a class="nav-link" href="/link_inst/<%= user._id %>">
+                                <i class="nc-icon nc-attach-87"></i>
+                                <p>Mis links</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="/list_part">
+                                <i class="nc-icon nc-badge"></i>
+                                <p>Mis participantes</p>
+                            </a>
+                        </li>
 
                 <% } %>
 
                 <li class="nav-item active active-pro">
                     <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">
-                        <i class="nc-icon nc-alien-33"></i>
+                        <i class="nc-icon nc-bag"></i>
                         <p>Acerca de K@PTA</p>
                     </a>
                 </li>
