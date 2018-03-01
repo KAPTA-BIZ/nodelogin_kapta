@@ -46,13 +46,35 @@
   font-style: normal;
 }
 
+button{
+  padding: 8px 40px !important;
+}
+.btn{
+  font-family: 'Segoe UI Bold' !important;
+  background-color: #003851;
+  color: white;
+  border: 1px solid #003851 !important;
+  text-transform: uppercase;
+  border-radius: 2px;
+  padding: 16px 47px 16px 47px;
+  opacity: 1;
+  cursor: pointer;
+}
+a,a p{
+  font-family: 'Segoe UI Bold' !important;
+}
+.btn:hover, button:hover{
+  color: #003851;
+  background-color: white;
+}
+
 h1,h2{
   font-family: 'Segoe UI Bold' !important;
 }
 h3,h4,h5{
   font-family: 'Segoe UI' !important;
 }
-p,a,span{
+p,span{
   font-family: 'Segoe UI Light' !important;
 }
 .left-logo img{
@@ -64,7 +86,7 @@ p,a,span{
   height: auto;
 }
 .login img, .signup img{
-  width: 100%;
+  width: 70%;
 }
 #bg-cont{
   position: fixed;
