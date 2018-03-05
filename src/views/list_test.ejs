@@ -84,6 +84,7 @@
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                                   <% }%>
                               </select>
+                              <input type="text" value="<%= url %>" name="id" style="display:none">
                                 <button type="submit" class="btn btn-primary">Buscar</button>
                           </form>
                       </div>
@@ -96,6 +97,7 @@
                                   <input type="date"name="start" class="form-control">
                                   <div class="input-group-addon">Hasta</div>
                                   <input type="date" name="end" class="form-control">
+                                  <input type="text" value="<%= url %>" name="id" style="display:none">
                                   <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
                               </div>
                               

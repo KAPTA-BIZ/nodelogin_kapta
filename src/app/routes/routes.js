@@ -411,6 +411,7 @@ module.exports = (app, passport) => {
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                     if(err) console.log("ERROR " ,err)
                     else{
+                        console.log("LISTVIEW", req.params.id);
                         // Cuando long es 0 pasa a la lista
                         // Cuando long es 1 pasa a la busqueda
 
@@ -445,10 +446,12 @@ module.exports = (app, passport) => {
                     }else{
                         var long
                         (result==0)?long=1:long=0
-                        LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
+                        
+                        LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
-                                console.log("MI LINK ",resultLink)
+                                console.log("RESULTLINK", resultLink);
+                                //console.log("MI LINK ",resultLink)
                                 res.render('list_test', {cat: resultCat, allcat: allCategories,item: result, url: req.query.id, val: long, link: resultLink })
                             }
                         })
@@ -530,7 +533,7 @@ module.exports = (app, passport) => {
                                 }
                             })
                         }else{
-                            LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
+                            LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                                 if(err) console.log("ERROR " ,err)
                                 else{
                                     res.render('list_test', {cat: resultCat, item: resultDate, url: req.query.id, val: long, link: resultLink })
