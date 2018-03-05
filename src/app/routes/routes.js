@@ -404,6 +404,7 @@ module.exports = (app, passport) => {
                 console.log("Error retrieving");
         }else{
             TestSchema.find({link_url_id: req.params.id}).exec((err, result) => {
+                console.log("AQUI", result);
             if(err){
                 console.log("Error retrieving");
             }
@@ -411,10 +412,8 @@ module.exports = (app, passport) => {
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                     if(err) console.log("ERROR " ,err)
                     else{
-                        console.log("LISTVIEW", req.params.id);
                         // Cuando long es 0 pasa a la lista
                         // Cuando long es 1 pasa a la busqueda
-
                         var long=0
                         res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long, link: resultLink })
                     }

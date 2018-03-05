@@ -17,6 +17,9 @@ mongoose.connect(url);
 
 require('./config/passport')(passport);
 
+//Json File
+app.locals.accesslist = require('./config/ci.json');
+
 app.set('port', process.env.PORT || 3001);
 app.set('views', path.join(__dirname + '/views'));
 app.set('view engine','ejs');

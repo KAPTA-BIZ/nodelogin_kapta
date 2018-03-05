@@ -124,11 +124,39 @@
                                             <th>Categoría(s)</th>
                                           </thead>
                                           <tbody>
-                                          <% item.forEach(function(items) { %> 
+                                            
+                                            <!-- TODO hacer lista de json y comparar para mostrar los que 
+                                            ya se presentaron con la consulta a la base de datos -->
+                                            
+                                          <!--lista de access code json-->
+                                          <% accesslist.forEach(function(itemaccess){ %> 
+                                          <% }) %>
+                                          
+                                          <!--lista base de datos-->
+                                          <% item.forEach(function(items) { 
+                                            geturl = items.link_url_id
+                                          })
+                                          %>
+                                              
+                                           
+                                          <% item.forEach(function(items) { 
+                                            if((geturl)==(url)){
+                                            getaccess_code = items.access_code
+                                            getpoints_scored = items.points_scored
+                                            getpoints_available = items.points_available
+                                            getduration = items.duration
+                                            }
+                                          }) %>
+                                           
+                                           <%= url %>
+                                           
+                                          <% accesslist.forEach(function(itemaccess){ %> 
                                           <tr>
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           
-                                          <% if((items.link_url_id)==(url)){ %>
+                                          <% if((itemaccess.CI)==(getaccess_code)){
+                                            item.forEach(function(items) { 
+                                          %>
                                             <td><%= items.access_code %></td>
                                             <td><%= items.points_scored %></td>
                                             <td><%= items.points_available %></td>
@@ -154,10 +182,20 @@
                                             <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
                                             <%= items.category_results[i].name %><br> <% } %>  
                                             </td><% } %>
-                                            <% } }); %>
+                                            <% }); }else{ %>
+                                            <td><%= itemaccess.CI %></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            </tr>
+                                            <% } %><!--else-->
+                                            <% }); %>
                                           </tbody>
                                           <% } %>
                                     </table>
+                                    
                                 </div>
                             </div>
                         </div>
