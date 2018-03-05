@@ -6,39 +6,54 @@
     <% include partials/head %>
   </head>
   <body class="signup">
-    <div class="container">
-      <div class="col-sm-6 mx-auto">
-        <div class="card mt-5">
-          <div class="card-body">
-            <!-- messages -->
-            <h1 class="text-center">
-              <img width="60px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
-              <span class="fa fa-sign-in"></span> Registro
-            </h1>
-            <% if (message.length > 0) { %>
-              <div class="alert alert-danger">
-                <%= message %>
-              </div>
-            <% } %>
 
-            <!-- form -->
-            <form action="/newpart" method="post">
-              <div class="form-group">
-                <label for="email">Id participante</label>
-                <input type="text" name="access_code" class="form-control" required>
-                <input type="text" name="id_inst" value="<% iduser=user._id %><%= iduser %>" style="display:none">
-              </div>
-              <input type="submit" class="btn btn-dark btn-lg" value="Registrame">
-            </form><br>
-            <% if(participante!=""){ %> Participante con Access Code: <b> <%= participante.access_code %> </b> Registrado <%}%>
-            <br><a href="list_part">Ver lista participantes</a>
-            <hr>
-            <div class="text-center">
+
+      <section id="bg-cont">
+    
+          <div class="container">
+              <div class="col-sm-12 col-lg-6 mx-auto" style="margin-top: 25vh;">
+                <div class="card mt-5">
+                  <div class="card-body">
+                    <!-- messages -->
+                    <h1 class="text-center">
+                      <div class="col-sm-12 ">
+                        <div class="row">
+                          <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
+                              <img src=/img/logo/kapta.png alt="logo de K@PTA"/>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                      <div class="col-sm-12" style="margin-top: 20px;">
+                        Registrar Access Code
+                      </div>
               
+                    </h1>
+                    <% if (message.length > 0) { %>
+                      <div class="alert alert-danger">
+                        <%= message %>
+                      </div>
+                    <% } %>
+        
+                    <form action="/newpart" method="post">
+                      <div class="form-group">
+                        <label for="email">Id participante</label>
+                        <input type="text" name="access_code" class="form-control" required>
+                        <input type="text" name="id_inst" value="<% iduser=user._id %><%= iduser %>" style="display:none">
+                      </div>
+                      <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
+                    </form><br>
+                    <% if(participante!=""){ %> Participante con Access Code: <b> <%= participante.access_code %> </b> Registrado <%}%>
+                    <br><a href="list_part">Ver lista participantes</a>
+                    <hr>
+                    <div class="text-center">
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      
+      </section>
   </body>
 </html>

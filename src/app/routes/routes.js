@@ -195,7 +195,7 @@ module.exports = (app, passport) => {
         if(req.isAuthenticated()){
             return next(); 
         }
-        return  res.send('Debe estar autenticado');
+        return  res.redirect('/');
         //Next: Crear View para decir que debe estar autenticado
         //return res.redirect('/');
     }
@@ -205,9 +205,7 @@ module.exports = (app, passport) => {
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile',
         failureRedirect: '/login',
-        failureFlash: true,
-        
-        
+        failureFlash: true    
     }));
 
     /* ------- FUNCION PARA ENCONTRAR INSCRITOS --------*/
@@ -408,11 +406,20 @@ module.exports = (app, passport) => {
             TestSchema.find({link_url_id: req.params.id}).exec((err, result) => {
             if(err){
                 console.log("Error retrieving");
-        }else{
-            var long=0
-            res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long})
-            }});
             }
+            else{
+                LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
+                    if(err) console.log("ERROR " ,err)
+                    else{
+                        // Cuando long es 0 pasa a la lista
+                        // Cuando long es 1 pasa a la busqueda
+
+                        var long=0
+                        res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long, link: resultLink })
+                    }
+                })
+            }});
+        }
         });
     });
     
@@ -428,7 +435,6 @@ module.exports = (app, passport) => {
                 if(err){
                     console.log(err);
                 }else{
-                    console.log("CATEGORIA CONSULTADA" + allCategories)
                     Categories.find().exec((err, resultCat) => {
                     if(err){
                         console.log("Error retrieving");
@@ -439,10 +445,13 @@ module.exports = (app, passport) => {
                     }else{
                         var long
                         (result==0)?long=1:long=0
-                        res.render("list_test", 
-                        {
-                            cat: resultCat, allcat: allCategories, item: result, url: req.query.id, val: long
-                        });
+                        LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
+                            if(err) console.log("ERROR " ,err)
+                            else{
+                                console.log("MI LINK ",resultLink)
+                                res.render('list_test', {cat: resultCat, allcat: allCategories,item: result, url: req.query.id, val: long, link: resultLink })
+                            }
+                        })
                        }
                      })//Close TestSchema.find
                     } //Close Categories else
@@ -512,10 +521,23 @@ module.exports = (app, passport) => {
                         //Captura de variable query.admin para validar si la busqueda la hace admin
                         //si es admin renderiza admin_search, si no renderiza list_test
                         //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
-                        req.query.admin?UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
-                        err?console.log("Error retrieving"):(res.render('admin_search', {result: resultDate, val: long, User: resultUser}))}):
-                        (res.render("list_test", {cat: resultCat, item: resultDate, url: req.query.id, val: long}))
-                       }
+
+                        if(req.query.admin){
+                            UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
+                                if(err) console.log("Error retrieving " ,err)
+                                else{
+                                    res.render('admin_search', {result: resultDate, val: long, User: resultUser})
+                                }
+                            })
+                        }else{
+                            LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
+                                if(err) console.log("ERROR " ,err)
+                                else{
+                                    res.render('list_test', {cat: resultCat, item: resultDate, url: req.query.id, val: long, link: resultLink })
+                                }
+                            })
+                        }
+                    }
                      //Close TestSchema.find
                      //Close Categories else
                   })//Close Categories.find()

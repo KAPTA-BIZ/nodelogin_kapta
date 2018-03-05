@@ -6,89 +6,217 @@
 </head>
 <body>
 
-	<div class="container">
-	  
-		<div class="card text-center mt-5">
-		  
-	<!-- form busqueda categorias START -->
-	
-	<div class="row">
-	  
-  <div class="col-8">
-    <form action="/date" method="GET">
-      <label for="exampleInputEmail1">Buscar por fecha</label><br>
-        <div class="input-group input-daterange">
-            <div class="input-group-addon">Desde</div>
-            <input type="date"name="start"  class="form-control">
-            <div class="input-group-addon">Hasta</div>
-            <input type="date" name="end" class="form-control">
-            <input type="text" value="<%= 1 %>" name="admin" style="display:none">
+  <div style="position:fixed;" class="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png">
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <a href="https://www.kapta.biz" rel="noopener noreferrer" target="_blank"  className="simple-text">
+              <img src="/img/logo/kapta_white.png" alt="logo de K@PTA"/>
+            </a>
         </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    </form>
+        <ul class="nav">
+            <% if (sa == 1){ %>
+            <li class="nav-item active">
+                <a class="nav-link" href="/profile">
+                    <i class="nc-icon nc-notes"></i>
+                    <p>Resumen</p>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" href="/list">
+                    <i class="nc-icon nc-circle-09"></i>
+                    <p>Instructores</p>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" href="/categories">
+                  <i class="nc-icon nc-chart-pie-35"></i>
+                    <p>Categorias</p>
+                </a>
+            </li>
+            <% } %>
+                  
+            <% if (sa == 0){ %>
+
+                <li class="nav-item active">
+                        <a class="nav-link" href="/profile">
+                            <i class="nc-icon nc-notes"></i>
+                            <p>Resumen</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="./profile">
+                            <i class="nc-icon nc-circle-09"></i>
+                                <p>Mi perfil</p>
+                            </a>
+                        </li>
+                    <li>
+                        <a class="nav-link" href="/link_inst/<%= user._id %>">
+                            <i class="nc-icon nc-attach-87"></i>
+                            <p>Mis links</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/list_part">
+                            <i class="nc-icon nc-badge"></i>
+                            <p>Mis participantes</p>
+                        </a>
+                    </li>
+
+            <% } %>
+
+            <li class="nav-item active active-pro">
+                <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">
+                    <i class="nc-icon nc-bag"></i>
+                    <p>Acerca de K@PTA</p>
+                </a>
+            </li>
+        </ul>
+    </div>
   </div>
-    
-    <!-- form busqueda Fecha END -->
-    
+
+
+  <div class="main-panel">
+      <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+          <div class=" container-fluid  ">
+              <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-bar burger-lines"></span>
+                  <span class="navbar-toggler-bar burger-lines"></span>
+                  <span class="navbar-toggler-bar burger-lines"></span>
+              </button>
+              <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                  <ul class="nav navbar-nav mr-auto">
+                      <!--
+                      <li class="dropdown nav-item">
+                          <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                              <i class="nc-icon nc-planet"></i>
+                              <span class="notification">5</span>
+                              <span class="d-lg-none">Notification</span>
+                          </a>
+                          <ul class="dropdown-menu">
+                              <a class="dropdown-item" href="#">Notification 1</a>
+                              <a class="dropdown-item" href="#">Notification 2</a>
+                              <a class="dropdown-item" href="#">Notification 3</a>
+                              <a class="dropdown-item" href="#">Notification 4</a>
+                              <a class="dropdown-item" href="#">Another notification</a>
+                          </ul>
+                        </li>
+                      -->
+                  </ul>
+                  <ul class="navbar-nav ml-auto">
+                      <li class="nav-item">
+                          <a class="nav-link" href="#">
+                              <span class="no-icon">Cuenta</span>
+                          </a>
+                      </li>
+                      <!--
+                      <li class="nav-item dropdown">
+                          <a href="/menu" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <span class="no-icon">Menu</span>
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                              <% if (sa == 1){ %>
+                              <a class="dropdown-item" href="#">Registrar Instructor</a>
+                              <a class="dropdown-item" href="#">Instructores</a>
+                              <a class="dropdown-item" href="#">Categorias</a>
+                              <% } %>
+                              <% if (sa == 0){ %>
+                              <a class="dropdown-item" href="#">Registrar Participante</a>
+                              <a class="dropdown-item" href="#">Mis links</a>
+                              <a class="dropdown-item" href="#">Mis participantes</a>
+                              <% } %>
+                          </div>
+                      </li>
+                    -->
+                      <li class="nav-item">
+                          <a class="nav-link" href="/logout">
+                              <span class="no-icon">Salir</span>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </nav>
+
+      <div class="content">
+          <div class="container-fluid">
+              <div class="row">
+
+                  <div class="col-md-12 card">
+                    <form action="/date" method="GET">
+                      <label for="exampleInputEmail1">Buscar por fecha</label><br>
+                        <div class="input-group input-daterange">
+                            <div class="input-group-addon">Desde</div>
+                            <input type="date"name="start" class="form-control">
+                            <div class="input-group-addon">Hasta</div>
+                            <input type="date" name="end" class="form-control">
+                            <input type="text" value="<%= 1 %>" name="admin" style="display:none">
+                        </div>
+                        <button style="margin-bottom: 20px; margin-top: 20px;" type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                  </div>
+
+                  <div class="col-md-12">
+                      <div class="card strpied-tabled-with-hover">
+                          <div class="card-header ">
+                              <h4 class="card-title">Test del link <%=  %></h4>
+                              <p class="card-category">Lista de asistentes creados desde Classmarker.</p>
+                          </div>
+                          <div class="card-body table-full-width table-responsive">
+                              <table class="table table-hover table-striped">
+                                  <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
+                                    <thead>
+                                    <tr>
+                                      <th>Access Code</th>
+                                      <th>Puntos Obtenidos</th>
+                                      <th>Tiempo</th>
+                                      <th>Categoría(s)</th>
+                                      <th>Instructor</th>
+                                      <th>Fecha</th>
+                                    </thead>
+                                    <tbody>
+                                    <% result.forEach(function(items) { %> 
+                                    <tr>
+
+                                      <td><%= items.access_code %></td>
+                                      <td><%= items.points_scored %></td>
+                                      <td><%= items.duration %> </td>
+                                      <% if(items.category_results){ %>
+                                      <td>
+                                      <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
+                                      <%= items.category_results[i].name %><br> <% } %>  
+                                      </td><% } %>
+                                      <td>
+                                      <%longUser=(User.length); for(i=0; i<longUser; i++){ if((User[i].id)==(items.id_inst)){%>
+                                      <%= User[i].local.email %><% }} %>  
+                                      </td>
+                                      <td>
+                                          <% function timeConverter(UNIX_timestamp)
+                                          {
+                                             var a = new Date(UNIX_timestamp * 1000);
+                                             var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                                             var year = a.getFullYear();
+                                             var month = months[a.getMonth()];
+                                             var date = a.getDate();
+                                             var hour = a.getHours();
+                                             var min = a.getMinutes();
+                                             var sec = a.getSeconds();
+                                             var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+                                             return time;
+                                          }
+                                          %><%= timeConverter(items.time_started) %>
+                                      </td>
+                                      <% }); %>
+                                    </tbody>
+                                    <% } %>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
   </div>
-  
-			<div class="card-body">
-          <img width="100px" src="https://pbs.twimg.com/profile_images/836695399809302528/568l42NJ_400x400.jpg">
-				<h1>
-				<span class="fa fa-block"></span>Test del link <%=  %></h1>
-				<table class="table">
-				  <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
-          <thead>
-          <tr>
-            <th>Access Code</th>
-            <th>Puntos Obtenidos</th>
-            <th>Tiempo</th>
-            <th>Categoría(s)</th>
-            <th>Link</th>
-            <th>Instructor</th>
-            <th>Fecha</th>
-          </thead>
-          <tbody>
-          <% result.forEach(function(items) { %> 
-          <tr>
-          <!-- Filtrar id_inst con id capturado del instructor -->
-          
-         
-            <td><%= items.access_code %></td>
-            <td><%= items.points_scored %></td>
-            <td><%= items.duration %> </td>
-            <% if(items.category_results){ %>
-            <td>
-            <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
-            <%= items.category_results[i].name %><br> <% } %>  
-            </td><% } %>
-            <td><%= items.link_url_id %></td>
-            <td>
-            <%longUser=(User.length); for(i=0; i<longUser; i++){ if((User[i].id)==(items.id_inst)){%>
-            <%= User[i].local.email %><% }} %>  
-            </td>
-            <td>
-                <% function timeConverter(UNIX_timestamp)
-                {
-                   var a = new Date(UNIX_timestamp * 1000);
-                   var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-                   var year = a.getFullYear();
-                   var month = months[a.getMonth()];
-                   var date = a.getDate();
-                   var hour = a.getHours();
-                   var min = a.getMinutes();
-                   var sec = a.getSeconds();
-                   var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-                   return time;
-                }
-                %><%= timeConverter(items.time_started) %>
-            </td>
-            <% }); %>
-          </tbody>
-          <% } %>
-          </table>
-			</div>
-		</div>
-	</div>
+
+	
 </body>
 </html>
