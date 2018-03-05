@@ -533,6 +533,7 @@ module.exports = (app, passport) => {
                                 }
                             })
                         }else{
+                            //COMMENT GIt
                             LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                                 if(err) console.log("ERROR " ,err)
                                 else{
