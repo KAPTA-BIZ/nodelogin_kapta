@@ -13,6 +13,7 @@ var UserSchema = require('../models/user.js');
 var TestSchema = require('../models/test.js');
 var HookSchema = require('../models/hook.js');
 var LinkSchema = require('../models/linkTest.js');
+var aSchema = require('../models/accessSchema.js');
 var LSchema = require('../models/link.js');
 var GroupSchema = require('../models/group.js');
 var Categories = require('../models/categories.js');
@@ -400,11 +401,12 @@ module.exports = (app, passport) => {
     app.get('/list_test/:id', isLoggedIn, (req, res) => {
     
         Categories.find().exec((err, resultCat) => {
+            
             if(err){
                 console.log("Error retrieving");
         }else{
             TestSchema.find({link_url_id: req.params.id}).exec((err, result) => {
-                console.log("AQUI", result);
+                console.log("AQUIPRIMERO", result)
             if(err){
                 console.log("Error retrieving");
             }
@@ -412,11 +414,24 @@ module.exports = (app, passport) => {
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                     if(err) console.log("ERROR " ,err)
                     else{
+                      
+                      LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
+                      if(err) console.log("ERROR " ,err)
+                      else{
+                        aSchema.find().exec((err,accessresult)=>{
+                            console.log("AQUICAMILO", accessresult)
+                        if(err) console.log("ERROR " ,err)
+                        else{
+                            
                         // Cuando long es 0 pasa a la lista
                         // Cuando long es 1 pasa a la busqueda
                         var long=0
-                        res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long, link: resultLink })
-                    }
+                        res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long, link: resultLink, aresult: accessresult })
+                         }
+                        })//alSchema
+                      }//else LSchema
+                    })//LSchema
+                  }
                 })
             }});
         }

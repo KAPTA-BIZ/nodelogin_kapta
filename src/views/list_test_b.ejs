@@ -130,6 +130,8 @@
                                             
                                           <!--lista de access code json-->
                                          
+                                         
+                                           
                                           <% item.forEach(function(items){ %> 
                                           <tr>
                                           <!-- Filtrar id_inst con id capturado del instructor -->
@@ -163,59 +165,15 @@
                                           </tbody>
                                           <% } %>
                                     </table>
+                                    
                                 </div>
                             </div>
                         </div>
-                                      <table class="table table-hover table-striped">
-                                           <tr>
-                                            <th>Access Code</th>
-                                            <th>Puntos Obtenidos</th>
-                                            <th>Puntos Totales</th>
-                                            <th>Tiempo</th>
-                                            <th>Fecha</th>
-                                            <th>Categoría(s)</th>
-                                            </tr>
-                                            <% item.forEach(function(items, index){  %>
-                                            
-                                            <% aresult.forEach(function(aresults, index){ 
-                                            if(items.access_code==aresults.access_code)
-                                            { 
-                                            %>
-                                            <tr>
-                                            <td><%= items.access_code %></td>
-                                            <td><%=items.points_scored%></td>
-                                            <td><%= items.points_available %></td>
-                                            <td><%= items.duration %> </td>
-                                            <td>fecha</td>
-                                            <td>hora</td>
-                                            </tr>  
-                                            
-                                            <% } else if(index==0) { %>
-                                            
-                                            <tr>
-                                                 <td><%=aresults.access_code %></td>
-                                                 <td></td>
-                                                 <td></td>
-                                                 <td></td>
-                                                 <td></td>
-                                                 <td></td>
-                                            </tr>
-                                            
-                                            <% } %> 
-                                            <% }); %>
-                                            
-                                            <% }); %>
-                                            
-                                                
-                                            
-                                         
-                                    </table>
+
 
                 </div>
             </div>
         </div>
-
-
 
 
       </div>
