@@ -3,7 +3,7 @@
 <head>
 	<title>Authentication with Node</title>
 	<% include partials/head %>
-</head>
+	 
 <body>
 
   <div style="position:fixed;" class="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png">
@@ -14,27 +14,6 @@
             </a>
         </div>
         <ul class="nav">
-            <% if (sa == 1){ %>
-            <li class="nav-item active">
-                <a class="nav-link" href="/profile">
-                    <i class="nc-icon nc-notes"></i>
-                    <p>Resumen</p>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" href="/list">
-                    <i class="nc-icon nc-circle-09"></i>
-                    <p>Instructores</p>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" href="/categories">
-                  <i class="nc-icon nc-chart-pie-35"></i>
-                    <p>Categorias</p>
-                </a>
-            </li>
-            <% } %>
-                  
             <% if (sa == 0){ %>
 
                 <li class="nav-item active">
@@ -50,7 +29,7 @@
                             </a>
                         </li>
                     <li>
-                        <a class="nav-link" href="/link_inst/<%= %>">
+                        <a class="nav-link" href="/link_inst/<%= user._id %>">
                             <i class="nc-icon nc-attach-87"></i>
                             <p>Mis links</p>
                         </a>
@@ -138,8 +117,10 @@
       </nav>
 
       <div class="content">
+          <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>   <br>
           <div class="container-fluid">
               <div class="row">
+                  
 
                   <div class="col-md-12 card">
                     <form action="/date" method="GET">
@@ -160,7 +141,7 @@
                           <div class="card-header ">
                               
                             <!-- Search Bar Start -->
-                            <form action="/adminsearch">
+                            <form action="/consultor_search">
                             <h3>Barra de busqueda.</h3>
                             <div class="form-group row" >
                             <div class="col-8">
@@ -186,9 +167,10 @@
                                       <th>Fecha</th>
                                     </thead>
                                     <tbody>
-                                    <% result.forEach(function(items) { %> 
+                                    <% result.forEach(function(items) { %>
+                                    <% if(user.id==items.id_inst){ %>
+                                    
                                     <tr>
-
                                       <td><%= items.access_code %></td>
                                       <td><%= items.points_scored %></td>
                                       <td><%= items.duration %> </td>
@@ -217,6 +199,8 @@
                                           }
                                           %><%= timeConverter(items.time_started) %>
                                       </td>
+                                      </tr>
+                                      <% } %>
                                       <% }); %>
                                     </tbody>
                                     <% } %>

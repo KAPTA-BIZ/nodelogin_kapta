@@ -18,7 +18,7 @@
                         Administrador 
                     <% }else{ %>
                     <p>
-                        <strong>Instructor</strong> : <% iduser=user.local.email %><%= iduser %> <br>    
+                        <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>    
                     </p>
 
                     <% } %> 
@@ -29,7 +29,7 @@
                     <ul class="nav navbar-nav mr-auto">
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-toggle="dropdown">
-                                <i class="nc-icon nc-palette"></i>
+                                
                                 <span class="d-lg-none">Dashboard</span>
                             </a>
                         </li>
@@ -121,7 +121,6 @@
                     </div>
                     </form>
                     
-            
                     <% } %>
                     
                     <% if (user.sa == 0){ %>
@@ -134,6 +133,18 @@
                     <a href="/list_part" class="btn btn-light btn-sm">
                     Ver Participantes asociados
                     </a>
+                    <form action="/consultor_search">
+                        <h3>Barra de busqueda.</h3>
+                    <div class="form-group row" >
+                        <div class="col-8">
+                            <input class="form-control" type="search" name="search" placeholder="Buscar link o test o access code" />
+                            <input type="text" value="<%= user._id %>" name="id" > 
+                        </div>
+                        <div class="col-2">
+                            <button class="btn btn-light">Buscar</button>
+                        </div>
+                    </div>
+                    </form>
                     
                     <% } %>
                     
@@ -174,7 +185,6 @@
                 <% } %>
                         
                 <% if (sa == 0){ %>
-
 
                     <li class="nav-item active">
                             <a class="nav-link" href="/profile">

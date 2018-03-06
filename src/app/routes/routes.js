@@ -509,6 +509,36 @@ module.exports = (app, passport) => {
     })
     
     
+    /*-------------------    BUSQUEDA PARA CONSULTAR ------------------------*/
+    
+    app.get('/consultor_search/', isLoggedIn, (req, res) => {
+        if((req.query.search)&&(req.user.sa==0)){
+            console.log("LOGG", req.user.id)
+            const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            TestSchema.find({$or:[{access_code: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    var long
+                    (allCategories==0)?long=1:long=0
+                    
+                    TestSchema.find({id_inst:req.user.id}).exec((err, resultID)=>{
+                        if(err){
+                            console.log(err)
+                        }else{
+                    UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                    err?console.log("Error retrieving"):(res.render('consultor_search', {result: allCategories, val: long, User: resultUser, user:req.user }))})
+                        }
+                    })
+                }
+            })
+        }else{
+            (res.sendStatus(404))
+        }
+    })
+    
+    
+    
     
     /*------------------------ BUSQUEDA POR FECHA ----------------------------*/
     

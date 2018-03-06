@@ -18,8 +18,7 @@ mongoose.connect(url);
 require('./config/passport')(passport);
 
 //Json File
-app.locals.alist = require('./config/ci.json');
-app.locals.alist_b = require('./config/cj2.json');
+
 
 app.set('port', process.env.PORT || 3001);
 app.set('views', path.join(__dirname + '/views'));
