@@ -6,73 +6,7 @@
 </head>
 <body>
 
-  <div style="position:fixed;" class="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png">
-    <div class="sidebar-wrapper">
-        <div class="logo">
-            <a href="https://www.kapta.biz" rel="noopener noreferrer" target="_blank"  className="simple-text">
-              <img src="/img/logo/kapta_white.png" alt="logo de K@PTA"/>
-            </a>
-        </div>
-        <ul class="nav">
-            <% if (sa == 1){ %>
-            <li class="nav-item active">
-                <a class="nav-link" href="/profile">
-                    <i class="nc-icon nc-notes"></i>
-                    <p>Resumen</p>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" href="/list">
-                    <i class="nc-icon nc-circle-09"></i>
-                    <p>Instructores</p>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" href="/categories">
-                  <i class="nc-icon nc-chart-pie-35"></i>
-                    <p>Categorias</p>
-                </a>
-            </li>
-            <% } %>
-                  
-            <% if (sa == 0){ %>
-
-                <li class="nav-item active">
-                        <a class="nav-link" href="/profile">
-                            <i class="nc-icon nc-notes"></i>
-                            <p>Resumen</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="./profile">
-                            <i class="nc-icon nc-circle-09"></i>
-                                <p>Mi perfil</p>
-                            </a>
-                        </li>
-                    <li>
-                        <a class="nav-link" href="/link_inst/<%= %>">
-                            <i class="nc-icon nc-attach-87"></i>
-                            <p>Mis links</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/list_part">
-                            <i class="nc-icon nc-badge"></i>
-                            <p>Mis participantes</p>
-                        </a>
-                    </li>
-
-            <% } %>
-
-            <li class="nav-item active active-pro">
-                <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">
-                    <i class="nc-icon nc-bag"></i>
-                    <p>Acerca de K@PTA</p>
-                </a>
-            </li>
-        </ul>
-    </div>
-  </div>
+   <% include partials/left_column %>
 
 
   <div class="main-panel">
