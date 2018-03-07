@@ -497,9 +497,11 @@ module.exports = (app, passport) => {
                         LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
+                                if(usuario.sa==1){//If superAdmin
                                 UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
-                                err?console.log("Error retrieving"):(res.render('list_test', {
+                                err?console.log("Error retrieving"):
                                 
+                                (res.render('list_test', {
                                     cat: resultCat, 
                                     allcat: allCategories,
                                     url: req.query.id, 
@@ -508,9 +510,26 @@ module.exports = (app, passport) => {
                                     user: usuario,
                                     result: result,
                                     User: resultUser
+                                }
+                               ))})
+                              }else{//if sa==1 if consultor
+                               UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                                err?console.log("Error retrieving"):
                                 
-                               }))})
-                            }
+                                (res.render('consultor_search', {
+                                    cat: resultCat, 
+                                    allcat: allCategories,
+                                    url: req.query.id, 
+                                    val: long, 
+                                    link: resultLink, 
+                                    user: usuario,
+                                    result: result,
+                                    User: resultUser
+                                }
+                               ))})
+                              
+                              }
+                           }
                         })
                        }
                      })//Close TestSchema.find
@@ -572,7 +591,7 @@ module.exports = (app, passport) => {
     /*-------------------    BUSQUEDA PARA CONSULTAR ------------------------*/
     
     app.get('/consultor_search/', isLoggedIn, (req, res) => {
-        if((req.query.search)&&(req.user.sa==0)){
+        if(req.query.search){
             console.log("LOGG", req.user.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             TestSchema.find({$or:[{access_code: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
@@ -581,13 +600,28 @@ module.exports = (app, passport) => {
                 }else{
                     var long
                     (allCategories==0)?long=1:long=0
-                    
                     TestSchema.find({id_inst:req.user.id}).exec((err, resultID)=>{
                         if(err){
                             console.log(err)
                         }else{
-                    UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
-                    err?console.log("Error retrieving"):(res.render('consultor_search', {result: allCategories, val: long, User: resultUser, user:req.user }))})
+                            Categories.find().exec((err, resultCat) => {
+                            if(err) console.log(err)
+                            else{
+                                
+                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                                err?console.log("Error retrieving"):(res.render('consultor_search', {
+                                    
+                                    cat: resultCat,
+                                    result: allCategories, 
+                                    val: long, 
+                                    User: resultUser, 
+                                    user:req.user,
+                                    busqueda: req.query.search
+                                    
+                                    }))
+                                  })
+                                }
+                            })
                         }
                     })
                 }
@@ -646,24 +680,42 @@ module.exports = (app, passport) => {
                             else{
                                 UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
                                     if(err) console.log(err)
-                                    else{
-                                        console.log("FECHA", date_start)
-                                        
-                                res.render('list_test', {
-                                    cat: resultCat, 
-                                    result: resultDate, 
-                                    val: long, 
-                                    link: resultLink,
-                                    user:usuario,
-                                    aresult: accessresult,
-                                    User: resultUser,
-                                    resultUser: resultUser,
-                                    date_start: date_start_get,
-                                    date_end: date_end_get
-                                })
-                              }
+                                    else
+                                    {
+                                        if(usuario.sa==1)
+                                        {
+                                            res.render('list_test', 
+                                            {
+                                            cat: resultCat, 
+                                            result: resultDate, 
+                                            val: long, 
+                                            link: resultLink,
+                                            user:usuario,
+                                            aresult: accessresult,
+                                            User: resultUser,
+                                            resultUser: resultUser,
+                                            date_start: date_start_get,
+                                            date_end: date_end_get
+                                            })
+                                            
+                                        }else{
+                                            res.render('consultor_search', 
+                                            {
+                                            cat: resultCat, 
+                                            result: resultDate, 
+                                            val: long, 
+                                            link: resultLink,
+                                            user:usuario,
+                                            aresult: accessresult,
+                                            User: resultUser,
+                                            resultUser: resultUser,
+                                            date_start: date_start_get,
+                                            date_end: date_end_get
+                                            })
+                                        }
+                                    }//else
                              })//UserSchema
-                            }
+                           }
                          })//Close LSchema
                         }
                       })//aSchema.find(    
@@ -674,7 +726,6 @@ module.exports = (app, passport) => {
                 }
         })//Close TestSchema.find(search_date)
         
-       
     })
     
     
