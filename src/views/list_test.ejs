@@ -109,11 +109,23 @@
                         <!------ BUSQUEDA PARA ADMIN START ----->
                         
                         <% if(user.sa == 1) %>
-                        
+                        <%{%>
                         <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                           <div class="card-header ">
-                              
+                            <!-- Validar si fue busqueda por fecha-->
+                            <%
+                            var date_s=''
+                            var date_e=''
+                            const isset_s = (date_start) => typeof date_start !== 'undefined' 
+                            typeof date_start=='undefined'?date_s='':date_s=date_start
+                            const isset_e = (date_end) => typeof date_end !== 'undefined' 
+                            typeof date_end=='undefined'?date_e='':date_e=date_end
+                            %>
+                            <%if((date_s&&date_e)!=''){%>
+                            <p>Busqueda realizada entre <%= date_s %> y <%= date_e %></p>
+                            <%}else{%><p></p><%}%>
+                            
                             <!-- Search Bar Start -->
                             <form action="/adminsearch">
                             <h3>Barra de busqueda.</h3>
@@ -148,7 +160,6 @@
                                     <tbody>
                                     <% result.forEach(function(items) { %> 
                                     <tr>
-
                                       <td><%= items.access_code %></td>
                                       <td><%= items.points_scored %></td>
                                       <td><%= items.duration %> </td>
@@ -185,7 +196,7 @@
                           
                          </div>
                       </div>
-                  </div>
+                  </div><%}%>
                           
                           <!------ BUSQUEDA PARA ADMIN END ----->
                           

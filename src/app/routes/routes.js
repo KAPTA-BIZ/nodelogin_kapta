@@ -429,9 +429,9 @@ module.exports = (app, passport) => {
                         // Cuando long es 1 pasa a la busqueda
                         var long=0
                         res.render('list_test', {
-                            cat: resultCat, item: 
-                            result, url: 
-                            req.params.id, 
+                            cat: resultCat, 
+                            item: result, 
+                            url: req.params.id, 
                             val: long, 
                             link: resultLink, 
                             aresult: accessresult ,
@@ -477,15 +477,19 @@ module.exports = (app, passport) => {
                         LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
-                                console.log("RESULTLINK", resultLink);
-                                //console.log("MI LINK ",resultLink)
-                                res.render('list_test', {
+                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                                err?console.log("Error retrieving"):(res.render('list_test', {
+                                
                                     cat: resultCat, 
                                     allcat: allCategories,
                                     url: req.query.id, 
                                     val: long, 
                                     link: resultLink, 
-                                    user: usuario })
+                                    user: usuario,
+                                    result: result,
+                                    User: resultUser
+                                
+                               }))})
                             }
                         })
                        }
@@ -581,15 +585,15 @@ module.exports = (app, passport) => {
     app.get('/date', isLoggedIn, function(req, res){
        
         
-        date_start=req.query.start
-        date_end=req.query.end
+        var date_start_get=req.query.start
+        var date_end_get=req.query.end
         
         //Defino usuario globalmente
         var usuario = req.user
         
         //Se suma 86400 para obtener el día completo
-        var date_start = ((new Date(date_start)/1000)+86400);
-        var date_end = ((new Date(date_end)/1000)+86400);
+        var date_start = ((new Date(date_start_get)/1000)+86400);
+        var date_end = ((new Date(date_end_get)/1000)+86400);
         
         //console.log(date_start)
         //console.log(date_end)
@@ -601,7 +605,7 @@ module.exports = (app, passport) => {
                 }else{
                     //console.log(req.query.search)
                     //res.render("list_test_b", {categories: allCategories});
-                    TestSchema.find().exec(function(err, resultCat){
+                    Categories.find().exec(function(err, resultCat){
                     if(err){
                         console.log("Error retrieving");
                     }else{
@@ -620,11 +624,11 @@ module.exports = (app, passport) => {
                         LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
-                                
                                 UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
                                     if(err) console.log(err)
                                     else{
-                                
+                                        console.log("FECHA", date_start)
+                                        
                                 res.render('list_test', {
                                     cat: resultCat, 
                                     result: resultDate, 
@@ -632,7 +636,9 @@ module.exports = (app, passport) => {
                                     link: resultLink,
                                     user:usuario,
                                     aresult: accessresult,
-                                    User: resultUser
+                                    User: resultUser,
+                                    date_start: date_start_get,
+                                    date_end: date_end_get
                                 })
                               }
                              })//UserSchema
