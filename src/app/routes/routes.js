@@ -399,6 +399,8 @@ module.exports = (app, passport) => {
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
     
     app.get('/list_test/:id', isLoggedIn, (req, res) => {
+        
+        var usuario = req.user
     
         Categories.find().exec((err, resultCat) => {
             
@@ -426,7 +428,15 @@ module.exports = (app, passport) => {
                         // Cuando long es 0 pasa a la lista
                         // Cuando long es 1 pasa a la busqueda
                         var long=0
-                        res.render('list_test', {cat: resultCat, item: result, url: req.params.id, val: long, link: resultLink, aresult: accessresult })
+                        res.render('list_test', {
+                            cat: resultCat, item: 
+                            result, url: 
+                            req.params.id, 
+                            val: long, 
+                            link: resultLink, 
+                            aresult: accessresult ,
+                            user: usuario
+                          })
                          }
                         })//alSchema
                       }//else LSchema
@@ -443,13 +453,16 @@ module.exports = (app, passport) => {
     
     app.get('/search/', isLoggedIn, (req, res) => {
         if(req.query.search){
+            var usuario = req.user
             //console.log(req.query.search)
             console.log(req.query.id)
+            //Se hace busqueda a partir de la categoria seleccionada en name de categories
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             Categories.find({name: regex}, function(err, allCategories){
                 if(err){
                     console.log(err);
                 }else{
+                    //Se hace consulta de todas las categorias para renderizarlas
                     Categories.find().exec((err, resultCat) => {
                     if(err){
                         console.log("Error retrieving");
@@ -466,7 +479,13 @@ module.exports = (app, passport) => {
                             else{
                                 console.log("RESULTLINK", resultLink);
                                 //console.log("MI LINK ",resultLink)
-                                res.render('list_test', {cat: resultCat, allcat: allCategories,item: result, url: req.query.id, val: long, link: resultLink })
+                                res.render('list_test', {
+                                    cat: resultCat, 
+                                    allcat: allCategories,
+                                    url: req.query.id, 
+                                    val: long, 
+                                    link: resultLink, 
+                                    user: usuario })
                             }
                         })
                        }
@@ -490,7 +509,9 @@ module.exports = (app, passport) => {
     /*-------------------    BUSQUEDA PARA ADMIN  -------------------------*/
     
     app.get('/adminsearch/', isLoggedIn, (req, res) => {
-        if((req.query.search)&&(req.user.sa==1)){
+        if(req.query.search){
+            //Defino variable de usuario
+           var usuario = req.user
             console.log(req.query.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
@@ -499,8 +520,23 @@ module.exports = (app, passport) => {
                 }else{
                     var long
                     (allCategories==0)?long=1:long=0
-                    UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
-                    err?console.log("Error retrieving"):(res.render('admin_search', {result: allCategories, val: long, User: resultUser}))})
+                    Categories.find().exec((err, resultCat) => {
+                    if(err){
+                        console.log("Error retrieving");
+                    }else{
+                        console.log(req.query.search)
+                        UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                        err?console.log("Error retrieving"):(res.render('list_test', {
+                            result: allCategories, 
+                            val: long, 
+                            User: resultUser,
+                            user: usuario,
+                            cat: resultCat,
+                            busqueda: req.query.search
+                        })) //res.render
+                      }) //UserSchema.fin
+                    }//else categories
+                  })//Categories.find   
                 }
             })
         }else{
@@ -546,11 +582,18 @@ module.exports = (app, passport) => {
         date_start=req.query.start
         date_end=req.query.end
         
+        console.log("USUARIO", req.user)
+        
+        //Defino usuario globalmente
+        var usuario = req.user
+        
         //Se suma 86400 para obtener el día completo
         var date_start = ((new Date(date_start)/1000)+86400);
         var date_end = ((new Date(date_end)/1000)+86400);
+        
         //console.log(date_start)
         //console.log(date_end)
+        
         var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
         TestSchema.find(search_date).exec(function(err, resultDate){
             if(err){
@@ -568,29 +611,34 @@ module.exports = (app, passport) => {
                         //Captura de variable query.admin para validar si la busqueda la hace admin
                         //si es admin renderiza admin_search, si no renderiza list_test
                         //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
-
-                        if(req.query.admin){
-                            UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
-                                if(err) console.log("Error retrieving " ,err)
-                                else{
-                                    res.render('admin_search', {result: resultDate, val: long, User: resultUser})
-                                }
-                            })
-                        }else{
-                            //COMMENT GIt
-                            LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
-                                if(err) console.log("ERROR " ,err)
-                                else{
-                                    res.render('list_test', {cat: resultCat, item: resultDate, url: req.query.id, val: long, link: resultLink })
-                                }
-                            })
+                        
+                        aSchema.find().exec((err,accessresult)=>{
+                        if(err) console.log("ERROR " ,err)
+                        else{
+                            
+                        //COMMENT GIt
+                        LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
+                            if(err) console.log("ERROR " ,err)
+                            else{
+                                res.render('list_test', {
+                                    cat: resultCat, 
+                                    item: resultDate, 
+                                    url: req.query.id, 
+                                    val: long, 
+                                    link: resultLink,
+                                    user:usuario,
+                                    aresult: accessresult
+                                })
+                            }
+                          })//Close LSchema
                         }
+                      })//aSchema.find(    
                     }
                      //Close TestSchema.find
                      //Close Categories else
                   })//Close Categories.find()
                 }
-        })
+        })//Close TestSchema.find(search_date)
         
     })
     
