@@ -72,7 +72,11 @@
 
         <div class="content">
             <div class="container-fluid">
-                
+                <% if(user.sa==0){ %>
+                <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>
+                <% }else{ %>
+                <% var emailcon=resultUser[0].local.email%> <%= emailcon %> <br>
+                <% } %>
                 <div class="row">
                     <div class="col-4" style="margin: 20px;" >
                         <form action="/search" method="GET">
@@ -106,101 +110,70 @@
                         </div>
 
                         
-                        <!------ BUSQUEDA PARA ADMIN START ----->
-                        
-                        
                         <div class="col-md-12">
-                        <div class="card strpied-tabled-with-hover">
-                          <div class="card-header ">
-                            <!-- Validar si fue busqueda por fecha-->
-                            <%
-                            var date_s=''
-                            var date_e=''
-                            const isset_s = (date_start) => typeof date_start !== 'undefined' 
-                            typeof date_start=='undefined'?date_s='':date_s=date_start
-                            const isset_e = (date_end) => typeof date_end !== 'undefined' 
-                            typeof date_end=='undefined'?date_e='':date_e=date_end
-                            %>
-                            <%if((date_s&&date_e)!=''){%>
-                            <p>Busqueda realizada entre <%= date_s %> y <%= date_e %></p>
-                            <%}else{%><p></p><%}%>
-                            
-                            <!-- Search Bar Start -->
-                            <form action="/adminsearch">
-                            <h3>Barra de busqueda.</h3>
-                            <div class="form-group row" >
-                            <div class="col-8">
-                                <%
-                                var busq=''
-                                const isset = (busqueda) => typeof busqueda !== 'undefined' 
-                                typeof busqueda=='undefined'?busq='':busq=busqueda
-                                %>
-                              <input class="form-control" type="search" name="search" placeholder="Buscar link o test o access code" value="<%= busq  %>" required/>
+                            <div class="card strpied-tabled-with-hover">
+                                <div class="card-header ">
+                                    <h4 class="card-title">Test del link <% if(link[0]) { %><%= link[0].link_name %><% } else{ %><%= url %><% } %></h4>
+                                    <p class="card-category">Lista de resultados del test. para consultor: <%=emailcon%></p>
+                                </div>
+                                
+                                
+                                <div class="card-body table-full-width table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
+                                          <thead>
+                                          <tr>
+                                            <th>Access Code</th>
+                                            <th>Puntos Obtenidos</th>
+                                            <th>Puntos Totales</th>
+                                            <th>Tiempo</th>
+                                            <th>Fecha</th>
+                                            <th>Categoría(s)</th>
+                                          </thead>
+                                          <tbody>
+                                            
+                                            <!-- TODO hacer lista de json y comparar para mostrar los que 
+                                            ya se presentaron con la consulta a la base de datos -->
+                                            
+                                          <!--lista de access code json-->
+                                         
+                                          <% item.forEach(function(items){ %> 
+                                          <tr>
+                                          <!-- Filtrar id_inst con id capturado del instructor -->
+                                          
+                                            <td><%= items.access_code %></td>
+                                            <td><%= items.points_scored %></td>
+                                            <td><%= items.points_available %></td>
+                                            <td><%= items.duration %> </td>
+                                            <td>
+                                                    <% function timeConverter(UNIX_timestamp)
+                                                    {
+                                                       var a = new Date(UNIX_timestamp * 1000);
+                                                       var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                                                       var year = a.getFullYear();
+                                                       var month = months[a.getMonth()];
+                                                       var date = a.getDate();
+                                                       var hour = a.getHours();
+                                                       var min = a.getMinutes();
+                                                       var sec = a.getSeconds();
+                                                       var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+                                                       return time;
+                                                    }
+                                                    %><%= timeConverter(items.time_started) %>
+                                            </td>
+                                            <% if(items.category_results){ %>
+                                            <td>
+                                            <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
+                                            <%= items.category_results[i].name %><br> <% } %>  
+                                            </td><% } %>
+                                            <% });%>
+                                          </tbody>
+                                          <% } %>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="col-2">
-                              <button class="btn btn-light">Buscar</button>
-                            </div>
-                            </div>
-                            </form>
-                            <!-- Search Bar End -->
+                        </div>
                           
-                          <div class="card-body table-full-width table-responsive">
-                              <% if(user.sa == 1) %>
-                              <% { %>
-                              <table class="table table-hover table-striped">
-                                  <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
-                                    <thead>
-                                    <tr>
-                                      <th>Access Code</th>
-                                      <th>Puntos Obtenidos</th>
-                                      <th>Tiempo</th>
-                                      <th>Categoría(s)</th>
-                                      <th>Consultor</th>
-                                      <th>Fecha</th>
-                                    </thead>
-                                    <tbody>
-                                    <% result.forEach(function(items) { %> 
-                                    <tr>
-                                      <td><%= items.access_code %></td>
-                                      <td><%= items.points_scored %></td>
-                                      <td><%= items.duration %> </td>
-                                      <% if(items.category_results){ %>
-                                      <td>
-                                      <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
-                                      <%= items.category_results[i].name %><br> <% } %>  
-                                      </td><% } %>
-                                      <td>
-                                      <%longUser=(User.length); for(i=0; i<longUser; i++){ if((User[i].id)==(items.id_inst)){%>
-                                      <%= User[i].local.email %><% }} %>  
-                                      </td>
-                                      <td>
-                                          <% function timeConverter(UNIX_timestamp)
-                                          {
-                                             var a = new Date(UNIX_timestamp * 1000);
-                                             var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-                                             var year = a.getFullYear();
-                                             var month = months[a.getMonth()];
-                                             var date = a.getDate();
-                                             var hour = a.getHours();
-                                             var min = a.getMinutes();
-                                             var sec = a.getSeconds();
-                                             var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-                                             return time;
-                                          }
-                                          %><%= timeConverter(items.time_started) %>
-                                      </td>
-                                      <% }); %>
-                                    </tbody>
-                                    <% } %>
-                              </table>
-                              <% } %>
-                          </div>
-                          
-                         </div>
-                      </div>
-                  </div>
-                          
-                          <!------ BUSQUEDA PARA ADMIN END ----->
                           
                 </div>
             </div>
@@ -282,3 +255,7 @@
     </div>
 </body>
 </html>
+
+
+
+                          

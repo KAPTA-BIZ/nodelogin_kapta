@@ -378,7 +378,12 @@ module.exports = (app, passport) => {
     
     app.get('/link_inst/:id', isLoggedIn, (req, res) => {
         LSchema.find().exec((err, resultArray) => {
-            err?console.log(err):res.render('links_instructor', {items: resultArray, user: req.user, id_inst: req.params.id})
+            err?console.log(err):
+            UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
+                err?console.log(err):
+                console.log("COMPROBAR",resultUser)
+                res.render('links_instructor', {items: resultArray, user: req.user, id_inst: req.params.id, resultUser: resultUser})
+          })
         })
     });
     
@@ -398,9 +403,17 @@ module.exports = (app, passport) => {
     //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
     
-    app.get('/list_test/:id', isLoggedIn, (req, res) => {
+    app.get('/list_test/:id&:iduser', isLoggedIn, (req, res) => {
         
         var usuario = req.user
+        var id_link = req.params.id
+        var id_user = req.params.iduser
+        
+        console.log("USER PRIMERO", req.params.id)
+        console.log("USER SEGUNDO", req.params.iduser)
+        
+        //Variable definida para validar en el front si viene de la ruta list_test
+        var list_test = 0;
     
         Categories.find().exec((err, resultCat) => {
             
@@ -408,7 +421,7 @@ module.exports = (app, passport) => {
                 console.log("Error retrieving");
         }else{
             TestSchema.find({link_url_id: req.params.id}).exec((err, result) => {
-                console.log("AQUIPRIMERO", result)
+                
             if(err){
                 console.log("Error retrieving");
             }
@@ -421,22 +434,29 @@ module.exports = (app, passport) => {
                       if(err) console.log("ERROR " ,err)
                       else{
                         aSchema.find().exec((err,accessresult)=>{
-                            console.log("AQUICAMILO", accessresult)
+                            
                         if(err) console.log("ERROR " ,err)
                         else{
-                            
+                             UserSchema.find({_id: id_user}).exec((err, resultUser)=>{
+                                 console.log("AQUICAMILO", resultUser)
+                            if(err) console.log(err)
+                            else{
                         // Cuando long es 0 pasa a la lista
                         // Cuando long es 1 pasa a la busqueda
                         var long=0
-                        res.render('list_test', {
+                        res.render('list_test_view', {
                             cat: resultCat, 
                             item: result, 
                             url: req.params.id, 
                             val: long, 
                             link: resultLink, 
                             aresult: accessresult ,
-                            user: usuario
+                            user: usuario,
+                            list_test: list_test,
+                            resultUser: resultUser
                           })
+                            }
+                          })//UserSchema.find({id: resultCat.id_inst})
                          }
                         })//alSchema
                       }//else LSchema
@@ -637,6 +657,7 @@ module.exports = (app, passport) => {
                                     user:usuario,
                                     aresult: accessresult,
                                     User: resultUser,
+                                    resultUser: resultUser,
                                     date_start: date_start_get,
                                     date_end: date_end_get
                                 })

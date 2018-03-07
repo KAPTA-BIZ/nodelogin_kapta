@@ -142,7 +142,7 @@
                     <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Links de <%= user.local.email %></h4>
+                                <h4 class="card-title">Links de <%= resultUser[0].local.email %></h4>
                                 <p class="card-category">Lista de links creados y asociados a los test.</p>
                             </div>
                             <div class="card-body table-full-width table-responsive">
@@ -159,7 +159,7 @@
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           <% if((item.id_inst)==(id_inst)){ %>
                                               <td><%= item.link_name %></td>
-                                              <td><a href="/list_test/<%= item.link_url_id %>">Ver test</a></td>
+                                              <td><a href="/list_test/<%= item.link_url_id %>&<%= resultUser[0].id %>">Ver test</a></td>
                                         </tr>
                                         <% }}); %>
                                       </tbody>
