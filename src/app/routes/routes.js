@@ -579,10 +579,10 @@ module.exports = (app, passport) => {
     /*------------------------ BUSQUEDA POR FECHA ----------------------------*/
     
     app.get('/date', isLoggedIn, function(req, res){
+       
+        
         date_start=req.query.start
         date_end=req.query.end
-        
-        console.log("USUARIO", req.user)
         
         //Defino usuario globalmente
         var usuario = req.user
@@ -620,17 +620,24 @@ module.exports = (app, passport) => {
                         LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
+                                
+                                UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
+                                    if(err) console.log(err)
+                                    else{
+                                
                                 res.render('list_test', {
                                     cat: resultCat, 
-                                    item: resultDate, 
-                                    url: req.query.id, 
+                                    result: resultDate, 
                                     val: long, 
                                     link: resultLink,
                                     user:usuario,
-                                    aresult: accessresult
+                                    aresult: accessresult,
+                                    User: resultUser
                                 })
+                              }
+                             })//UserSchema
                             }
-                          })//Close LSchema
+                         })//Close LSchema
                         }
                       })//aSchema.find(    
                     }
@@ -640,7 +647,10 @@ module.exports = (app, passport) => {
                 }
         })//Close TestSchema.find(search_date)
         
+       
     })
+    
+    
     
     /*-------------------------- VER CATEGORIAS ------------------------------*/
     
