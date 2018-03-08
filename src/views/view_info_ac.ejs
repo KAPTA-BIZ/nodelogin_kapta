@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Authentication with Node</title>
+	<% include partials/head %>
+</head>
+<body>
+    
+    <% 
+    function timeConverter(UNIX_timestamp)
+    {
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        return time;
+    }
+    %>
+
+    <div class="main-panel">
+        <% include partials/navbar %>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-4"  >
+                          <br>
+                      </div>
+                      <div class="col-md-12">
+                      <div class="card strpied-tabled-with-hover">
+                            <div class="card-header ">
+                                <h4 class="card-title">Usuario con codigo de accesso: <%= access_code %><br><br></h4>
+                            </div></div></div>
+                        <div class="col-md-12">
+                        <div class="card strpied-tabled-with-hover">
+                        <div class="card-header ">
+                                <h4 class="card-title">Resultados generales</h4>
+                            </div>
+                            <div class="card-body table-full-width table-responsive">
+                               <table class="table table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Código de Accesso</th>
+                                            <th>Puntos Obtenidos</th>
+                                            <th>Puntos Totales</th>
+                                            <th>Porcentaje</th>
+                                            <th>Tiempo</th>
+                                            <th>Fecha</th>
+                                            <th>Categoría(s)</th>
+                                            
+                                        </thead>
+                                        <tbody>
+                                            
+                                        <!-- TODO hacer lista de json y comparar para mostrar los que 
+                                        ya se presentaron con la consulta a la base de datos -->
+                                            
+                                        <% result.forEach(function(items){ %> 
+                                        <tr>
+                                          <!-- Filtrar id_inst con id capturado del instructor -->
+                                          
+                                        <td><%= items.access_code %></td>
+                                        <td><%= items.points_scored %></td>
+                                        <td><%= items.points_available %></td>
+                                        
+                                        <td><%= items.percentage %> </td>
+                                        <td><%= items.duration %> </td>
+                                        <td>
+                                            <%= timeConverter(items.time_started) %>
+                                            </td>
+                                            <% if(items.category_results){ %>
+                                            <td>
+                                            <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
+                                            - <%= items.category_results[i].name %><br> <% } %>  
+                                            </td><% } %>
+                                            <% });%>
+                                          </tbody>
+                                    </table>
+                                    </div>
+                                    </div>
+                                </div>
+
+                        <div class="col-md-12">
+                                <div class="card strpied-tabled-with-hover">
+                                <div class="card-header ">
+                                    <h4 class="card-title">Categorias presentadas</h4>
+                                </div>
+                                <div class="card-body table-full-width table-responsive">
+                                    <table class="table table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Porcentaje</th>
+                                            <th>Puntos obtenidos</th>
+                                        </tr>
+                                    </thead> 
+                                     <% result.forEach(function(results){ %>
+                                            <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                               <%= results.category_results[i].name %> 
+                                            </th>
+                                            <th>
+                                                <%= results.category_results[i].percentage %> 
+                                            </th>
+                                            <th>
+                                                <%= results.category_results[i].points_scored %> 
+                                            </th>
+                                            
+                                        </tr>
+                                    </tbody>
+                                    <% } %>  
+                                    <% })%>
+                                    </table>
+                                    </div>
+                                  </div>
+                               </div>
+                            </div>
+                        </div>
+                  </div>
+             </div>
+        </div>
+      </div>
+ <% include partials/left_column %>
+</body>
+</html>
+
+                          

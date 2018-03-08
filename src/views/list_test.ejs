@@ -19,7 +19,7 @@
                         <form action="/search" method="GET">
                               <label for="exampleInputEmail1">Buscar por categoria</label><br>
                               <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
-                                  <option selected>Choose...</option>
+                                  <option selected>Seleccionar...</option>
                                   <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                                   <% }%>
@@ -92,7 +92,7 @@
                                   <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
                                     <thead>
                                     <tr>
-                                      <th>Access Code</th>
+                                      <th>Código de accesso</th>
                                       <th>Puntos Obtenidos</th>
                                       <th>Tiempo</th>
                                       <th>Categoría(s)</th>

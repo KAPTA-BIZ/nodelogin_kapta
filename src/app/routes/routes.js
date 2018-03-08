@@ -377,6 +377,8 @@ module.exports = (app, passport) => {
     
     
     app.get('/link_inst/:id', isLoggedIn, (req, res) => {
+        if((req.user._id==req.params.id)||(req.user.sa==1))
+        {
         LSchema.find().exec((err, resultArray) => {
             err?console.log(err):
             UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
@@ -385,6 +387,9 @@ module.exports = (app, passport) => {
                 res.render('links_instructor', {items: resultArray, user: req.user, id_inst: req.params.id, resultUser: resultUser})
           })
         })
+        }else{
+            (res.sendStatus(404))
+        }
     });
     
     
@@ -411,6 +416,9 @@ module.exports = (app, passport) => {
         var id_link = req.params.id
         var id_user = req.params.iduser
         
+        //valida si el usuario actual coincide con la url, con el fin de evitar ver otros usuarios
+        
+         
         console.log("USER PRIMERO", req.params.id)
         console.log("USER SEGUNDO", req.params.iduser)
         
@@ -435,12 +443,11 @@ module.exports = (app, passport) => {
                       LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                       if(err) console.log("ERROR " ,err)
                       else{
-                        aSchema.find().exec((err,accessresult)=>{
+                        aSchema.find({id_ins: id_user}).exec((err,accessresult)=>{
                             
                         if(err) console.log("ERROR " ,err)
                         else{
                              UserSchema.find({_id: id_user}).exec((err, resultUser)=>{
-                                 console.log("AQUICAMILO", resultUser)
                             if(err) console.log(err)
                             else{
                         // Cuando long es 0 pasa a la lista
@@ -455,7 +462,8 @@ module.exports = (app, passport) => {
                             aresult: accessresult ,
                             user: usuario,
                             list_test: list_test,
-                            resultUser: resultUser
+                            resultUser: resultUser,
+                            id_user: id_user
                           })
                             }
                           })//UserSchema.find({id: resultCat.id_inst})
@@ -468,7 +476,36 @@ module.exports = (app, passport) => {
             }});
         }
         });
+        
     });
+    
+    
+    /*-----------------  VER INFO FROM ACCESS CODE ----------------------------*/
+    app.get('/viewinfo/:id_user&:access_code', isLoggedIn, (req, res) => {
+        
+        
+        //Capturo access code y id user por GET
+        var access_code = req.params.access_code
+        var id_user = req.params.id_user
+        var usuario = req.user
+        
+            TestSchema.find({access_code: access_code}).exec((err, result) => {
+            if(err){
+                console.log("Error retrieving");
+            }
+            else{
+                // Cuando long es 0 pasa a la lista
+                console.log("RESULTADO", result)
+                // Cuando long es 1 pasa a la busqueda
+                res.render('view_info_ac', {
+                    user: usuario,
+                    id_user: id_user,
+                    access_code: access_code,
+                    result: result
+                })
+            }});
+        
+    })
     
     
     /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
