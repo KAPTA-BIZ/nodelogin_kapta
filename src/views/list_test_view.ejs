@@ -170,7 +170,46 @@
                                           </tbody>
                                           <% } %>
                                     </table>
+                                    
                                 </div>
+                                </div>
+                                
+                               
+                            <!-- defino list_array para acumular los access codes ya utilizados --> 
+                            <% var list_array = [] 
+                            item.forEach(function(items, index){ 
+                            list_array.push(items.access_code) 
+                            //por cada iteración me añade al list_array los access_code encontrados
+                            }) %>
+                            <%console.log("consul", list_array.includes("CI1010"))  %>
+                            
+                                  <!------->
+                                
+                                <div class="card strpied-tabled-with-hover">
+                                <div class="card-header ">
+                                    <h4 class="card-title">Códigos de accesso sin usar</h4>
+                                </div>
+                                <div class="card-body table-full-width table-responsive">
+                                <table class="table table-hover table-striped">
+                                           <tr>
+                                            <th>Access Code</th>
+                                            
+                                            </tr>
+                                            
+                                            <% aresult.forEach(function(aresults, index){ 
+                                            if(list_array.includes(aresults.access_code)==false){ %>
+                                            
+                                            <tr>
+                                            <td><%=aresults.access_code%></td>
+                                            
+                                            </tr> 
+                                            
+                                            <% } %>
+                                            <% }); %>
+                                     </table>
+                                    </div>
+                                  </div>
+                               </div>
                             </div>
                         </div>
                   </div>
