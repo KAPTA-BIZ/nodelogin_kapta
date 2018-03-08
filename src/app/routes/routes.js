@@ -367,7 +367,7 @@ module.exports = (app, passport) => {
     //busqueda general de usuarios para despliegue de lista
     app.get('/list', isLoggedIn, (req, res) => {
         UserSchema.find().exec((err, resultArray) => {
-            err?console.log(err):res.render('list', {items: resultArray})
+            err?console.log(err):res.render('list', {items: resultArray, user:req.user})
         })
     })
     
@@ -394,9 +394,11 @@ module.exports = (app, passport) => {
     
     app.get('/list_part/', isLoggedIn, (req, res, next) => {
         TestSchema.find({id_inst: req.user.id}).exec(function Consulta(err, result){
-            err?console.log("Error retrieving"):console.log(result); res.render('list_participantes', {participantes: result})
+            err?console.log("Error retrieving"):console.log(result); res.render('list_participantes', {participantes: result, user:req.user})
         });
     })
+    
+   
     
     
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
@@ -734,15 +736,11 @@ module.exports = (app, passport) => {
     
     app.get('/categories', isLoggedIn, (req, res) => {
         Categories.find().exec((err, result) => {
-            err?console.log("Error retrieving"):console.log(result); res.render('categorias', {categorias: result})
+            err?console.log("Error retrieving"):console.log(result); res.render('categorias', {categorias: result, user: req.user})
         })
     })
     
-    app.get('/list_part/', isLoggedIn, (req, res, next) => {
-        TestSchema.find({id_inst: req.user.id}).exec((err, result) => {
-            err?console.log("Error retrieving"):console.log(result); res.render('list_participantes', {participantes: result})
-        });
-    })
+    
     
     /*------------------------SEARCH FUNCIONALIDAD ---------------------------*/
     
