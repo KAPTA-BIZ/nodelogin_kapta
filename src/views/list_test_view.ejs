@@ -10,7 +10,7 @@
          <div class="content">
             <div class="container-fluid">
                <div class="row">
-                  <div class="col-4"  >
+                  <div class="col-4" style="margin: 20px;" >
                      <form action="/search" method="GET">
                         <label for="exampleInputEmail1">Buscar por categoria</label><br>
                         <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
@@ -92,7 +92,24 @@
                                     </td>
                                     <% } %>
                                     <td><a href="/viewinfo/<%=id_user%>&<%=items.access_code%>">Ver info</a></td>
-                                    <% });%>
+                                    
+                                    <%
+                                    a=0
+                                    suma=0
+                                    cant=(item.length*100)
+                                    for(i=0; i<item.length; i++)
+                                    {
+                                       suma=item[i].percentage//100
+                                       a=a+suma//80
+                                    }
+                                    
+                                    %>
+                                    <% console.log(a) %>
+                                    <% });
+                                    porcentaje=((a/cant)*100)
+                                    porcentaje=porcentaje.toFixed(2)
+                                    %>
+                                    
                               </tbody>
                               <% } %>
                            </table>
@@ -107,6 +124,16 @@
                      <%console.log("consul", list_array.includes("CI1010"))  %>
                      <!------->
                      <div class="row">
+                        <div class="col-6">
+                           <div class="card strpied-tabled-with-hover">
+                              <div class="card-header ">
+                                 <h4 class="card-title">Estadísticas - Participantes</h4>
+                              </div>
+                              <div class="card-body table-full-width table-responsive">
+                                 <canvas id="bar-chart" height="400" width="400"></canvas>
+                           </div>
+                          </div>
+                        </div>
                         <div class="col-6">
                            <div class="card strpied-tabled-with-hover">
                               <div class="card-header ">
@@ -128,9 +155,6 @@
                               </div>
                            </div>
                         </div>
-                        <div class="col">
-                           hola
-                        </div>
                      </div>
                   </div>
                </div>
@@ -140,5 +164,48 @@
       </div>
       </div>
       <% include partials/left_column %>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+      <script>
+      /*global item*/
+      var mivar = <%=porcentaje%> 
+      console.log("RENDER", mivar)
+      new Chart(document.getElementById("bar-chart"), {
+      type: 'bar',
+       data: {
+         labels: ["", "", mivar + "%", "", "" ],
+         datasets: [
+           {
+             label: "",
+             backgroundColor: ["", "","#3cba9f","",""],
+             data: [0,0,mivar,0,0]
+           }
+         ]
+       },
+       options: {
+         legend: { display: false },
+         title: {
+           display: true,
+           text: 'Estadisticas generales de los usuarios que han presentado el test'
+         },
+         scales: {
+           xAxes: [{
+               display: true,
+               scaleLabel: {
+               display: true
+               }
+               }],
+           yAxes: [{
+               display: true,
+               ticks: {
+               beginAtZero: true,
+               steps: 10,
+               stepValue: 5,
+               max: 100
+               }
+           }]
+          }
+       }
+   });
+</script>
    </body>
 </html>
