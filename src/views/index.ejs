@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Authentication with Node</title>
+	<title>Bienvenido a Resultados K@PTA</title>
 	<% include partials/head %>
 	<style>
 	.container{
@@ -14,22 +14,13 @@
 <body>
 	<section id="bg-cont">
 		<div class="container">
-				<div class="card text-center mt-5">
-					<div class="card-body">
-						<div class="row">
-							<div class="col left-logo" style="border-right: 1px solid rgba(0,0,0,.1);">
-									<img style="margin-top: 10px;" src=/img/logo/kapta.png alt="logo de K@PTA"/>
-							</div>
-							<div class="col">
-									<h3 style="margin-top:10px; line-height: 1.5;" >Inicia Sesión para continuar.</h3>
-									<a href="/login" class="btn btn-light">
-										Iniciar Sesión
-									</a>
-							</div>
-						</div>
-					</div>
-				</div>
+				<h1>Loading...</h1>
 			</div>
 	</section>
+	<script type="text/javascript">
+		setTimeout(function() {
+				window.location.href = '/login';
+		}, 1000);
+</script> 
 </body>
 </html>

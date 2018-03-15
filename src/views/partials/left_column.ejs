@@ -1,16 +1,16 @@
 <div style="position:fixed;" class="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png">
         <div class="sidebar-wrapper">
             <div class="logo">
-                <a href="https://www.kapta.biz" rel="noopener noreferrer" target="_blank"  className="simple-text">
+                <a href="/profile" rel="noopener noreferrer" className="simple-text">
                     <img src="/img/logo/kapta_white.png" alt="logo de K@PTA"/>
                 </a>
             </div>
             <ul class="nav">
                 <% if (sa == 1){ %>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="/profile">
                         <i class="nc-icon nc-notes"></i>
-                        <p>Resumen</p>
+                        <p>Inicio</p>
                     </a>
                 </li>
                 <li>
@@ -29,16 +29,16 @@
                         
                 <% if (sa == 0){ %>
 
-                    <li class="nav-item active">
+                    <li class="nav-item">
                             <a class="nav-link" href="/profile">
                                 <i class="nc-icon nc-notes"></i>
-                                <p>Resumen</p>
+                                <p>Inicio</p>
                             </a>
                         </li>
                         <li>
                             <a class="nav-link" href="/link_inst/<%= user._id %>">
                                 <i class="nc-icon nc-attach-87"></i>
-                                <p>Mis links</p>
+                                <p>Evaluaciones</p>
                             </a>
                         </li>
                         <li>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <title>Authentication with Node</title>
+      <title>Resultados por evaluación</title>
       <% include partials/head %>
    </head>
    <body>
@@ -40,22 +40,19 @@
                   <div class="col-md-12">
                      <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
-                           <h4 class="card-title">Test del enlace:  <% if(link[0]) { %><%= link[0].link_name %><% } else{ %><%= url %><% } %></h4>
-                           <p class="card-category">Lista de resultados del test. para consultor: <%=user.local.email%></p>
+                           <h4 class="card-title">Evaluación: <% if(link[0]) { %><%= link[0].link_name %><% } else{ %><%= url %><% } %></h4>
+                           <p class="card-category">En esta lista encuentra los resultados por participantede resultados del test. para consultor: <%=user.local.email%></p>
                         </div>
                         <div class="card-body table-full-width table-responsive">
                            <table class="table table-hover table-striped">
                               <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
                               <thead>
                                  <tr>
-                                    <th>Access Code</th>
-                                    <th>Puntos Obtenidos</th>
-                                    <th>Puntos Totales</th>
+                                    <th>Código de acceso/Participante</th>
                                     <th>Porcentaje</th>
-                                    <th>Tiempo</th>
                                     <th>Fecha</th>
                                     <th>Categoría(s)</th>
-                                    <th>Opción</th>
+                                    <th></th>
                               </thead>
                               <tbody>
                                  <!-- TODO hacer lista de json y comparar para mostrar los que 
@@ -65,10 +62,7 @@
                                  <tr>
                                     <!-- Filtrar id_inst con id capturado del instructor -->
                                     <td><%= items.access_code %></td>
-                                    <td><%= items.points_scored %></td>
-                                    <td><%= items.points_available %></td>
-                                    <td><%= items.percentage %> </td>
-                                    <td><%= items.duration %> </td>
+                                    <td><%= items.percentage %></td>
                                     <td>
                                        <% function timeConverter(UNIX_timestamp)
                                           {
