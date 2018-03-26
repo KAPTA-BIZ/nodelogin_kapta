@@ -43,7 +43,9 @@ module.exports = (app, passport) => {
 
     app.get('/', (req,res,next) => {
         //res.render('home/index.jsx', {foo: 'bar'});
-        res.render('index');
+        res.render('login', {
+            message: req.flash('loginMessage')
+        });
       });
 
     /*------------CONEXION WEBHOOK START------------*/
@@ -132,16 +134,19 @@ module.exports = (app, passport) => {
 
     /*-------------------------- JOIN PROJECT END ----------------------------*/ 
 
-    app.get('/', (req, res) => {
-        res.render('index');
-    });
-
-    /*------------- LOGIN VIEW ------------------*/
-    app.get('/login', (req, res) => {
+    /*app.get('/', (req, res) => {
+        //res.render('index');
         res.render('login', {
             message: req.flash('loginMessage')
         });
-    });
+    });*/
+
+    /*------------- LOGIN VIEW ------------------*/
+    /*app.get('/login', (req, res) => {
+        res.render('login', {
+            message: req.flash('loginMessage')
+        });
+    });*/
 
 
     /*------- REGISTRO VIEW ONLY SUPER ADMIN -------
@@ -384,7 +389,11 @@ module.exports = (app, passport) => {
             UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
                 err?console.log(err):
                 console.log("COMPROBAR",resultUser)
-                res.render('links_instructor', {items: resultArray, user: req.user, id_inst: req.params.id, resultUser: resultUser})
+                res.render('links_instructor', {
+                    items: resultArray, 
+                    user: req.user, 
+                    id_inst: req.params.id, 
+                    resultUser: resultUser})
           })
         })
         }else{
@@ -398,9 +407,29 @@ module.exports = (app, passport) => {
    
     
     app.get('/list_part/', isLoggedIn, (req, res, next) => {
-        TestSchema.find({id_inst: req.user.id}).exec(function Consulta(err, result){
-            err?console.log("Error retrieving"):console.log(result); res.render('list_participantes', {participantes: result, user:req.user})
-        });
+        //Consulta a LSchema para igualar el id de consultor con el actual y obtener el link_url_id 
+        //de los links del consultor ya que en schema no se asigna id_consultor
+        
+        LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+        err?console.log(err):
+        TestSchema.find().exec((err, result)=>{
+        err?console.log("Error retrieving"):
+        aSchema.find({id_ins: req.user.id}).exec((err,accessresult)=>{
+            err?console.log("ERROR " ,err):
+            console.log("AQUIHOY", Lresult)
+            
+            res.render('list_participantes', 
+            {
+                lresult: Lresult,
+                participantes: result, 
+                participantes_totales: accessresult,
+                user:req.user,
+                
+            })  
+                
+            })
+        })
+        })//LSchema
     })
     
    
