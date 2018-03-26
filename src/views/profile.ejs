@@ -61,9 +61,66 @@
                 </div>
                 </div>                 
             </div>
-
+            
+            <!-- 5 ultimos presentados -->
+            
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                <table class="table table-hover table-striped">
+                                  <thead>
+                                      <tr>
+                                        <th>Access code</th>
+                                        <th>Enlace</th>
+                                        <th>Fecha</th>
+                                      </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        
+                <% 
+                 
+                participantes.forEach(function(participante) { %> 
+                    <%lresult.forEach(function(lr){%>
+                    <%if(participante.link_url_id==lr.link_url_id){ %>
+                    
+                    <tr>
+                        <td><%=participante.access_code%></td>
+                        <!--condicion para obtener nombre del test -->
+                        <td><%
+                            if(participante.link_url_id==lr.link_url_id)
+                        {%>
+                        <%= lr.link_name %>
+                        <% } %>
+                        </td>
+                        <td><%= timeConverter(participante.time_finished) %></td>
+                    </tr>
+                    <% } %>
+                    <% }) %>
+                    <% }); %>
+                    </tbody>
+                                    
+                      </table>
+                    </di>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <% function timeConverter(UNIX_timestamp)
+    {
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' a las  ' + hour + ':' + min + ':' + sec ;
+        return time;
+        }
+    %>
 
      <% include partials/left_column %>
 

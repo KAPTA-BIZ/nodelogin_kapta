@@ -173,10 +173,61 @@ module.exports = (app, passport) => {
     /*------------------- VIEW PERFIL ------------------*/
     
     app.get('/profile', isLoggedIn, (req, res) => {
+        
+        LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+        err?console.log(err):
+        console.log("SI1", Lresult)
+        TestSchema.find().limit(20).exec((err, result)=>{
+        console.log("SI2", result)
+        err?console.log("Error retrieving"):
+        aSchema.find({id_ins: req.user.id}).exec((err,accessresult)=>{
+            err?console.log("ERROR " ,err):
+            
+            res.render('profile', 
+            {
+                lresult: Lresult,
+                participantes: result, 
+                participantes_totales: accessresult,
+                user:req.user,
+                
+            })   
+            })
+        })
+        })//LSchema
+    })
+        
+        
+        /*
+        
+        LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+        err?console.log(err):
+        TestSchema.find().sort( { time_finished: -1 } ).exec((err, result)=>{
+        console.log("SISISI", result)
+        err?console.log("Error retrieving"):
+        aSchema.find({id_ins: req.user.id}).exec((err,accessresult)=>{
+            err?console.log("ERROR " ,err):
+            
+            res.render('profile', 
+            {
+                lresult: Lresult,
+                participantes: result, 
+                participantes_totales: accessresult,
+                user:req.user,
+                
+            })   
+            })
+        })
+        })//LSchema
+        
+        
+        TestSchema.find({}).exec((err, Presult)=>{
+        err?console.log(err):
+        console.log("CAMILO HOY", Presult)
         res.render('profile', {
             user: req.user
-        });
-    });
+        })
+      })*/
+    
 
 
 
@@ -416,7 +467,6 @@ module.exports = (app, passport) => {
         err?console.log("Error retrieving"):
         aSchema.find({id_ins: req.user.id}).exec((err,accessresult)=>{
             err?console.log("ERROR " ,err):
-            console.log("AQUIHOY", Lresult)
             
             res.render('list_participantes', 
             {
