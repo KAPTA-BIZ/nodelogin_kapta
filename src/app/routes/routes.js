@@ -174,26 +174,44 @@ module.exports = (app, passport) => {
     
     app.get('/profile', isLoggedIn, (req, res) => {
         
+        //Se inicializan en cero para que sean enviadas e identificadas en el front
+        
+        if(req.user.sa==1){
+            res.render('profile', {
+            lresult: "0",
+            participantes: "0", 
+            participantes_totales: "0",
+            user:req.user
+            
+            });
+        }else{
+        
         LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
         err?console.log(err):
         console.log("SI1", Lresult)
-        TestSchema.find().limit(20).exec((err, result)=>{
+        
+        TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]}).limit(5).exec((err, result)=>{
         console.log("SI2", result)
         err?console.log("Error retrieving"):
+        
         aSchema.find({id_ins: req.user.id}).exec((err,accessresult)=>{
-            err?console.log("ERROR " ,err):
+            if(err){console.log("ERROR " ,err)}
+            else{
             
-            res.render('profile', 
-            {
-                lresult: Lresult,
-                participantes: result, 
-                participantes_totales: accessresult,
-                user:req.user,
-                
-            })   
+                res.render('profile', 
+                {
+                    lresult: Lresult,
+                    participantes: result, 
+                    participantes_totales: accessresult,
+                    user:req.user
+                    
+                })
+           
+              }
             })
         })
         })//LSchema
+        }
     })
         
         
@@ -542,7 +560,8 @@ module.exports = (app, passport) => {
                             user: usuario,
                             list_test: list_test,
                             resultUser: resultUser,
-                            id_user: id_user
+                            id_user: id_user,
+                            id_link: id_link
                           })
                             }
                           })//UserSchema.find({id: resultCat.id_inst})
@@ -593,10 +612,11 @@ module.exports = (app, passport) => {
         if(req.query.search){
             var usuario = req.user
             //console.log(req.query.search)
-            console.log(req.query.id)
+            
             //Se hace busqueda a partir de la categoria seleccionada en name de categories
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             Categories.find({name: regex}, function(err, allCategories){
+                
                 if(err){
                     console.log(err);
                 }else{
@@ -606,6 +626,7 @@ module.exports = (app, passport) => {
                         console.log("Error retrieving");
                     }else{
                     TestSchema.find({'category_results.name': req.query.search}).exec((err, result) => {
+                        console.log("CONSULTA1", result)
                     if(err){
                         console.log("Error retrieving");
                     }else{
@@ -756,6 +777,7 @@ module.exports = (app, passport) => {
     
     app.get('/date', isLoggedIn, function(req, res){
        
+        var url=req.query.id
         
         var date_start_get=req.query.start
         var date_end_get=req.query.end
@@ -813,7 +835,8 @@ module.exports = (app, passport) => {
                                             User: resultUser,
                                             resultUser: resultUser,
                                             date_start: date_start_get,
-                                            date_end: date_end_get
+                                            date_end: date_end_get,
+                                            url: url
                                             })
                                             
                                         }else{
@@ -828,7 +851,8 @@ module.exports = (app, passport) => {
                                             User: resultUser,
                                             resultUser: resultUser,
                                             date_start: date_start_get,
-                                            date_end: date_end_get
+                                            date_end: date_end_get,
+                                            url: url
                                             })
                                         }
                                     }//else

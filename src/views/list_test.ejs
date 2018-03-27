@@ -39,7 +39,7 @@
                                   <input type="date"name="start" class="form-control">
                                   <div class="input-group-addon">Hasta</div>
                                   <input type="date" name="end" class="form-control">
-                                  <input type="text" value="<%= user._id %>" name="id" style="display:none">
+                                  <input type="text" value="<%= url %>" name="id" style="display:none">
                                   <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
                               </div>
                               
@@ -84,6 +84,7 @@
                             </div>
                             </form>
                             <!-- Search Bar End -->
+                            
                           
                           <div class="card-body table-full-width table-responsive">
                               <% if(user.sa == 1) %>

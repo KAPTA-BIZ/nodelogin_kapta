@@ -25,7 +25,7 @@
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                                   <% }%>
                               </select>
-                              <input type="text" value="<%= user._id %>" name="id" style="display:none">
+                              <input type="text" value="<%= url %>" name="id" style="display:none">
                                 <button type="submit" class="btn btn-primary">Buscar</button>
                           </form>
                           <br>
@@ -37,10 +37,10 @@
                             <label for="exampleInputEmail1">Buscar por fecha</label><br>
                               <div class="input-group input-daterange">
                                   <div class="input-group-addon">Desde</div>
-                                  <input type="date"name="start" class="form-control">
+                                  <input type="date"name="start" class="form-control" required>
                                   <div class="input-group-addon">Hasta</div>
-                                  <input type="date" name="end" class="form-control">
-                                  <input type="text" value="<%= user._id %>" name="id" style="display:none">
+                                  <input type="date" name="end" class="form-control" required>
+                                  <input type="text" value="<%= url %>" name="id" style="display:none">
                                   <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
                               </div>
                               
@@ -64,7 +64,7 @@
                             <%}else{%><p></p><%}%>
                             
                             <!-- Search Bar Start -->
-                            <form action="/consultor_search">
+                            <!--<form action="/consultor_search">
                             <h3>Barra de busqueda.</h3>
                             <div class="form-group row" >
                             <div class="col-8">
@@ -79,9 +79,11 @@
                               <button class="btn btn-light">Buscar</button>
                             </div>
                             </div>
-                            </form>
+                            </form>-->
                             <!-- Search Bar End -->
-                          
+                          <!--<% result.forEach(function(items) { %>
+                          <%= items  %><br><br>
+                          <% }) %>-->
                           <div class="card-body table-full-width table-responsive">
                               <table class="table table-hover table-striped">
                                   <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
@@ -95,7 +97,7 @@
                                     </thead>
                                     <tbody>
                                     <% result.forEach(function(items) { %>
-                                    <% if(user.id==items.id_inst){ %>
+                                    <% if(url==items.link_url_id){ %>
                                     
                                     <tr>
                                       <td><%= items.access_code %></td>

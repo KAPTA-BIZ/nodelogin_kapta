@@ -30,7 +30,7 @@
                     Ver Categorias
                     </a> 
                     <form action="/adminsearch">
-                        <h5>Barra de búsqueda</h5>
+                        <br><h5>Barra de búsqueda</h5>
                     <div class="form-group row" >
                         <div class="col-8">
                             <input class="form-control" type="search" name="search" placeholder="Buscar link o test o access code" required/>
@@ -61,10 +61,16 @@
                 </div>
                 </div>                 
             </div>
+           
+        
+        <!-- prueba -->
+        
+        <% if(user.sa==1){
+            participantes==0
             
-            <!-- 5 ultimos presentados -->
-            
-            <div class="col-sm-12">
+        }else if(user.sa==0){ %>
+        
+        <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
                 <table class="table table-hover table-striped">
@@ -79,14 +85,13 @@
                                     <tbody>
                                         
                 <% 
-                 
                 participantes.forEach(function(participante) { %> 
                     <%lresult.forEach(function(lr){%>
                     <%if(participante.link_url_id==lr.link_url_id){ %>
                     
                     <tr>
                         <td><%=participante.access_code%></td>
-                        <!--condicion para obtener nombre del test -->
+                        
                         <td><%
                             if(participante.link_url_id==lr.link_url_id)
                         {%>
@@ -104,7 +109,8 @@
                     </di>
                 </div>
             </div>
-        </div>
+        </div><% } %>
+        
     </div>
     
     <% function timeConverter(UNIX_timestamp)

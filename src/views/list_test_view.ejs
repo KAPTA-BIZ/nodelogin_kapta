@@ -19,7 +19,7 @@
                            <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                            <% }%>
                         </select>
-                        <input type="text" value="<%= user._id %>" name="id" style="display:none">
+                        <input type="text" value="<%= id_link %>" name="id" style="display:none">
                         <button type="submit" class="btn btn-primary">Buscar</button>
                      </form>
                      <br>
@@ -29,10 +29,10 @@
                         <label for="exampleInputEmail1">Buscar por fecha</label><br>
                         <div class="input-group input-daterange">
                            <div class="input-group-addon">Desde</div>
-                           <input type="date"name="start" class="form-control">
+                           <input type="date"name="start" class="form-control" required>
                            <div class="input-group-addon">Hasta</div>
-                           <input type="date" name="end" class="form-control">
-                           <input type="text" value="<%= user._id %>" name="id" style="display:none">
+                           <input type="date" name="end" class="form-control" required>
+                           <input type="text" value="<%= url %>" name="id" style="display:none">
                            <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
                         </div>
                      </form>
