@@ -19,7 +19,7 @@
                         <form action="/search" method="GET">
                               <label for="exampleInputEmail1">Buscar por categoria</label><br>
                               <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
-                                  <option selected>Seleccionar...</option>
+                                  <option selected><% if(search){%> <%= search %><% }else { %>Seleccionar...<% } %></option>
                                   <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                                   <% }%>
@@ -30,7 +30,6 @@
                           <br>
                       </div>
                       
-
                       <div class="col-7" style="margin: 20px;" >
                           <form action="/date" method="GET">
                             <label for="exampleInputEmail1">Buscar por fecha</label><br>
@@ -66,26 +65,10 @@
                             <p>Busqueda realizada entre <%= date_s %> y <%= date_e %></p>
                             <%}else{%><p></p><%}%>
                             
-                            <!-- Search Bar Start -->
-                            <form action="/adminsearch">
-                            <h3>Barra de busqueda.</h3>
-                            <div class="form-group row" >
-                            <div class="col-8">
-                                <%
-                                var busq=''
-                                const isset = (busqueda) => typeof busqueda !== 'undefined' 
-                                typeof busqueda=='undefined'?busq='':busq=busqueda
-                                %>
-                              <input class="form-control" type="search" name="search" placeholder="Buscar link o test o access code" value="<%= busq  %>" required/>
-                            </div>
-                            <div class="col-2">
-                              <button class="btn btn-light">Buscar</button>
-                            </div>
-                            </div>
-                            </form>
+                            
                             <!-- Search Bar End -->
                             
-                          
+                          <p>Resultados para la busqueda: <b> <%=search%></b></p>
                           <div class="card-body table-full-width table-responsive">
                               <% if(user.sa == 1) %>
                               <% { %>

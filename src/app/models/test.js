@@ -12,6 +12,7 @@ var TestSchema = mongoose.Schema({
     id_inst: String,
     link_url_id: String,
     category_results: [],
+    questions: []
 });
 
 module.exports = mongoose.model('TestSchema', TestSchema);

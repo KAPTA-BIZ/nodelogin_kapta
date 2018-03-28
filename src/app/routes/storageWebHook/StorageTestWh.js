@@ -13,7 +13,8 @@ function storeTestWh(test){
             time_finished:test.result.time_finished,
             duration:test.result.duration,
             link_url_id:test.link.link_url_id,
-            category_results: test.category_results
+            category_results: test.category_results,
+            questions: test.questions
             
             
         });	

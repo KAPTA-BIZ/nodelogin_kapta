@@ -35,67 +35,14 @@
                             <div class="card-header ">
                                 <h4 class="card-title">Usuario con codigo de accesso: <%= access_code %><br><br></h4>
                             </div></div></div>
-                        <div class="col-md-12">
-                        <div class="card strpied-tabled-with-hover">
-                        <div class="card-header ">
-                                <h4 class="card-title">Resultados generales</h4>
-                            </div>
-                            <div class="card-body table-full-width table-responsive">
-                               <table class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Código de Accesso</th>
-                                            <th>Puntos Obtenidos</th>
-                                            <th>Puntos Totales</th>
-                                            <th>Porcentaje</th>
-                                            <th>Tiempo</th>
-                                            <th>Fecha</th>
-                                            <th>Categoría(s)</th>
-                                            <th>Cantidad preguntas</th>
-                                            
-                                        </thead>
-                                        <tbody>
-                                            
-                                        <!-- TODO hacer lista de json y comparar para mostrar los que 
-                                        ya se presentaron con la consulta a la base de datos -->
-                                            
-                                        <% result.forEach(function(items){ %> 
-                                        <tr>
-                                          <!-- Filtrar id_inst con id capturado del instructor -->
-                                          
-                                        <td><%= items.access_code %></td>
-                                        <td><%= items.points_scored %></td>
-                                        <td><%= items.points_available %></td>
-                                        
-                                        <td><%= items.percentage %> </td>
-                                        <td><%= items.duration %> </td>
-                                        <td>
-                                            <%= timeConverter(items.time_started) %>
-                                        </td>
-                                        <% if(items.category_results){ %>
-                                        <td>
-                                            <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
-                                            - <%= items.category_results[i].name %><br> <% } %>  
-                                        </td>
-                                        <% } %>
-                                        <% if(items.questions){ %>
-                                        <td>
-                                            <%= items.questions.length%>  
-                                        </td>
-                                        <% } %>
-                                        <% });%>
-                                          </tbody>
-                                    </table>
-                                    </div>
-                                    </div>
-                                </div>
+                        
                                 
                         <!-- detalles preguntas -->
                         
                         <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
-                                <h4 class="card-title">Resultados preguntas</h4>
+                                <h4 class="card-title">Pregunta <%= id_question %></h4>
                             </div>
                             <div class="card-body table-full-width table-responsive">
                                <table class="table table-hover table-striped">
@@ -108,7 +55,7 @@
                                             <th>Categoría</th>
                                             <th>Estado</th>
                                             <th></th>
-                                            <th></th>
+                                            
                                             
                                         </thead>
                                         <tbody>
@@ -118,8 +65,9 @@
                                          
                                         <% result.forEach(function(items){ %>    
                                         <% if(items.questions){ %>
+                                        
                                         <%long=(items.questions.length); for(i=0; i<long; i++){ %>
-                                            
+                                            <% if((items.questions[i].question_id)==(id_question)){ %>
                                         <tr>
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           
@@ -148,72 +96,20 @@
                                             src='http://img110.xooimage.com/files/5/7/3/no-5434f0b.png'>
                                         <% } %>
                                         </td>
-                                        <td><a href="/question/<%=items.questions[i].question_id%>&<%=items.access_code%>">Ver detalles</a></td>
+                                        
                                             
                                          </tr>
-                                        <% } } })%>  
+                                        <% } } } })%>  
                                           </tbody>
                                     </table>
                                     </div>
                                     </div>
                                 </div>
 
-                        <div class="col-md-12">
-                            <div class="card strpied-tabled-with-hover">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Categorias presentadas</h4>
-                                </div>
-                                <div class="card-body table-full-width table-responsive">
-                                    <table class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Categoria</th>
-                                            <th>Porcentaje</th>
-                                            <th>Puntos obtenidos</th>
-                                        </tr>
-                                    </thead> 
-                                     <% result.forEach(function(results){ %>
-                                            <%long_c=(results.category_results.length); for(i=0; i<long_c; i++){ %>
-                                    <tbody>
-                                        <tr>
-                                            <th>
-                                               <%= results.category_results[i].name %> 
-                                            </th>
-                                            <th>
-                                                <%= results.category_results[i].percentage %> 
-                                            </th>
-                                            <th>
-                                                <%= results.category_results[i].points_scored %> 
-                                            </th>
-                                            
-                                        </tr>
-                                    </tbody>
-                                    <% } %>  
-                                    <% })%>
-                                    </table>
-                                    </div>
-                                  </div>
-                               </div>
+                        
                             </div>
                             
-                            <h4>Estadisticas de categorias</h4>
-                    <div class="row">
-                        <!--  ForEach para capturar category_id y mostrarlo en getElementById -->
-                        <% result.forEach(function(results){ %>
-                            <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
-                            <div class="col-6">
-                                <div class="card strpied-tabled-with-hover">
-                                <div class="card-header ">
-                                    <h4 class="card-title"><%= results.category_results[i].name  %></h4>
-                                </div>
-                                <div class="card-body table-full-width table-responsive">
-                                    <canvas id="<%= results.category_results[i].category_id %>" height="400" width="400"></canvas>
-                                </div>
-                                </div>
-                            </div>
-                            <% } %>  
-                        <% })%>           
-                    </div>
+                   
                     
                      </div>
                   </div>

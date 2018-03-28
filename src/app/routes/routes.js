@@ -605,6 +605,31 @@ module.exports = (app, passport) => {
         
     })
     
+    app.get('/question/:id_question&:access_code', isLoggedIn, (req, res)  => {
+        
+        //Capturo access code y id user por GET
+        var access_code = req.params.access_code
+        var id_question = req.params.id_question
+        var usuario = req.user
+        
+            TestSchema.find({access_code: access_code}).exec((err, result) => {
+            if(err){
+                console.log("Error retrieving");
+            }
+            else{
+                // Cuando long es 0 pasa a la lista
+                console.log("RESULTADO", result)
+                // Cuando long es 1 pasa a la busqueda
+                res.render('question', {
+                    user: usuario,
+                    id_question: id_question,
+                    access_code: access_code,
+                    result: result
+                })
+            }});
+        
+    })
+    
     
     /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
     
@@ -644,6 +669,7 @@ module.exports = (app, passport) => {
                                     cat: resultCat, 
                                     allcat: allCategories,
                                     url: req.query.id, 
+                                    search: req.query.search,
                                     val: long, 
                                     link: resultLink, 
                                     user: usuario,
