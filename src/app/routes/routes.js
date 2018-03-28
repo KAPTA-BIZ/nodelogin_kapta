@@ -640,7 +640,7 @@ module.exports = (app, passport) => {
                                 UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
                                 err?console.log("Error retrieving"):
                                 
-                                (res.render('list_test', {
+                                (res.render('list_test_search', {
                                     cat: resultCat, 
                                     allcat: allCategories,
                                     url: req.query.id, 
@@ -707,16 +707,19 @@ module.exports = (app, passport) => {
                         console.log("Error retrieving");
                     }else{
                         console.log(req.query.search)
-                        UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                        LSchema.find().exec((err, resultUser)=>{
+                        console.log("AQUIESTE",resultUser)
                         err?console.log("Error retrieving"):(res.render('list_test', {
                             result: allCategories, 
                             val: long, 
                             User: resultUser,
                             user: usuario,
                             cat: resultCat,
-                            busqueda: req.query.search
+                            busqueda: req.query.search,
+                            url: ""
                         })) //res.render
                       }) //UserSchema.fin
+                    
                     }//else categories
                   })//Categories.find   
                 }
