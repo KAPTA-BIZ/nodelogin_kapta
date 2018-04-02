@@ -190,7 +190,20 @@ module.exports = (app, passport) => {
         err?console.log(err):
         console.log("SI1", Lresult)
         
-        TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]}).limit(5).exec((err, result)=>{
+        if(Lresult=="")
+        {
+            console.log("VACIO", Lresult)
+            res.render('profile', 
+                {
+                    lresult: Lresult,
+                    participantes: "", 
+                    participantes_totales: "",
+                    user:req.user
+                    
+                })
+        }else{
+        
+        TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]}).limit(5).sort({time_finished: -1}).exec((err, result)=>{
         console.log("SI2", result)
         err?console.log("Error retrieving"):
         
@@ -210,6 +223,7 @@ module.exports = (app, passport) => {
               }
             })
         })
+        }
         })//LSchema
         }
     })

@@ -84,7 +84,7 @@
                                     
                                     <tbody>
                                         
-                <% 
+                <% if(participantes!=""){
                 participantes.forEach(function(participante) { %> 
                     <%lresult.forEach(function(lr){%>
                     <%if(participante.link_url_id==lr.link_url_id){ %>
@@ -102,11 +102,13 @@
                     </tr>
                     <% } %>
                     <% }) %>
-                    <% }); %>
+                    <% }); }else{%>
+                    
                     </tbody>
                                     
                       </table>
                     </di>
+                    No tienes usuarios inscritos<% } %>
                 </div>
             </div>
         </div><% } %>
