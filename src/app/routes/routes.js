@@ -555,7 +555,6 @@ module.exports = (app, passport) => {
         var id_user = req.params.iduser
         var allresult =  req.cod_sin
         
-        console.log("Camilo", allresult)
         
         //valida si el usuario actual coincide con la url, con el fin de evitar ver otros usuarios
         
@@ -624,12 +623,11 @@ module.exports = (app, passport) => {
     
     
     /*-----------------  VER INFO FROM ACCESS CODE ----------------------------*/
-    app.get('/viewinfo/:id_user&:access_code', isLoggedIn, (req, res) => {
+    app.get('/viewinfo/:access_code', isLoggedIn, (req, res) => {
         
         
         //Capturo access code y id user por GET
         var access_code = req.params.access_code
-        var id_user = req.params.id_user
         var usuario = req.user
         
             TestSchema.find({access_code: access_code}).exec((err, result) => {
@@ -642,7 +640,6 @@ module.exports = (app, passport) => {
                 // Cuando long es 1 pasa a la busqueda
                 res.render('view_info_ac', {
                     user: usuario,
-                    id_user: id_user,
                     access_code: access_code,
                     result: result
                 })
@@ -678,9 +675,11 @@ module.exports = (app, passport) => {
     
     /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
     
-    app.get('/search/', isLoggedIn, (req, res) => {
+    app.get('/search/', isLoggedIn, cod_sin, (req, res) => {
         if(req.query.search){
+            
             var usuario = req.user
+            var allresult =  req.cod_sin
             //console.log(req.query.search)
             
             //Se hace busqueda a partir de la categoria seleccionada en name de categories
@@ -695,7 +694,15 @@ module.exports = (app, passport) => {
                     if(err){
                         console.log("Error retrieving");
                     }else{
-                    TestSchema.find({'category_results.name': req.query.search}).exec((err, result) => {
+                    
+                    if(req.query.search=="all")
+                    {
+                        var querySearch = {}
+                    }else{
+                        var querySearch = {'category_results.name': req.query.search}
+                    }
+                        
+                    TestSchema.find(querySearch).exec((err, result) => {
                         console.log("CONSULTA1", result)
                     if(err){
                         console.log("Error retrieving");
@@ -722,7 +729,7 @@ module.exports = (app, passport) => {
                                     User: resultUser
                                 }
                                ))})
-                              }else{//if sa==1 if consultor
+                              }else{
                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
                                 err?console.log("Error retrieving"):
                                 
@@ -735,10 +742,10 @@ module.exports = (app, passport) => {
                                     user: usuario,
                                     result: result,
                                     User: resultUser
-                                }
-                               ))})
-                              
+                                })
+                                )})
                               }
+                              
                            }
                         })
                        }

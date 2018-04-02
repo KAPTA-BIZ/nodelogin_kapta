@@ -16,23 +16,25 @@
           <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>   <br>
           <div class="container-fluid">
               <div class="row">
-                  <div class="col-4" style="margin: 20px;" >
+                  <div class="col-5" style="margin: 20px;" >
                         <form action="/search" method="GET">
                               <label for="exampleInputEmail1">Buscar por categoria</label><br>
                               <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
                                   <option selected>Seleccionar...</option>
+                                  <option value="all">Todas</option>
                                   <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                                   <% }%>
+                                  
                               </select>
                               <input type="text" value="<%= url %>" name="id" style="display:none">
-                                <button type="submit" class="btn btn-primary">Buscar</button>
+                                <button type="submit" class="btn btn-primary">Buscar</button><br>
                           </form>
                           <br>
                       </div>
                       
 
-                      <div class="col-7" style="margin: 20px;" >
+                      <div class="col-6" style="margin: 20px;" >
                           <form action="/date" method="GET">
                             <label for="exampleInputEmail1">Buscar por fecha</label><br>
                               <div class="input-group input-daterange">
