@@ -204,10 +204,17 @@ module.exports = (app, passport) => {
         }else{
         
         //for para iterar los link_url_id pertenecientes a cada consultor
+         var arrayResult = []
+        
         for(var i=0; i<Lresult.length; i++)
         {
-        TestSchema.find({$or:[{link_url_id: Lresult[i].link_url_id}]})
-         
+            arrayResult.push(Lresult[i].link_url_id)
+        }
+        
+        
+        //TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]})
+        TestSchema.find({link_url_id: {$in: arrayResult}})
+        
             .limit(5) 
             .sort({time_finished: -1}) //fecha de mayor a menor
             .exec((err, result)=>{
@@ -231,7 +238,6 @@ module.exports = (app, passport) => {
               }
             })
           })
-         }//for end
         }
         })//LSchema
         }
