@@ -434,34 +434,64 @@ module.exports = (app, passport) => {
     //para sincronizar link con instructor
     
     app.post('/newlink', isLoggedIn, (req, res) => {
-        console.log('LINK UPDATE');
-
-        var newLSchema = new LSchema();
-        var link_url_id = req.body.link_url_id;
         
-        LSchema.findOne({link_url_id: link_url_id}, (err, link) => {
-            if(err){
-                console.log(err);
-                }
-                if(!link){
-                    console.log("no existe")
-                }else{
-                    console.log("si existe");
-                    /*----------- SI EXISTE, SE HAYA EL DOC Y SE ACTUALIZA -------*/
-                    newLSchema.link_url_id = req.body.link_url_id;
-                    LSchema.findOneAndUpdate({link_url_id: req.body.link_url_id},
-                    {
-                        $set: {id_inst: req.body.id_inst}
-                    },
-                    {
-                        new: true
-                    },
-                    (err, updateTest) => {
-                        err?res.send("Error actualizando"):res.json(updateTest)
-                        }
-                    )
-                }
-        });
+        //accesscode ingresado
+        var access_code = req.body.access_code;
+        
+        //id inst
+        var id_ins = req.body.id_inst
+        
+        var existe
+        
+        console.log("ttt", access_code, id_ins)
+        
+        
+        aSchema.find({access_code: access_code }).exec((err, existAc) => {
+            if(err){console.log(err)}else{
+            
+        
+        if(existAc.length)
+        {
+            UserSchema.find().exec((err, resultArray) => {
+            err?console.log(err):res.render('list', {
+                items: resultArray, 
+                user:req.user,
+                existe: 1,
+                access_code: access_code
+            })
+          })
+        }else{
+            
+            const Save = new aSchema({		
+            access_code: access_code,
+            id_ins: id_ins
+            
+        });	
+        
+        Save.save(function (err, access_code_inserted){		
+            console.log("----- access_code_inserted ----- ")		
+            err?console.log(err):
+            UserSchema.find().exec((err, resultArray) => {
+            err?console.log(err):res.render('list', {
+                items: resultArray, 
+                user:req.user,
+                access_code: access_code,
+                existe: 2
+            })
+          })	
+        }) 
+        
+        }  
+                
+            }//else aSchema
+            
+         
+            
+            
+        })
+        
+        
+        
     });
     
     
@@ -482,6 +512,8 @@ module.exports = (app, passport) => {
     app.get('/link_inst/:id', isLoggedIn, (req, res) => {
         if((req.user._id==req.params.id)||(req.user.sa==1))
         {
+        
+            
         LSchema.find().exec((err, resultArray) => {
             err?console.log(err):
             UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
@@ -494,6 +526,7 @@ module.exports = (app, passport) => {
                     resultUser: resultUser})
           })
         })
+        
         }else{
             (res.sendStatus(404))
         }

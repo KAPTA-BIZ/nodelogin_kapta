@@ -27,6 +27,7 @@
                                         <tr>
                                           <th>Nombre de evaluación</th>
                                           <th></th>
+                                          <th></th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -36,6 +37,7 @@
                                           <% if((item.id_inst)==(id_inst)){ %>
                                               <td><%= item.link_name %></td>
                                               <td><a href="/list_test/<%= item.link_url_id %>&<%= resultUser[0].id %>">Ver resultados</a></td>
+                                              <td></td>
                                         </tr>
                                         <% }}); %>
                                       </tbody>

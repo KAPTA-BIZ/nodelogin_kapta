@@ -15,6 +15,21 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
+                    <% if((typeof access_code !== 'undefined')&&(typeof existe !== 'undefined')){ 
+                    if(existe==2){
+                    %>
+                    <div class="alert alert-success" role="alert">
+                       <strong>Código de accesso!</strong><h3><%= access_code %> </h3> agregado con éxito.
+                    </div>
+                    <% }else if(existe==1){ %>
+                    <div class="alert alert-danger" role="alert">
+                       <strong>Código de accesso </strong><h3><%= access_code %> </h3>ya registrado.
+                    </div>  
+                    <% }
+                    } %>
+                   
+                    
+                    
                     <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
@@ -36,7 +51,7 @@
                                               <% if(item.sa==0){ %>
                                                 <td><%= item.local.email%></td>
                                                 <!-- Se envia por GET el id del instructor -->
-                                                <td><a href="/newlink/<%= item._id %>">Asociar enlace</a></td>
+                                                <td><a href="/newlink/<%= item._id %>">Asociar código de accesso</a></td>
                                                 <td><a href="/link_inst/<%= item._id %>">Ver enlace</a></td>
                                           </tr>
                                           <% }}}); %>
