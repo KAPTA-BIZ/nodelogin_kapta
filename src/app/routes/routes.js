@@ -203,7 +203,15 @@ module.exports = (app, passport) => {
                 })
         }else{
         
-        TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]}).limit(5).sort({time_finished: -1}).exec((err, result)=>{
+        //for para iterar los link_url_id pertenecientes a cada consultor
+        for(var i=0; i<Lresult.length; i++)
+        {
+        TestSchema.find({$or:[{link_url_id: Lresult[i].link_url_id}]})
+         
+            .limit(5) 
+            .sort({time_finished: -1}) //fecha de mayor a menor
+            .exec((err, result)=>{
+                
         console.log("SI2", result)
         err?console.log("Error retrieving"):
         
@@ -222,7 +230,8 @@ module.exports = (app, passport) => {
            
               }
             })
-        })
+          })
+         }//for end
         }
         })//LSchema
         }
