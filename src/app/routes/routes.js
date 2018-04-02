@@ -501,39 +501,21 @@ module.exports = (app, passport) => {
     })
     
    
-   
-   
-   /*----------- Codigos de acceso sin usar -------------*/
-   
-    function cod_sin(req, res, next) {
+    
+    /*----------- codigos sin usar Funcion -----------*/
+    
+    var cod_sin = function (req, res, next) {
 
-        var id_link = req.params.id
-        
-        var newTestSchema = new TestSchema();
-        var newASchema = new aSchema();
-        
-        aSchema.find((err, aresult) => {
-            if(err){
-                console.log(err);
-            }else{
-                TestSchema.find({link_url_id: id_link}, (err, test) => {
-                    
-            if(err){
-                console.log(err);
+        TestSchema.find().exec((err, allresult) => {
+                
+                if(err){
+                    console.log("Error retrieving");
                 }
-                if(!test){
-                    console.log("no hay inscritos")
-                    return next();
-                }else{
-                    //esto se muestra
-                    res.json(test);
-                    //res.render('list')
+                else{
+                    req.cod_sin = allresult
+                    next()
                 }
-              });
-            }
-            
         })
-        
     }
     
     
@@ -541,17 +523,19 @@ module.exports = (app, passport) => {
     //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
     
-    app.get('/list_test/:id&:iduser', isLoggedIn, (req, res) => {
+   
+    
+    app.get('/list_test/:id&:iduser', isLoggedIn, cod_sin, (req, res) => {
         
         var usuario = req.user
         var id_link = req.params.id
         var id_user = req.params.iduser
+        var allresult =  req.cod_sin
+        
+        console.log("Camilo", allresult)
         
         //valida si el usuario actual coincide con la url, con el fin de evitar ver otros usuarios
         
-         
-        console.log("USER PRIMERO", req.params.id)
-        console.log("USER SEGUNDO", req.params.iduser)
         
         //Variable definida para validar en el front si viene de la ruta list_test
         var list_test = 0;
@@ -567,13 +551,6 @@ module.exports = (app, passport) => {
                 console.log("Error retrieving");
             }
             else{
-                
-                TestSchema.find().exec((err, allresult) => {
-                
-                if(err){
-                    console.log("Error retrieving");
-                }
-                else{
                 
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                     if(err) console.log("ERROR " ,err)
@@ -612,7 +589,7 @@ module.exports = (app, passport) => {
                         })//alSchema
                       }//else LSchema
                     })//LSchema
-                    } })
+                   
                   }
                 })
                 
