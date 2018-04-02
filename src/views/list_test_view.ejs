@@ -111,8 +111,8 @@
                      </div>
                      <!-- defino list_array para acumular los access codes ya utilizados --> 
                      <% var list_array = [] 
-                        item.forEach(function(items, index){ 
-                        list_array.push(items.access_code) 
+                        allitem.forEach(function(allitems, index){ 
+                        list_array.push(allitems.access_code) 
                         //por cada iteración me añade al list_array los access_code encontrados
                         }) %>
                      <%console.log("consul", list_array.includes("CI1010"))  %>

@@ -501,6 +501,40 @@ module.exports = (app, passport) => {
     })
     
    
+   
+   
+   /*----------- Codigos de acceso sin usar -------------*/
+   
+    function cod_sin(req, res, next) {
+
+        var id_link = req.params.id
+        
+        var newTestSchema = new TestSchema();
+        var newASchema = new aSchema();
+        
+        aSchema.find((err, aresult) => {
+            if(err){
+                console.log(err);
+            }else{
+                TestSchema.find({link_url_id: id_link}, (err, test) => {
+                    
+            if(err){
+                console.log(err);
+                }
+                if(!test){
+                    console.log("no hay inscritos")
+                    return next();
+                }else{
+                    //esto se muestra
+                    res.json(test);
+                    //res.render('list')
+                }
+              });
+            }
+            
+        })
+        
+    }
     
     
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
@@ -533,6 +567,14 @@ module.exports = (app, passport) => {
                 console.log("Error retrieving");
             }
             else{
+                
+                TestSchema.find().exec((err, allresult) => {
+                
+                if(err){
+                    console.log("Error retrieving");
+                }
+                else{
+                
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                     if(err) console.log("ERROR " ,err)
                     else{
@@ -553,6 +595,7 @@ module.exports = (app, passport) => {
                         res.render('list_test_view', {
                             cat: resultCat, 
                             item: result, 
+                            allitem: allresult,
                             url: req.params.id, 
                             val: long, 
                             link: resultLink, 
@@ -569,8 +612,10 @@ module.exports = (app, passport) => {
                         })//alSchema
                       }//else LSchema
                     })//LSchema
+                    } })
                   }
                 })
+                
             }});
         }
         });
