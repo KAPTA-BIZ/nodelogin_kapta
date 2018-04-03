@@ -997,15 +997,15 @@ module.exports = (app, passport) => {
         var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
         TestSchema.find(search_date).exec(function(err, resultDate){
             if(err){
-                console.log("Error retrieving");
+                console.log("Error retrieving Date");
                 }else{
                     //console.log(req.query.search)
                     //res.render("list_test_b", {categories: allCategories});
                     Categories.find().exec(function(err, resultCat){
                     if(err){
-                        console.log("Error retrieving");
+                        console.log("Error retrieving Date 2");
                     }else{
-                        console.log(resultDate)
+                        console.log("--------- FECHA ------------- ",resultDate)
                         var long
                         (resultDate==0)?long=1:long=0
                         //Captura de variable query.admin para validar si la busqueda la hace admin

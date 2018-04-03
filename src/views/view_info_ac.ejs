@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Authentication with Node</title>
+	<title>Detalles de Evaluación</title>
 	<% include partials/head %>
 </head>
 <body>
@@ -33,7 +33,7 @@
                       <div class="col-md-12">
                       <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Usuario con codigo de accesso: <%= access_code %><br><br></h4>
+                                <h4 class="card-title">Usuario con código de accesso: <%= access_code %><br><br></h4>
                             </div></div></div>
                         <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
@@ -59,7 +59,9 @@
                                         <!-- TODO hacer lista de json y comparar para mostrar los que 
                                         ya se presentaron con la consulta a la base de datos -->
                                             
-                                        <% result.forEach(function(items){ %> 
+                                        <% result.forEach(function(items){ 
+                                            
+                                            %> 
                                         <tr>
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           
@@ -96,15 +98,24 @@
                         <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
                                 <h4 class="card-title">Resultados preguntas</h4>
+                                <p class="card-category">Listado de respuestas del participante. 
+                                    <br/> 
+                                    En color <b style="background: rgb(17, 216, 93); color: rgb(17, 216, 93);">Verde</b> están las RESPUESTAS CORRECTAS del participante. 
+                                    <br /> 
+                                    En color <b style="background: rgb(216, 17, 17); color: rgb(216, 17, 17);">Rojo</b> están las RESPUESTAS INCORRECTAS del participante. 
+                                    <br /> 
+                                    En color <b style="background: rgb(174, 211, 158); color: rgb(174, 211, 158);">Verde</b> están las RESPUESTAS CORRECTAS que el participante no acertó.
+                                </p>
                             </div>
                             <div class="card-body table-full-width table-responsive">
                                <table class="table table-hover table-striped">
                                     <thead>
                                         <tr>
                                             <th>Pregunta</th>
-                                            <th>Respuesta usuario</th>
-                                            <th>Respuesta correcta</th>
-                                            <th>Tipo de pregunta</th>
+                                            <th>Respuesta A</th>
+                                            <th>Respuesta B</th>
+                                            <th>Respuesta C</th>
+                                            <th>Respuesta D</th>
                                             <th>Categoría</th>
                                             <th>Estado</th>
                                             <th></th>
@@ -116,18 +127,113 @@
                                         <!-- TODO hacer lista de json y comparar para mostrar los que 
                                         ya se presentaron con la consulta a la base de datos -->
                                          
-                                        <% result.forEach(function(items){ %>    
-                                        <% if(items.questions){ %>
-                                        <%long=(items.questions.length); for(i=0; i<long; i++){ %>
+                                        <% result.forEach(function(items){
+                                            
+                                             %>    
+                                        <% if(items.questions){ 
+                                            
+                                            %>
+                                        <% long=(items.questions.length); 
+                                        
+                                            for(i=0; i<long; i++){ 
+
+                                            if(items.questions[i].question_type == "multiplechoice" || items.questions[i].question_type == "truefalse"){ %>
                                             
                                         <tr>
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           
-                                        <td><%= items.questions[i].question %></td>
-                                        <td><%= items.questions[i].user_response %></td>
-                                        <td><%= items.questions[i].correct_option %></td>
-                                        <td><%= items.questions[i].question_type %></td>
-                                        
+                                            <td>
+                                                <%= items.questions[i].question %>
+                                            </td>
+                                        <%
+                                            if(items.questions[i].question_type == "multiplechoice"){
+
+                                                var resA = "rgba(255,255,255,0)",resB = "rgba(255,255,255,0)",resC = "rgba(255,255,255,0)",resD = "rgba(255,255,255,0)"
+                                                var correctans = "rgba(255,255,255,0)"
+
+                                                if(items.questions[i].correct_option == "A"){
+                                                    resA = "rgb(174, 211, 158)"
+                                                }else if(items.questions[i].correct_option == "B"){
+                                                    resB = "rgb(174, 211, 158)"
+                                                }else if(items.questions[i].correct_option == "C"){
+                                                    resC = "rgb(174, 211, 158)"
+                                                }else{
+                                                    resD = "rgb(174, 211, 158)"
+                                                }
+
+                                                if(items.questions[i].user_response == "A" && items.questions[i].correct_option == "A"){
+                                                    resA = "rgb(17, 216, 93)"
+                                                }else if(items.questions[i].user_response == "A"){
+                                                    resA = "rgb(216, 17, 17)"
+                                                }
+                                                if(items.questions[i].user_response == "B" && items.questions[i].correct_option == "B"){
+                                                    resB = "rgb(17, 216, 93)"
+                                                }else if(items.questions[i].user_response == "B"){
+                                                    resB = "rgb(216, 17, 17)"
+                                                }
+                                                if(items.questions[i].user_response == "C" && items.questions[i].correct_option == "C"){
+                                                    resC = "rgb(17, 216, 93)"
+                                                }else if(items.questions[i].user_response == "C"){
+                                                    resC = "rgb(216, 17, 17)"
+                                                }
+                                                if(items.questions[i].user_response == "D" && items.questions[i].correct_option == "D"){
+                                                    resD = "rgb(17, 216, 93)"
+                                                }else if(items.questions[i].user_response == "D"){
+                                                    resD = "rgb(216, 17, 17)"
+                                                }
+                                                
+                                                %>
+                                                    <td style="background: <%= resA %>;"><%= items.questions[i].options.A %></td>
+                                                    <td style="background: <%= resB %>;"><%= items.questions[i].options.B %></td>
+                                                    <td style="background: <%= resC %>;"><%= items.questions[i].options.C %></td>
+                                                    <td style="background: <%= resD %>;"><%= items.questions[i].options.D %></td>
+                                                <%
+                                                if(items.questions[i].options.E){
+                                                    if(items.questions[i].user_response = "E"){
+                                                        resE = "rgba(255,0,0,1)"
+                                                    }else if(items.questions[i].user_response == "E"){
+                                                    resB = "rgb(216, 17, 17)"
+                                                }
+                                                    %>
+                                                    <td><%= items.questions[i].options.A %></td>
+                                                    <td><%= items.questions[i].options.B %></td>
+                                                    <td><%= items.questions[i].options.C %></td>
+                                                    <td><%= items.questions[i].options.D %></td>
+                                                    <td><%= items.questions[i].options.E %></td>
+                                                <%
+                                                }
+                                                if(items.questions[i].options.F){
+                                                    %>
+                                                    <td><%= items.questions[i].options.A %></td>
+                                                    <td><%= items.questions[i].options.B %></td>
+                                                    <td><%= items.questions[i].options.C %></td>
+                                                    <td><%= items.questions[i].options.D %></td>
+                                                    <td><%= items.questions[i].options.E %></td>
+                                                    <td><%= items.questions[i].options.F %></td>
+                                                <%
+                                                }
+                                            }else if(items.questions[i].question_type == "truefalse"){
+                                                var rA = "rgba(255,255,255,0)",rB = "rgba(255,255,255,0)"
+                                                if(items.questions[i].user_response == "A" && items.questions[i].correct_option == "A"){
+                                                    rA = "rgb(17, 216, 93)"
+                                                }else if(items.questions[i].user_response == "A"){
+                                                    rA = "rgb(216, 17, 17)"
+                                                }
+                                                if(items.questions[i].user_response == "B" && items.questions[i].correct_option == "B"){
+                                                    rB = "rgb(17, 216, 93)"
+                                                }else if(items.questions[i].user_response == "B"){
+                                                    rB = "rgb(216, 17, 17)"
+                                                }
+
+                                                %>
+                                                    <td style="background: <%= rA %>;"><%= items.questions[i].options.A %></td>
+                                                    <td style="background: <%= rB %>;"><%= items.questions[i].options.B %></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                <%
+                                            }
+                                        %>
+
                                         <td>
                                         <%long_b=(items.category_results.length);
                                         for(a=0; a<long_b; a++){ %>
@@ -136,8 +242,6 @@
                                         <% } } %>
                                         </td>
                                         
-                                        
-                                        <td><%= items.questions[i].result %>o </td>
                                         <td><% if(items.questions[i].result=="correct"){ %>
                                             <img width="50px" 
                                             height="50px" 
@@ -148,10 +252,9 @@
                                             src='http://img110.xooimage.com/files/5/7/3/no-5434f0b.png'>
                                         <% } %>
                                         </td>
-                                        <td><a href="/question/<%=items.questions[i].question_id%>&<%=items.access_code%>">Ver detalles</a></td>
-                                            
+  
                                          </tr>
-                                        <% } } })%>  
+                                        <% }} } })%>  
                                           </tbody>
                                     </table>
                                     </div>
