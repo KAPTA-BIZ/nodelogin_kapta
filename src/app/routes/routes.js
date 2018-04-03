@@ -581,6 +581,7 @@ module.exports = (app, passport) => {
     }
     
     
+    
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
@@ -717,6 +718,8 @@ module.exports = (app, passport) => {
     app.get('/search/', isLoggedIn, cod_sin, (req, res) => {
         if(req.query.search){
             
+            // Se recibe el id del instructor, req.query.id
+            
             var usuario = req.user
             var allresult =  req.cod_sin
             //console.log(req.query.search)
@@ -752,9 +755,15 @@ module.exports = (app, passport) => {
                         LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
-                                if(usuario.sa==1){//If superAdmin
+                                
+                                if(usuario.sa==1)
+                                
+                                {
+                                    
                                 UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
                                 err?console.log("Error retrieving"):
+                                
+                                
                                 
                                 (res.render('list_test_search', {
                                     cat: resultCat, 
@@ -767,12 +776,41 @@ module.exports = (app, passport) => {
                                     result: result,
                                     User: resultUser
                                 }
+                                
                                ))})
                               }else{
-                               UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                                  
+                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                                    
+                                
+                                console.log("resultUser", result)    
+                                    
                                 err?console.log("Error retrieving"):
                                 
-                                (res.render('consultor_search', {
+                                
+                                
+                                LSchema.find({id_inst: req.user.id}).exec((err, Lresult) => {
+                                err ? console.log(err) : console.log("Lresult", Lresult)
+                                
+                                var arrayResult = []
+
+                                for (var i = 0; i < Lresult.length; i++) 
+                                {
+                                    arrayResult.push(Lresult[i].link_url_id)
+                                }
+                                
+                                
+                                TestSchema.find({link_url_id: {$in: arrayResult}})
+                                    .sort({time_finished: -1}) //fecha de mayor a menor
+                                    .exec((err, ByLinkresult) => {
+                                        
+                                    console.log("ByLinkresult", ByLinkresult)
+                                    
+                                     err ? console.log(err):
+                                
+                                
+                                (res.render('consultor_search', 
+                                {
                                     cat: resultCat, 
                                     allcat: allCategories,
                                     url: req.query.id, 
@@ -780,9 +818,19 @@ module.exports = (app, passport) => {
                                     link: resultLink, 
                                     user: usuario,
                                     result: result,
+                                    ByLinkresult: ByLinkresult,
                                     User: resultUser
-                                })
-                                )})
+                                    
+                                }
+                                ))
+                                
+                                })//TestSchema.find({link_url_id: {$in: arrayResult}})
+                                
+                                })//LSchema.find({id_inst: req.user.id})
+                                    
+                                    
+                                })//UserSchema.find({id: allCategories.id_inst})
+                                
                               }
                               
                            }
@@ -811,7 +859,7 @@ module.exports = (app, passport) => {
         if(req.query.search){
             //Defino variable de usuario
            var usuario = req.user
-            console.log(req.query.id)
+           
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
                 if(err){
@@ -823,9 +871,9 @@ module.exports = (app, passport) => {
                     if(err){
                         console.log("Error retrieving");
                     }else{
-                        console.log(req.query.search)
+                        
                         LSchema.find().exec((err, resultUser)=>{
-                        console.log("AQUIESTE",resultUser)
+                        
                         err?console.log("Error retrieving"):(res.render('list_test', {
                             result: allCategories, 
                             val: long, 
@@ -850,40 +898,74 @@ module.exports = (app, passport) => {
     /*-------------------    BUSQUEDA PARA CONSULTAR ------------------------*/
     
     app.get('/consultor_search/', isLoggedIn, (req, res) => {
+        
+        var url=req.query.id
+        console.log("urlaqui", url)
+        
         if(req.query.search){
+            
             console.log("LOGG", req.user.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            
             TestSchema.find({$or:[{access_code: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
                 if(err){
                     console.log(err);
                 }else{
                     var long
-                    (allCategories==0)?long=1:long=0
-                    TestSchema.find({id_inst:req.user.id}).exec((err, resultID)=>{
-                        if(err){
-                            console.log(err)
-                        }else{
+                    (allCategories==null)?long=1:long=0
+                    
                             Categories.find().exec((err, resultCat) => {
-                            if(err) console.log(err)
-                            else{
+                            err?console.log(err):
                                 
-                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
-                                err?console.log("Error retrieving"):(res.render('consultor_search', {
+                                /*------------------------------------*/
+                                LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+                                err?console.log(err):
+                                
+                                console.log("cccc", Lresult)
+        
+                                //for para iterar los link_url_id pertenecientes a cada consultor
+                                var arrayResult = []
+        
+                                for(var i=0; i<Lresult.length; i++)
+                                {
+                                   arrayResult.push(Lresult[i].link_url_id)
+                                }
+        
+        
+                                //TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]})
+                                TestSchema.find({link_url_id: {$in: arrayResult}})
+        
+                                    .sort({time_finished: -1}) //fecha de mayor a menor
+                                    .exec((err, result)=>{
+                                        
+                
+                                err?console.log(err):
+        
+                                
+                                (res.render('consultor_search', {
                                     
+                                    lresult: Lresult,
+                                    participantes: result, 
                                     cat: resultCat,
                                     result: allCategories, 
                                     val: long, 
-                                    User: resultUser, 
                                     user:req.user,
-                                    busqueda: req.query.search
+                                    busqueda: req.query.search,
+                                    url: req.query.id
                                     
-                                    }))
-                                  })
-                                }
-                            })
-                        }
-                    })
-                }
+                                    
+                                }))//(res.render('consultor_search'
+           
+                                  
+                                })//TestSchema.find({link_url_id: {$in: arrayResult}})
+                                
+                                })//LSchema
+                                /*------------------------------------*/
+                                
+                                
+                    })//Categories.find()
+                    
+                }//else
             })
         }else{
             (res.sendStatus(404))
