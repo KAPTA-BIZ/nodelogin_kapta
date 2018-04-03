@@ -36,7 +36,9 @@
                     <form action="/newlink" method="post">
                       <div class="form-group">
                         <label for="email">URL enlace</label>
-                        <input type="text" name="link_url_id" class="form-control" required>
+                        
+                        <input type="text" name="access_code" class="form-control" required>
+                        <input type"text" value="<%=user%>" name="id_inst" style="display:none">
                       </div>
                       <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
                     </form>

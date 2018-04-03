@@ -204,10 +204,17 @@ module.exports = (app, passport) => {
         }else{
         
         //for para iterar los link_url_id pertenecientes a cada consultor
+         var arrayResult = []
+        
         for(var i=0; i<Lresult.length; i++)
         {
-        TestSchema.find({$or:[{link_url_id: Lresult[i].link_url_id}]})
-         
+            arrayResult.push(Lresult[i].link_url_id)
+        }
+        
+        
+        //TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]})
+        TestSchema.find({link_url_id: {$in: arrayResult}})
+        
             .limit(5) 
             .sort({time_finished: -1}) //fecha de mayor a menor
             .exec((err, result)=>{
@@ -231,7 +238,6 @@ module.exports = (app, passport) => {
               }
             })
           })
-         }//for end
         }
         })//LSchema
         }
@@ -428,34 +434,64 @@ module.exports = (app, passport) => {
     //para sincronizar link con instructor
     
     app.post('/newlink', isLoggedIn, (req, res) => {
-        console.log('LINK UPDATE');
-
-        var newLSchema = new LSchema();
-        var link_url_id = req.body.link_url_id;
         
-        LSchema.findOne({link_url_id: link_url_id}, (err, link) => {
-            if(err){
-                console.log(err);
-                }
-                if(!link){
-                    console.log("no existe")
-                }else{
-                    console.log("si existe");
-                    /*----------- SI EXISTE, SE HAYA EL DOC Y SE ACTUALIZA -------*/
-                    newLSchema.link_url_id = req.body.link_url_id;
-                    LSchema.findOneAndUpdate({link_url_id: req.body.link_url_id},
-                    {
-                        $set: {id_inst: req.body.id_inst}
-                    },
-                    {
-                        new: true
-                    },
-                    (err, updateTest) => {
-                        err?res.send("Error actualizando"):res.json(updateTest)
-                        }
-                    )
-                }
-        });
+        //accesscode ingresado
+        var access_code = req.body.access_code;
+        
+        //id inst
+        var id_ins = req.body.id_inst
+        
+        var existe
+        
+        console.log("ttt", access_code, id_ins)
+        
+        
+        aSchema.find({access_code: access_code }).exec((err, existAc) => {
+            if(err){console.log(err)}else{
+            
+        
+        if(existAc.length)
+        {
+            UserSchema.find().exec((err, resultArray) => {
+            err?console.log(err):res.render('list', {
+                items: resultArray, 
+                user:req.user,
+                existe: 1,
+                access_code: access_code
+            })
+          })
+        }else{
+            
+            const Save = new aSchema({		
+            access_code: access_code,
+            id_ins: id_ins
+            
+        });	
+        
+        Save.save(function (err, access_code_inserted){		
+            console.log("----- access_code_inserted ----- ")		
+            err?console.log(err):
+            UserSchema.find().exec((err, resultArray) => {
+            err?console.log(err):res.render('list', {
+                items: resultArray, 
+                user:req.user,
+                access_code: access_code,
+                existe: 2
+            })
+          })	
+        }) 
+        
+        }  
+                
+            }//else aSchema
+            
+         
+            
+            
+        })
+        
+        
+        
     });
     
     
@@ -476,6 +512,8 @@ module.exports = (app, passport) => {
     app.get('/link_inst/:id', isLoggedIn, (req, res) => {
         if((req.user._id==req.params.id)||(req.user.sa==1))
         {
+        
+            
         LSchema.find().exec((err, resultArray) => {
             err?console.log(err):
             UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
@@ -488,6 +526,7 @@ module.exports = (app, passport) => {
                     resultUser: resultUser})
           })
         })
+        
         }else{
             (res.sendStatus(404))
         }
@@ -542,6 +581,7 @@ module.exports = (app, passport) => {
     }
     
     
+    
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
@@ -555,7 +595,6 @@ module.exports = (app, passport) => {
         var id_user = req.params.iduser
         var allresult =  req.cod_sin
         
-        console.log("Camilo", allresult)
         
         //valida si el usuario actual coincide con la url, con el fin de evitar ver otros usuarios
         
@@ -624,12 +663,11 @@ module.exports = (app, passport) => {
     
     
     /*-----------------  VER INFO FROM ACCESS CODE ----------------------------*/
-    app.get('/viewinfo/:id_user&:access_code', isLoggedIn, (req, res) => {
+    app.get('/viewinfo/:access_code', isLoggedIn, (req, res) => {
         
         
         //Capturo access code y id user por GET
         var access_code = req.params.access_code
-        var id_user = req.params.id_user
         var usuario = req.user
         
             TestSchema.find({access_code: access_code}).exec((err, result) => {
@@ -642,7 +680,6 @@ module.exports = (app, passport) => {
                 // Cuando long es 1 pasa a la busqueda
                 res.render('view_info_ac', {
                     user: usuario,
-                    id_user: id_user,
                     access_code: access_code,
                     result: result
                 })
@@ -678,9 +715,13 @@ module.exports = (app, passport) => {
     
     /*-------------------    BUSQUEDA POR CATEGORIA  -------------------------*/
     
-    app.get('/search/', isLoggedIn, (req, res) => {
+    app.get('/search/', isLoggedIn, cod_sin, (req, res) => {
         if(req.query.search){
+            
+            // Se recibe el id del instructor, req.query.id
+            
             var usuario = req.user
+            var allresult =  req.cod_sin
             //console.log(req.query.search)
             
             //Se hace busqueda a partir de la categoria seleccionada en name de categories
@@ -695,7 +736,15 @@ module.exports = (app, passport) => {
                     if(err){
                         console.log("Error retrieving");
                     }else{
-                    TestSchema.find({'category_results.name': req.query.search}).exec((err, result) => {
+                    
+                    if(req.query.search=="all")
+                    {
+                        var querySearch = {}
+                    }else{
+                        var querySearch = {'category_results.name': req.query.search}
+                    }
+                        
+                    TestSchema.find(querySearch).exec((err, result) => {
                         console.log("CONSULTA1", result)
                     if(err){
                         console.log("Error retrieving");
@@ -706,9 +755,15 @@ module.exports = (app, passport) => {
                         LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                             if(err) console.log("ERROR " ,err)
                             else{
-                                if(usuario.sa==1){//If superAdmin
+                                
+                                if(usuario.sa==1)
+                                
+                                {
+                                    
                                 UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
                                 err?console.log("Error retrieving"):
+                                
+                                
                                 
                                 (res.render('list_test_search', {
                                     cat: resultCat, 
@@ -721,12 +776,41 @@ module.exports = (app, passport) => {
                                     result: result,
                                     User: resultUser
                                 }
+                                
                                ))})
-                              }else{//if sa==1 if consultor
-                               UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                              }else{
+                                  
+                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+                                    
+                                
+                                console.log("resultUser", result)    
+                                    
                                 err?console.log("Error retrieving"):
                                 
-                                (res.render('consultor_search', {
+                                
+                                
+                                LSchema.find({id_inst: req.user.id}).exec((err, Lresult) => {
+                                err ? console.log(err) : console.log("Lresult", Lresult)
+                                
+                                var arrayResult = []
+
+                                for (var i = 0; i < Lresult.length; i++) 
+                                {
+                                    arrayResult.push(Lresult[i].link_url_id)
+                                }
+                                
+                                
+                                TestSchema.find({link_url_id: {$in: arrayResult}})
+                                    .sort({time_finished: -1}) //fecha de mayor a menor
+                                    .exec((err, ByLinkresult) => {
+                                        
+                                    console.log("ByLinkresult", ByLinkresult)
+                                    
+                                     err ? console.log(err):
+                                
+                                
+                                (res.render('consultor_search', 
+                                {
                                     cat: resultCat, 
                                     allcat: allCategories,
                                     url: req.query.id, 
@@ -734,11 +818,21 @@ module.exports = (app, passport) => {
                                     link: resultLink, 
                                     user: usuario,
                                     result: result,
+                                    ByLinkresult: ByLinkresult,
                                     User: resultUser
+                                    
                                 }
-                               ))})
-                              
+                                ))
+                                
+                                })//TestSchema.find({link_url_id: {$in: arrayResult}})
+                                
+                                })//LSchema.find({id_inst: req.user.id})
+                                    
+                                    
+                                })//UserSchema.find({id: allCategories.id_inst})
+                                
                               }
+                              
                            }
                         })
                        }
@@ -765,7 +859,7 @@ module.exports = (app, passport) => {
         if(req.query.search){
             //Defino variable de usuario
            var usuario = req.user
-            console.log(req.query.id)
+           
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
                 if(err){
@@ -777,9 +871,9 @@ module.exports = (app, passport) => {
                     if(err){
                         console.log("Error retrieving");
                     }else{
-                        console.log(req.query.search)
+                        
                         LSchema.find().exec((err, resultUser)=>{
-                        console.log("AQUIESTE",resultUser)
+                        
                         err?console.log("Error retrieving"):(res.render('list_test', {
                             result: allCategories, 
                             val: long, 
@@ -804,40 +898,74 @@ module.exports = (app, passport) => {
     /*-------------------    BUSQUEDA PARA CONSULTAR ------------------------*/
     
     app.get('/consultor_search/', isLoggedIn, (req, res) => {
+        
+        var url=req.query.id
+        console.log("urlaqui", url)
+        
         if(req.query.search){
+            
             console.log("LOGG", req.user.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            
             TestSchema.find({$or:[{access_code: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
                 if(err){
                     console.log(err);
                 }else{
                     var long
-                    (allCategories==0)?long=1:long=0
-                    TestSchema.find({id_inst:req.user.id}).exec((err, resultID)=>{
-                        if(err){
-                            console.log(err)
-                        }else{
+                    (allCategories==null)?long=1:long=0
+                    
                             Categories.find().exec((err, resultCat) => {
-                            if(err) console.log(err)
-                            else{
+                            err?console.log(err):
                                 
-                                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
-                                err?console.log("Error retrieving"):(res.render('consultor_search', {
+                                /*------------------------------------*/
+                                LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+                                err?console.log(err):
+                                
+                                console.log("cccc", Lresult)
+        
+                                //for para iterar los link_url_id pertenecientes a cada consultor
+                                var arrayResult = []
+        
+                                for(var i=0; i<Lresult.length; i++)
+                                {
+                                   arrayResult.push(Lresult[i].link_url_id)
+                                }
+        
+        
+                                //TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]})
+                                TestSchema.find({link_url_id: {$in: arrayResult}})
+        
+                                    .sort({time_finished: -1}) //fecha de mayor a menor
+                                    .exec((err, result)=>{
+                                        
+                
+                                err?console.log(err):
+        
+                                
+                                (res.render('consultor_search', {
                                     
+                                    lresult: Lresult,
+                                    participantes: result, 
                                     cat: resultCat,
                                     result: allCategories, 
                                     val: long, 
-                                    User: resultUser, 
                                     user:req.user,
-                                    busqueda: req.query.search
+                                    busqueda: req.query.search,
+                                    url: req.query.id
                                     
-                                    }))
-                                  })
-                                }
-                            })
-                        }
-                    })
-                }
+                                    
+                                }))//(res.render('consultor_search'
+           
+                                  
+                                })//TestSchema.find({link_url_id: {$in: arrayResult}})
+                                
+                                })//LSchema
+                                /*------------------------------------*/
+                                
+                                
+                    })//Categories.find()
+                    
+                }//else
             })
         }else{
             (res.sendStatus(404))

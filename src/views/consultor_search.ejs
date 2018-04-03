@@ -16,22 +16,23 @@
           <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>   <br>
           <div class="container-fluid">
               <div class="row">
-                  <div class="col-4" style="margin: 20px;" >
+                  <div class="col-5" style="margin: 20px;" >
                         <form action="/search" method="GET">
                               <label for="exampleInputEmail1">Buscar por categoria</label><br>
                               <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
                                   <option selected>Seleccionar...</option>
+                                  <option value="all">Todas</option>
                                   <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                                   <% }%>
+                                  
                               </select>
-                              <input type="text" value="<%= url %>" name="id" style="display:none">
-                                <button type="submit" class="btn btn-primary">Buscar</button>
+                              <input type="text" value="<%= user._id %>" name="id" style="display:none">
+                                <button type="submit" class="btn btn-primary">Buscar</button><br>
                           </form>
                           <br>
                       </div>
                       
-
                       <div class="col-7" style="margin: 20px;" >
                     <form action="/date" method="GET">
                       <label for="exampleInputEmail1">Buscar por fecha</label>
@@ -120,12 +121,11 @@
                             </div>
                             </form>-->
                             <!-- Search Bar End -->
-                          <!--<% result.forEach(function(items) { %>
-                          <%= items  %><br><br>
-                          <% }) %>-->
+
                           <div class="card-body table-full-width table-responsive">
+                            
+                            <% if (typeof(lresult) !== 'undefined') { %>
                               <table class="table table-hover table-striped">
-                                  <% if(val==1){ %>No hay datos disponibles para esta busqueda <% }else{ %>
                                     <thead>
                                     <tr>
                                       <th>Access Code</th>
@@ -136,7 +136,13 @@
                                     </thead>
                                     <tbody>
                                     <% result.forEach(function(items) { %>
-                                    <% if(url==items.link_url_id){ %>
+                                    
+                                    
+                                    
+                                    <% lresult.forEach(function(lresults) { %>
+                                    
+                                    
+                                    <% if(lresults.link_url_id==items.link_url_id){ %>
                                     
                                     <tr>
                                       <td><%= items.access_code %></td>
@@ -167,9 +173,115 @@
                                       </tr>
                                       <% } %>
                                       <% }); %>
+                                      <% }); %>
                                     </tbody>
-                                    <% } %>
                               </table>
+                              
+                              
+                              <% }else if (typeof(ByLinkresult) !== 'undefined') { %>
+                              
+                              <table class="table table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                      <th>Access Code</th>
+                                      <th>Puntos Obtenidos</th>
+                                      <th>Tiempo</th>
+                                      <th>Categoría(s)</th>
+                                      <th>Fecha</th>
+                                    </tr>
+                                    </thead>
+                              
+                              <% var list_array = [] 
+                                    result.forEach(function(items) {
+                                    list_array.push(items.access_code) 
+                                    //por cada iteración me añade al list_array los access_code encontrados
+                                    }) %>
+                                    
+                                    <!-- si existe access_code no se muestra -->
+                                      <% ByLinkresult.forEach(function(BLresult) { 
+                                       if(list_array.includes(BLresult.access_code)){%> 
+                                      
+                                          <tbody>
+                                            <tr>
+                                      <td><%= BLresult.access_code %></td>
+                                      <td><%= BLresult.points_scored %></td>
+                                      <td><%= BLresult.duration %> </td>
+                                      <% if(BLresult.category_results){ %>
+                                      <td>
+                                      <%long=(BLresult.category_results.length); for(i=0; i<long; i++){ %>
+                                      <%= BLresult.category_results[i].name %><br> <% } %>  
+                                      </td><% } %>
+                                      
+                                      <td>
+                                          <% function timeConverter(UNIX_timestamp)
+                                          {
+                                             var a = new Date(UNIX_timestamp * 1000);
+                                             var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                                             var year = a.getFullYear();
+                                             var month = months[a.getMonth()];
+                                             var date = a.getDate();
+                                             var hour = a.getHours();
+                                             var min = a.getMinutes();
+                                             var sec = a.getSeconds();
+                                             var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+                                             return time;
+                                          }
+                                          %><%= timeConverter(BLresult.time_started) %>
+                                      </td>
+                                      </tr>
+                                          </tbody>
+                                      
+                                      
+                                      <% } %>
+                                      <% }); %>
+                                      
+                                      
+                              </table>
+                              <% }else{ %>
+                               <table class="table table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                      <th>Access Code</th>
+                                      <th>Puntos Obtenidos</th>
+                                      <th>Tiempo</th>
+                                      <th>Categoría(s)</th>
+                                      <th>Fecha</th>
+                                    </thead>
+                                    <tbody>
+                                    <% result.forEach(function(items) { %>
+                                    
+                                    
+                                    <tr>
+                                      <td><%= items.access_code %></td>
+                                      <td><%= items.points_scored %></td>
+                                      <td><%= items.duration %> </td>
+                                      <% if(items.category_results){ %>
+                                      <td>
+                                      <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
+                                      <%= items.category_results[i].name %><br> <% } %>  
+                                      </td><% } %>
+                                      
+                                      <td>
+                                          <% function timeConverter(UNIX_timestamp)
+                                          {
+                                             var a = new Date(UNIX_timestamp * 1000);
+                                             var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                                             var year = a.getFullYear();
+                                             var month = months[a.getMonth()];
+                                             var date = a.getDate();
+                                             var hour = a.getHours();
+                                             var min = a.getMinutes();
+                                             var sec = a.getSeconds();
+                                             var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+                                             return time;
+                                          }
+                                          %><%= timeConverter(items.time_started) %>
+                                      </td>
+                                      </tr>
+                                      <% }); %>
+                                    </tbody>
+                              </table>
+                              <% } %>
                           </div>
                           
                          </div>

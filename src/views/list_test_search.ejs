@@ -20,8 +20,11 @@
                               <label for="exampleInputEmail1">Buscar por categoria</label><br>
                               <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
                                   <option selected><% if(search){%> <%= search %><% }else { %>Seleccionar...<% } %></option>
+                                  <option value="all">Todas</option>
                                   <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
+                                  
                                   <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
+                                  
                                   <% }%>
                               </select>
                               <input type="text" value="<%= user._id %>" name="id" style="display:none">

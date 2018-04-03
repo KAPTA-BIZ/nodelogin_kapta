@@ -129,8 +129,9 @@
                                        <%= items.category_results[i].name %><br> <% } %>  
                                     </td>
                                     <% } %>
+
                                     <td><a href="/viewinfo/<%=id_user%>&<%=items.access_code%>">Detalles</a></td>
-                                    
+                   
                                     <%
                                     a=0
                                     suma=0
@@ -181,13 +182,15 @@
                                     <tr>
                                        <th>Código de accesso</th>
                                     </tr>
-                                    <% aresult.forEach(function(aresults, index){ 
+                                    <% 
+                                    if(aresult!=""){
+                                    aresult.forEach(function(aresults, index){ 
                                        if(list_array.includes(aresults.access_code)==false){ %>
                                     <tr>
                                        <td><%=aresults.access_code%></td>
                                     </tr>
                                     <% } %>
-                                    <% }); %>
+                                    <% }); }%>
                                  </table>
                               </div>
                            </div>
