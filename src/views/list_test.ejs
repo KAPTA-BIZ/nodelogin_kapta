@@ -32,20 +32,58 @@
                       
 
                       <div class="col-7" style="margin: 20px;" >
-                          <form action="/date" method="GET">
-                            <label for="exampleInputEmail1">Buscar por fecha</label><br>
-                              <div class="input-group input-daterange">
-                                  <div class="input-group-addon">Desde</div>
-                                  <input type="date"name="start" class="form-control">
-                                  <div class="input-group-addon">Hasta</div>
-                                  <input type="date" name="end" class="form-control">
-                                  <input type="text" value="<%= url %>" name="id" style="display:none">
-                                  <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
-                              </div>
-                              
-                          </form>
-                        </div>
+                    <form action="/date" method="GET">
+                      <label for="exampleInputEmail1">Buscar por fecha</label>
+                      <br/>
+                      <div class="input-daterange input-group" id="datepicker">
+                        <div class="input-group-addon">Desde</div>
+                        <input type="text" id="from" name="start">
+                        <div class="input-group-addon">Hasta</div>
+                        <input type="text" id="to" name="end">
+                        <input type="text" value="<%= url %>" name="id" style="display:none">
+                        <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
+                        
+                      </div>
 
+                    </form>
+
+
+                    <script>
+                      $( function() {
+                        var dateFormat = "yyyy-mm-dd",
+                          from = $( "#from" )
+                            .datepicker({
+                              dateFormat: "yy-mm-dd",
+                              defaultDate: "+1w",
+                              changeMonth: true,
+                              numberOfMonths: 1
+                            })
+                            .on( "change", function() {
+                              to.datepicker( "option", "minDate", getDate( this ) );
+                            }),
+                          to = $( "#to" ).datepicker({
+                            dateFormat: "yy-mm-dd",
+                            defaultDate: "+1w",
+                            changeMonth: true,
+                            numberOfMonths: 1
+                          })
+                          .on( "change", function() {
+                            from.datepicker( "option", "maxDate", getDate( this ) );
+                          });
+                    
+                        function getDate( element ) {
+                          var date;
+                          console.log(element.value)
+                          try {
+                            date = $.datepicker.parseDate( dateFormat, element.value );
+                          } catch( error ) {
+                            date = null;
+                          }
+                          return date;
+                        }
+                      } );
+                    </script>
+</diV>
                         
                         <!------ BUSQUEDA PARA ADMIN START ----->
                         

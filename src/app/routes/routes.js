@@ -920,6 +920,7 @@ module.exports = (app, passport) => {
         
         var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
         TestSchema.find(search_date).exec(function(err, resultDate){
+
             err?console.log(err):
             
                     //console.log(req.query.search)
@@ -928,6 +929,14 @@ module.exports = (app, passport) => {
                     err?console.log(err):
                     
                         console.log(resultDate)
+
+            err?console.log(err):
+                //console.log(req.query.search)
+                //res.render("list_test_b", {categories: allCategories});
+                Categories.find().exec(function(err, resultCat){
+                    err?console.log(err):
+                        console.log("--------- FECHA ------------- ",resultDate)
+
                         var long
                         (resultDate==0)?long=1:long=0
                         //Captura de variable query.admin para validar si la busqueda la hace admin
@@ -983,12 +992,13 @@ module.exports = (app, passport) => {
                         
                       })//aSchema.find(    
                     
+                    
                      //Close TestSchema.find
                      //Close Categories else
                   })//Close Categories.find()
                 
         })//Close TestSchema.find(search_date)
-        
+                    
     })
     
     
