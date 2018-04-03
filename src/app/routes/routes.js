@@ -921,72 +921,65 @@ module.exports = (app, passport) => {
         var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
         TestSchema.find(search_date).exec(function(err, resultDate){
 
-            err?console.log(err):
+        err?console.log(err):
             
-                    //console.log(req.query.search)
-                    //res.render("list_test_b", {categories: allCategories});
-                    Categories.find().exec(function(err, resultCat){
-                    err?console.log(err):
-                    
-                        console.log(resultDate)
+        
+            //console.log(req.query.search)
+            //res.render("list_test_b", {categories: allCategories});
+            Categories.find().exec(function(err, resultCat){
+                err?console.log(err):
+                console.log("--------- FECHA ------------- ",resultDate)
 
-            err?console.log(err):
-                //console.log(req.query.search)
-                //res.render("list_test_b", {categories: allCategories});
-                Categories.find().exec(function(err, resultCat){
-                    err?console.log(err):
-                        console.log("--------- FECHA ------------- ",resultDate)
-
-                        var long
-                        (resultDate==0)?long=1:long=0
-                        //Captura de variable query.admin para validar si la busqueda la hace admin
-                        //si es admin renderiza admin_search, si no renderiza list_test
-                        //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
+                var long
+                (resultDate==0)?long=1:long=0
+                //Captura de variable query.admin para validar si la busqueda la hace admin
+                //si es admin renderiza admin_search, si no renderiza list_test
+                //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
                         
-                        aSchema.find().exec((err,accessresult)=>{
-                        err?console.log(err):
+                aSchema.find().exec((err,accessresult)=>{
+                err?console.log(err):
                             
-                        //COMMENT GIt
-                        LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
-                        err?console.log(err):
+                //COMMENT GIt
+                LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
+                err?console.log(err):
                         
-                                UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
-                                err?console.log(err):console.log(resultUser)
+                UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
+                err?console.log(err):console.log(resultUser)
                                 
-                                        usuario.sa==1?
+                    usuario.sa==1?
                                         
-                                            res.render('list_test', 
-                                            {
-                                            cat: resultCat, 
-                                            result: resultDate, 
-                                            val: long, 
-                                            link: resultLink,
-                                            user:usuario,
-                                            aresult: accessresult,
-                                            User: resultUser,
-                                            resultUser: resultUser,
-                                            date_start: date_start_get,
-                                            date_end: date_end_get,
-                                            url: url
-                                            })
+                        res.render('list_test', 
+                        {
+                            cat: resultCat, 
+                            result: resultDate, 
+                            val: long, 
+                            link: resultLink,
+                            user:usuario,
+                            aresult: accessresult,
+                            User: resultUser,
+                            resultUser: resultUser,
+                            date_start: date_start_get,
+                            date_end: date_end_get,
+                            url: url
+                        })
                                             
-                                        ://else
-                                            res.render('consultor_search', 
-                                            {
-                                            cat: resultCat, 
-                                            result: resultDate, 
-                                            val: long, 
-                                            link: resultLink,
-                                            user:usuario,
-                                            aresult: accessresult,
-                                            User: resultUser,
-                                            resultUser: resultUser,
-                                            date_start: date_start_get,
-                                            date_end: date_end_get,
-                                            url: url
-                                            })
+                        ://else
+                        res.render('consultor_search', 
+                        {
+                            cat: resultCat, 
+                            result: resultDate, 
+                            val: long, 
+                            link: resultLink,
+                            user:usuario,
+                            aresult: accessresult,
+                            User: resultUser,
+                            resultUser: resultUser,
+                            date_start: date_start_get,
+                            date_end: date_end_get,
+                            url: url
+                        })
                                         
-                             })//UserSchema
+                            })//UserSchema
                            
                          })//Close LSchema
                         
@@ -995,10 +988,11 @@ module.exports = (app, passport) => {
                     
                      //Close TestSchema.find
                      //Close Categories else
-                  })//Close Categories.find()
                 
-        })//Close TestSchema.find(search_date)
+        })//Categories.find()
                     
+    })//TestSchema.find(search_date)
+    
     })
     
     
