@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Authentication with Node</title>
+	<title>Busqueda Consultor</title>
 	<% include partials/head %>
 	 
 <body>
@@ -16,7 +16,7 @@
           <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>   <br>
           <div class="container-fluid">
               <div class="row">
-                  <div class="col-5" style="margin: 20px;" >
+                  <div class="col-4" style="margin: 20px;" >
                         <form action="/search" method="GET">
                               <label for="exampleInputEmail1">Buscar por categoria</label><br>
                               <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
@@ -128,16 +128,17 @@
                               <table class="table table-hover table-striped">
                                     <thead>
                                     <tr>
-                                      <th>Access Code</th>
+                                      <th>Código de acceso</th>
                                       <th>Puntos Obtenidos</th>
                                       <th>Tiempo</th>
                                       <th>Categoría(s)</th>
                                       <th>Fecha</th>
                                     </thead>
                                     <tbody>
+                                         
                                     <% result.forEach(function(items) { %>
                                     
-                                    
+                                   
                                     
                                     <% lresult.forEach(function(lresults) { %>
                                     
@@ -183,13 +184,15 @@
                               <table class="table table-hover table-striped">
                                     <thead>
                                     <tr>
-                                      <th>Access Code</th>
+                                      <th>Código de acceso</th>
                                       <th>Puntos Obtenidos</th>
                                       <th>Tiempo</th>
                                       <th>Categoría(s)</th>
                                       <th>Fecha</th>
                                     </tr>
                                     </thead>
+                                    
+                                    <tbody>
                               
                               <% var list_array = [] 
                                     result.forEach(function(items) {
@@ -201,7 +204,7 @@
                                       <% ByLinkresult.forEach(function(BLresult) { 
                                        if(list_array.includes(BLresult.access_code)){%> 
                                       
-                                          <tbody>
+                                          
                                             <tr>
                                       <td><%= BLresult.access_code %></td>
                                       <td><%= BLresult.points_scored %></td>
@@ -229,11 +232,9 @@
                                           %><%= timeConverter(BLresult.time_started) %>
                                       </td>
                                       </tr>
-                                          </tbody>
-                                      
-                                      
                                       <% } %>
                                       <% }); %>
+                                      </tbody>
                                       
                                       
                               </table>
@@ -241,15 +242,16 @@
                                <table class="table table-hover table-striped">
                                     <thead>
                                     <tr>
-                                      <th>Access Code</th>
+                                      <th>Código de acceso</th>
                                       <th>Puntos Obtenidos</th>
                                       <th>Tiempo</th>
                                       <th>Categoría(s)</th>
                                       <th>Fecha</th>
                                     </thead>
                                     <tbody>
+                                        
                                     <% result.forEach(function(items) { %>
-                                    
+                                    <% if(items.link_url_id==url){ %>
                                     
                                     <tr>
                                       <td><%= items.access_code %></td>
@@ -278,6 +280,7 @@
                                           %><%= timeConverter(items.time_started) %>
                                       </td>
                                       </tr>
+                                      <% } %>
                                       <% }); %>
                                     </tbody>
                               </table>

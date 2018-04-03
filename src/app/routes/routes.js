@@ -438,13 +438,20 @@ module.exports = (app, passport) => {
         //accesscode ingresado
         var access_code = req.body.access_code;
         
+        //console.log("primera_letra", access_code.charAt(0))
+        //console.log("segunda_letra", access_code.charAt(1))
+        
+        
         //id inst
         var id_ins = req.body.id_inst
         var existe
         console.log("ttt", access_code, id_ins)
         
         aSchema.find({access_code: access_code }).exec((err, existAc) => {
-            if(err){console.log(err)}else{
+            if(err){console.log(err)}
+            
+            else{
+                
             
         if(existAc.length)
         {
@@ -478,7 +485,7 @@ module.exports = (app, passport) => {
         }) 
         
         }  
-            }//else aSchema
+        }//else aSchema
             
         })//aSchema.find({access_code: access_code })
         
