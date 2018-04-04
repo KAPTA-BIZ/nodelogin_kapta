@@ -15,12 +15,50 @@
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
+                        <%
+                            var code_repetido = []
+                            var enlace = []
+                                participantes.forEach(function(participante) { 
+                                    code_repetido.push(participante.access_code)
+                                    lresult.forEach(function(lr){
+                                        if(participante.link_url_id==lr.link_url_id){
+                                            enlace.push(lr.link_name)
+                                            }
+                                        })
+                                    })
+                            %>
+                            
+                        <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
+                                <p class="card-category">Códigos de acceso usados: <%= enlace.length-1 %>  </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card strpied-tabled-with-hover">
+                                <p class="card-category">Códigos de acceso disponibles: <%= (code_repetido.length+1) %> %> </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card strpied-tabled-with-hover">
+                                <p class="card-category">Códigos de acceso Totales: <%= (code_repetido.length)+(enlace.length) %> </p>
+                            </div>
+                        </div>
+                            
+                            
+                        <div class="col-md-12">
+                            
+                            
+                            
+                            <div class="card strpied-tabled-with-hover">
+                                
+                            
+                                
                                 <div class="card-header ">
                                     <h4 class="card-title">Mis Participantes</h4>
-                                    <p class="card-category">Listado de los participantes asignados a mi perfil.</p>
+                                    <p class="card-category">Listado de los participantes asignados a mi perfil.</p><br>
+                                     
                                 </div>
+                                
                                 <div class="card-body table-full-width table-responsive">
                                     <table class="table table-hover table-striped">
                                         <thead>
@@ -34,7 +72,6 @@
 
                                         <tbody>
                                        
-                                           
 
                                         <% 
                                             var code_repetido = []
@@ -51,7 +88,7 @@
                                             
                                             participantes_totales.forEach(function(p_totales,index){
 
-                                                %>
+                                        %>
                                                     <tr>
                                                     <% 
                             
@@ -75,8 +112,9 @@
                                                     <% } %>
                                                         
                                                     </tr>        
-                                                <% }) %>                                
-
+                                                <% }) %>  
+                                                
+                                                
                                         </tbody>
 
                                     </table>

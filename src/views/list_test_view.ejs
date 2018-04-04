@@ -78,6 +78,22 @@
                       } );
                     </script>
                   </div>
+                  
+                        <%
+                            var access_code = []
+                            item.forEach(function(items){
+                               access_code.push(items.access_code)
+                            })
+                            
+                        %>
+                            
+                        <div class="col-md-4">
+                            <div class="card strpied-tabled-with-hover">
+                                <br><p class="card-category" style="padding-left:10px">Códigos de acceso presentados en esta evaluación: <%=access_code.length%>  </p><br>
+                            </div>
+                        </div>
+                        
+                        
                   <div class="col-md-12">
                      <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
