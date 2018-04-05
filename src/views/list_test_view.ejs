@@ -78,21 +78,18 @@
                       } );
                     </script>
                   </div>
-                  
-                        <%
-                            var access_code = []
-                            item.forEach(function(items){
-                               access_code.push(items.access_code)
-                            })
+                  <%
+                     var access_code = []
+                     item.forEach(function(items){
+                     access_code.push(items.access_code)
+                     })
+                  %>
                             
-                        %>
-                            
-                        <div class="col-md-4">
-                            <div class="card strpied-tabled-with-hover">
-                                <br><p class="card-category" style="padding-left:10px">Códigos de acceso presentados en esta evaluación: <%=access_code.length%>  </p><br>
-                            </div>
-                        </div>
-                        
+                  <div class="col-md-4">
+                     <div class="card strpied-tabled-with-hover">
+                        <br><p class="card-category" style="padding-left:10px">Códigos de acceso presentados en esta evaluación: <%=access_code.length%>  </p><br>
+                     </div>
+                  </div>
                         
                   <div class="col-md-12">
                      <div class="card strpied-tabled-with-hover">
@@ -107,7 +104,7 @@
                                  <tr>
                                     <th>Código de acceso/Participante</th>
                                     <th>Porcentaje</th>
-                                    <th>Fecha</th>
+                                    <th>Fecha de presentación</th>
                                     <th>Categoría(s)</th>
                                     <th></th>
                               </thead>
@@ -119,7 +116,7 @@
                                  <tr>
                                     <!-- Filtrar id_inst con id capturado del instructor -->
                                     <td><%= items.access_code %></td>
-                                    <td><%= items.percentage %></td>
+                                    <td><%= items.percentage %>%</td>
                                     <td>
                                        <% function timeConverter(UNIX_timestamp)
                                           {
@@ -145,6 +142,7 @@
 
                                     <td><a href="/viewinfo/<%=items.access_code%>">Detalles</a></td>
                    
+                                    
                                     <%
                                     a=0
                                     suma=0
@@ -155,15 +153,14 @@
                                        a=a+suma//80
                                     }
                                     
-                                    %>
-                                    <% console.log(a) %>
-                                    <% });
+                                    });
                                     porcentaje=((a/cant)*100)
                                     porcentaje=porcentaje.toFixed(2)
                                     %>
                                     
                               </tbody>
                               <% } %>
+                             
                            </table>
                         </div>
                      </div>
@@ -178,7 +175,7 @@
                         <div class="col-6">
                            <div class="card strpied-tabled-with-hover">
                               <div class="card-header ">
-                                 <h4 class="card-title">Estadísticas - Participantes</h4>
+                                 <h4 class="card-title">Estadísticas - Porcentaje General Participantes</h4>
                               </div>
                               <div class="card-body table-full-width table-responsive">
                                  <canvas id="bar-chart" height="400" width="400"></canvas>

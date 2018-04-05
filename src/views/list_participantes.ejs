@@ -71,9 +71,9 @@
 
 
                                         <tbody>
-                                       
-
-                                        <% 
+                                            
+                                           <% 
+                                            var it=5
                                             var code_repetido = []
                                             var enlace = []
                                             participantes.forEach(
@@ -86,12 +86,14 @@
                                                     })
                                             })
                                             
+                                            
+
                                             participantes_totales.forEach(function(p_totales,index){
 
-                                        %>
-                                                    <tr>
-                                                    <% 
-                            
+                                            %>
+                                            
+                                            <tr>
+                                                <% 
                                                     if(code_repetido.includes(p_totales.access_code)){ %>
                                                         <td style="color: red; text-decoration: line-through;">
                                                             <%= p_totales.access_code %>
@@ -111,16 +113,18 @@
                                                         <td></td>
                                                     <% } %>
                                                         
-                                                    </tr>        
-                                                <% }) %>  
-                                                
-                                                
+                                            </tr>        
+                                            <% }) %>  
+                                        
                                         </tbody>
+                                        
 
                                     </table>
                                 </div>
+                                
                             </div>
-
+                            <button onclick="show()">Click me</button>
+                            
                         </div>
                     </div>
                 </div>

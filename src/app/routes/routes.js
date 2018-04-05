@@ -653,17 +653,32 @@ module.exports = (app, passport) => {
         var access_code = req.params.access_code
         var usuario = req.user
         
+        
+        aSchema.find({id_ins: usuario._id}).exec((err, resultAc) => {
+        err?console.log(err):  
+        
+        console.log("usuario", resultAc)
+        
             TestSchema.find({access_code: access_code}).exec((err, result) => {
+            console.log("resultA", result)
             err?console.log(err):
+            
+            TestSchema.find().exec((err, allResult) => {
+            err?console.log(err):
+            
                 // Cuando long es 0 pasa a la lista
                 console.log(result)
                 // Cuando long es 1 pasa a la busqueda
                 res.render('view_info_ac', {
                     user: usuario,
                     access_code: access_code,
-                    result: result
+                    result: result,
+                    resultAc: resultAc,
+                    allResult: allResult
+                    })
                 })
             })
+        })
     })
     
     app.get('/question/:id_question&:access_code', isLoggedIn, (req, res)  => {
