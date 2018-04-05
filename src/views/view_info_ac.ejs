@@ -327,7 +327,10 @@
                             
                             <!-- Media promedio en una categoria -->
                             
-                            
+                             <% finalResult = [] %>
+                             <% finalName = [] %>
+                             <% finalCount = [] %>
+                             <% finalMedia = [] %>
                              <% 
                              var var_percentage=0
                              var id
@@ -364,20 +367,20 @@
                                         <% por_a=por_b+por %>
                                         <% } %>
                                         
+                                        <%name=allR.category_results[a].name%>
                                         <%por_b=por_a %>
                                         <% count=count+1 %>
+                                        <% fn=por_b/count %>
                                         
                                         
-                            
                                         <br><-----------------><br>
                                         <id: <%=allR.category_results[a].category_id%><br>
                                         name: <%=allR.category_results[a].name%> <br>
                                         porcentaje: <%=allR.category_results[a].percentage%><br>
-                                        
                                         porcentaje suma:<%= por_b %><br>
-                                        <%=id_a=id %><br>
-                                       
                                         
+                                       
+                                       
                                         <------------------><br>
                                      
                             <% } %>
@@ -387,25 +390,26 @@
                             <% })%> 
                             <!-- porcentaje total -->
                             <br><br><br>
-                            PORCENTAJE TOTAL: <% id1=id %><%=por_b%> Cuenta: <%=count%>
+                            <!-- Array con resultados -->
+                            <b>Resultado TOTAL:</b> <%=por_b%><br>
+                            <b>Nombre Categoria:</b> <%= name %><br>
+                            <b>Cantidad:</b> <%=count%><br>
+                            <b>Porcentaje:</b> <%= fn %>
+                            
+                            <% finalResult.push(por_b) %>
+                            <% finalName.push(name) %>
+                            <% finalCount.push(count) %>
+                            <% finalMedia.push(fn) %>
+                            
                             <br><br><br>
                             <% } %>
                             <% }) %>
                             
+                            FINAL PORCENTAJES <%=finalResult%><br>
+                            FINAL NAMES <%=finalName%><br>
+                            FINAL COUNT <%=finalCount%><br>
+                            FINAL MEDIA <%=finalMedia%><br>
                             
-                            <% 
-                            var var_percentage=0
-                            var cantidad
-                            var media 
-                            var aux
-                            var aux_a%>
-                            
-                           
-                            <br><br>
-                            Porcentaje total: <%= var_percentage %> <br>
-                            Cantidad: <%cantidad=i-1%>
-                            <% media= var_percentage/cantidad%><br>
-                            Media: <% media.toFixed(2) %>%
                             
                         
                             <!-- Media promedio en una categoria -->
@@ -453,16 +457,17 @@
       console.log("TECLADE", category_id)
       
       var valor = <%=results.category_results[i].percentage%>
+      var media = <%=finalMedia[i]%>
       
       new Chart(document.getElementById(category_id), {
       type: 'bar',
        data: {
-         labels: ["", "", valor + "%", "", "" ],
+         labels: ["", "", "porcentaje participante " + valor + "%", "porcentaje promedio " + media + "%", "" ],
          datasets: [
            {
              label: "",
              backgroundColor: ["", "","#003851","",""],
-             data: [0,0,valor,0,0]
+             data: [0,0,valor,media,0]
            }
          ]
        },
