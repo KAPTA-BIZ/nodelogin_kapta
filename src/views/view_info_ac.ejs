@@ -329,6 +329,7 @@
                             
                             <!-- Media promedio en una categoria -->
                             
+                            <!--
                              <% finalResult = [] %>
                              <% finalName = [] %>
                              <% finalCount = [] %>
@@ -375,24 +376,21 @@
                                         <% fn=por_b/count %>
                                         
                                         
-                                        <br><-----------------><br>
+                                        <br><br>
                                         <id: <%=allR.category_results[a].category_id%><br>
                                         name: <%=allR.category_results[a].name%> <br>
                                         porcentaje: <%=allR.category_results[a].percentage%><br>
                                         porcentaje suma:<%= por_b %><br>
-                                        
-                                       
-                                       
-                                        <------------------><br>
+                                        <br>
                                      
                             <% } %>
                              
                             <% } %>  
                             
                             <% })%> 
-                            <!-- porcentaje total -->
+                            
                             <br><br><br>
-                            <!-- Array con resultados -->
+                            
                             <b>Resultado TOTAL:</b> <%=por_b%><br>
                             <b>Nombre Categoria:</b> <%= name %><br>
                             <b>Cantidad:</b> <%=count%><br>

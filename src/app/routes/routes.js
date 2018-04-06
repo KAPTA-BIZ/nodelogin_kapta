@@ -103,8 +103,8 @@ module.exports = (app, passport) => {
             if (!error && response.statusCode === 200) {
               var cleanBody = JSON.parse(body);
               //console.log(cleanBody);
-              //res.json(cleanBody);
-              storageLinkTest(cleanBody)
+              res.json(cleanBody);
+              //storageLinkTest(cleanBody)
             }
             return console.log(error);
         });
