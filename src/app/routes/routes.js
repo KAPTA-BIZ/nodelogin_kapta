@@ -663,11 +663,21 @@ module.exports = (app, passport) => {
             console.log("resultA", result)
             err?console.log(err):
             
+            //console.log("link de access", result[0].link_url_id)
+            
+            //Obtengo link_url_id con result[0].link_url_id
+            //usuarios con mismo link_url_id
+            
+            TestSchema.find({link_url_id: result[0].link_url_id}).exec((err, resultLinkUrlId) => {
+            console.log("resultA", resultLinkUrlId)
+            err?console.log(err):
+            
+            
             TestSchema.find().exec((err, allResult) => {
             err?console.log(err):
             
                 // Cuando long es 0 pasa a la lista
-                console.log(result)
+                //console.log(result)
                 // Cuando long es 1 pasa a la busqueda
                 res.render('view_info_ac', {
                     user: usuario,
@@ -677,6 +687,8 @@ module.exports = (app, passport) => {
                     allResult: allResult
                     })
                 })
+                
+              })
             })
         })
     })

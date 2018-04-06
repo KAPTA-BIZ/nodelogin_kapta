@@ -73,10 +73,11 @@
                                             <th>Puntos Obtenidos</th>
                                             <th>Puntos Totales</th>
                                             <th>Porcentaje</th>
-                                            <th>Tiempo</th>
-                                            <th>Fecha</th>
-                                            <th>Categoría(s)</th>
                                             <th>Cantidad preguntas</th>
+                                            <th>Tiempo</th>
+                                            <th>Fecha presentación</th>
+                                            <th>Categoría(s)</th>
+                                            
                                             
                                         </thead>
                                         <tbody>
@@ -94,7 +95,12 @@
                                         <td><%= items.points_scored %></td>
                                         <td><%= items.points_available %></td>
                                         
-                                        <td><%= items.percentage %> </td>
+                                        <td><%= items.percentage %>% </td>
+                                        <% if(items.questions){ %>
+                                        <td>
+                                            <%= items.questions.length%>  
+                                        </td>
+                                        <% } %>
                                         <td><%= items.duration %> </td>
                                         <td>
                                             <%= timeConverter(items.time_started) %>
@@ -105,11 +111,7 @@
                                             - <%= items.category_results[i].name %><br> <% } %>  
                                         </td>
                                         <% } %>
-                                        <% if(items.questions){ %>
-                                        <td>
-                                            <%= items.questions.length%>  
-                                        </td>
-                                        <% } %>
+                                        
                                         <% });%>
                                           </tbody>
                                     </table>
@@ -308,7 +310,7 @@
                                                <%= results.category_results[i].name %> 
                                             </th>
                                             <th>
-                                                <%= results.category_results[i].percentage %> 
+                                                <%= results.category_results[i].percentage %>% 
                                             </th>
                                             <th>
                                                 <%= results.category_results[i].points_scored %> 
@@ -462,12 +464,12 @@
       new Chart(document.getElementById(category_id), {
       type: 'bar',
        data: {
-         labels: ["", "", "porcentaje participante " + valor + "%", "porcentaje promedio " + media + "%", "" ],
+         labels: ["", "", "participante " + valor.toFixed(2) + "%", "promedio " + media.toFixed(2) + "%", "" ],
          datasets: [
            {
              label: "",
-             backgroundColor: ["", "","#003851","",""],
-             data: [0,0,valor,media,0]
+             backgroundColor: ["", "","#003851","#2E64FE",""],
+             data: [0,0,valor.toFixed(2),media.toFixed(2),0]
            }
          ]
        },
