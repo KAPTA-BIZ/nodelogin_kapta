@@ -141,8 +141,6 @@
                                     <tbody>
                                          
                                     <% result.forEach(function(items) { %>
-                                    <% lresult.forEach(function(lresults) { %>
-                                    <% if(lresults.link_url_id==items.link_url_id){ %>
                                     
                                     <tr>
                                       <td><%= items.access_code %></td>
@@ -179,8 +177,7 @@
                                       </td>
                                       <td><a href="viewinfo/<%=items.access_code%>">Ver detalles</a></td>
                                       </tr>
-                                      <% } %>
-                                      <% }); %>
+                                      
                                       <% }); %>
                                     </tbody>
                               </table>

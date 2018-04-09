@@ -897,7 +897,9 @@ module.exports = (app, passport) => {
                     
             Categories.find().exec((err, resultCat) => {
             err?console.log(err):
-                                
+            
+            
+                //Se encuentran los link_url_id segun req.user.id                
                 LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
                 err?console.log(err):console.log(Lresult)
         
@@ -949,9 +951,117 @@ module.exports = (app, passport) => {
     
     app.get('/date', isLoggedIn, function(req, res){
        
-        var url=req.query.id
+      
+       var url=req.query.id
+       
+       if(url==req.user.id)
+       {
+           console.log("VIENE DE BUSQUEDA GENERAL")
+           
+           var date_start_get=req.query.start
+        var date_end_get=req.query.end
         
-        var date_start_get=req.query.start
+        //Defino usuario globalmente
+        var usuario = req.user
+        
+        //Se suma 86400 para obtener el día completo
+        var date_start = ((new Date(date_start_get)/1000)+86400);
+        var date_end = ((new Date(date_end_get)/1000)+86400);
+        
+        //console.log(date_start)
+        //console.log(date_end)
+        
+        
+        LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+                err?console.log(err):console.log(Lresult)
+        
+                    //for para iterar los link_url_id pertenecientes a cada consultor
+                    var arrayResult = []
+        
+                    for(var i=0; i<Lresult.length; i++)
+                    {
+                        arrayResult.push(Lresult[i].link_url_id)
+                    }
+        
+                    //TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]})
+                    TestSchema.find()
+                        .and([
+                            {link_url_id: {$in: arrayResult}},
+                            {time_started:{ $gte: date_start, $lte: date_end }}
+                            ])
+                        .sort({time_finished: -1}) //fecha de mayor a menor
+                        .exec((err, result)=>{
+                            
+      
+            err?console.log(err):
+            
+        
+            //console.log(req.query.search)
+            //res.render("list_test_b", {categories: allCategories});
+            Categories.find().exec(function(err, resultCat){
+                err?console.log(err):console.log(resultCat)
+                
+                
+                //Captura de variable query.admin para validar si la busqueda la hace admin
+                //si es admin renderiza admin_search, si no renderiza list_test
+                //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
+                        
+                aSchema.find().exec((err,accessresult)=>{
+                err?console.log(err):
+                            
+                //COMMENT GIt
+                LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
+                err?console.log(err):console.log(resultLink)
+                
+                    usuario.sa==1?
+                                        
+                        res.render('list_test', 
+                        {
+                            cat: resultCat, 
+                            link: resultLink,
+                            user:usuario,
+                            aresult: accessresult,
+                            date_start: date_start_get,
+                            date_end: date_end_get,
+                            url: url
+                        })
+                                            
+                        ://else
+                        res.render('date_search', 
+                        {
+                            cat: resultCat, 
+                            result: result, 
+                            link: resultLink,
+                            user:usuario,
+                            aresult: accessresult,
+                            date_start: date_start_get,
+                            date_end: date_end_get,
+                            url: url,
+                            lresult: resultLink
+                            
+                        })
+                                        
+                            
+                         })//Close LSchema
+                        
+                      })//aSchema.find(    
+                    
+                    
+                     //Close TestSchema.find
+                     //Close Categories else
+                
+        })//Categories.find()
+                    
+    })//TestSchema.find(search_date)
+    
+        })
+           
+           
+       }else{
+           
+           console.log("VIENE DE ENLACE")
+           
+           var date_start_get=req.query.start
         var date_end_get=req.query.end
         
         //Defino usuario globalmente
@@ -973,9 +1083,8 @@ module.exports = (app, passport) => {
             //console.log(req.query.search)
             //res.render("list_test_b", {categories: allCategories});
             Categories.find().exec(function(err, resultCat){
-                err?console.log(err):
-                console.log("--------- FECHA ------------- ",resultDate)
-
+                err?console.log(err):console.log(resultCat)
+                
                 var long
                 (resultDate==0)?long=1:long=0
                 //Captura de variable query.admin para validar si la busqueda la hace admin
@@ -987,11 +1096,12 @@ module.exports = (app, passport) => {
                             
                 //COMMENT GIt
                 LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
-                err?console.log(err):
+                err?console.log(err):console.log(resultLink)
+                
                         
                 UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
                 err?console.log(err):console.log(resultUser)
-                                
+                
                     usuario.sa==1?
                                         
                         res.render('list_test', 
@@ -1040,7 +1150,10 @@ module.exports = (app, passport) => {
         })//Categories.find()
                     
     })//TestSchema.find(search_date)
-    
+           
+       
+       }
+       
     })
     
     
