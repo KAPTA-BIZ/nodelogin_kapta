@@ -604,7 +604,7 @@ module.exports = (app, passport) => {
         Categories.find().exec((err, resultCat) => {
         err?console.log(err):
         
-            TestSchema.find({link_url_id: req.params.id}).exec((err, result) => {
+            TestSchema.find({link_url_id: req.params.id}).sort({time_finished: -1}).exec((err, result) => {
             err?console.log(err):
                 
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
@@ -745,7 +745,7 @@ module.exports = (app, passport) => {
             var querySearch
             (req.query.search=="all")? querySearch = {}: querySearch = {'category_results.name': req.query.search}
                 
-            TestSchema.find(querySearch).exec((err, result) => {
+            TestSchema.find(querySearch).sort({time_finished: -1}).exec((err, result) => {
             err?console.log(err):console.log(result)
                 
                 var long
@@ -776,7 +776,7 @@ module.exports = (app, passport) => {
                         
                     })//UserSchema.find({id: allCategories.id_inst})
                          
-                    : //else usuario.sa==1?
+                : //else usuario.sa==1?
                        
                     UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
                     err?console.log("Error retrieving"):
@@ -807,7 +807,8 @@ module.exports = (app, passport) => {
                             user: usuario,
                             result: result,
                             ByLinkresult: ByLinkresult,
-                            User: resultUser
+                            User: resultUser,
+                            lresult: Lresult
                                     
                         }))
                                 
@@ -878,11 +879,13 @@ module.exports = (app, passport) => {
     
     app.get('/consultor_search/', isLoggedIn, (req, res) => {
         
-        var url=req.query.id
-        console.log("urlaqui", url)
+       
         
         if(req.query.search){
             
+            var url=req.query.id_inst
+            console.log("urlaqui", url)
+        
             console.log("LOGG", req.user.id)
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             
@@ -910,6 +913,8 @@ module.exports = (app, passport) => {
                     TestSchema.find({link_url_id: {$in: arrayResult}})
                         .sort({time_finished: -1}) //fecha de mayor a menor
                         .exec((err, result)=>{
+                            
+                            
                         
                         err?console.log(err):
                         
@@ -921,7 +926,7 @@ module.exports = (app, passport) => {
                             val: long, 
                             user:req.user,
                             busqueda: req.query.search,
-                            url: req.query.id
+                            url: url
                             
                         }))//(res.render('consultor_search'
            
@@ -1017,7 +1022,9 @@ module.exports = (app, passport) => {
                             resultUser: resultUser,
                             date_start: date_start_get,
                             date_end: date_end_get,
-                            url: url
+                            url: url,
+                            lresult: resultLink
+                            
                         })
                                         
                             })//UserSchema

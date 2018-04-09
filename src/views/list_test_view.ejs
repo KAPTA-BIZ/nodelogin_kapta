@@ -10,6 +10,7 @@
          <% include partials/navbar %>
          <div class="content">
             <div class="container-fluid">
+               <a href="">restablecer búsqueda</a>
                <div class="row">
                   <div class="col-4" style="margin: 20px;" >
                      <form action="/search" method="GET">
@@ -20,6 +21,7 @@
                            <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
                            <% }%>
                         </select>
+                        <input type="text" value="<%= url %>" name="id" style="display:none">
                         <button type="submit" class="btn btn-primary">Buscar</button>
                      </form>
                      <br>
@@ -31,15 +33,15 @@
                       <br/>
                       <div class="input-daterange input-group" id="datepicker">
                         <div class="input-group-addon">Desde</div>
-                        <input type="text" id="from" name="start">
+                        <input type="text" id="from" name="start" required="">
                         <div class="input-group-addon">Hasta</div>
-                        <input type="text" id="to" name="end">
+                        <input type="text" id="to" name="end" required="">
                         <input type="text" value="<%= url %>" name="id" style="display:none">
                         <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
-                        
                       </div>
-
                     </form>
+                    
+                    
 
 
                     <script>
@@ -84,7 +86,7 @@
                      access_code.push(items.access_code)
                      })
                   %>
-                            
+                           
                   <div class="col-md-4">
                      <div class="card strpied-tabled-with-hover">
                         <br><p class="card-category" style="padding-left:10px">Códigos de acceso presentados en esta evaluación: <%=access_code.length%>  </p><br>
