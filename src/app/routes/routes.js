@@ -174,6 +174,8 @@ module.exports = (app, passport) => {
     
     app.get('/profile', isLoggedIn, (req, res) => {
         
+        console.log("USERAQUI", req.user.sa)
+        
         //user.sa=1 Admin
         req.user.sa==1?
         
@@ -308,11 +310,11 @@ module.exports = (app, passport) => {
     
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile',
-        failureRedirect: '/login',
+        failureRedirect: '/',
         failureFlash: true    
     }));
 
-    /* ------- FUNCION PARA ENCONTRAR INSCRITOS --------*/
+    /* ------- FUNCION PARA ENCONTRAR INSCRITOfS --------*/
 
     function lista(req, res, next) {
 
@@ -533,11 +535,16 @@ module.exports = (app, passport) => {
         //Consulta a LSchema para igualar el id de consultor con el actual y obtener el link_url_id 
         //de los links del consultor ya que en schema no se asigna id_consultor
         
+        console.log("REQ2", req.user.id)
+        
         LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
+        console.log("1BUSQUEDA", Lresult)
         err?console.log(err):
         TestSchema.find().exec((err, result)=>{
+        //console.log("2BUSQUEDA", result)
         err?console.log("Error retrieving"):
         aSchema.find({id_ins: req.user.id}).exec((err,accessresult)=>{
+            //console.log("3BUSQUEDA", accessresult)
             err?console.log("ERROR " ,err):
             
             res.render('list_participantes', 

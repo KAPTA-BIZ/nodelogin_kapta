@@ -121,7 +121,165 @@
                                 
                         <!-- detalles preguntas -->
                         
-                        <div class="col-md-12">
+                         <div class="col-md-12">
+                            <div class="card strpied-tabled-with-hover">
+                                <div class="card-header ">
+                                    <h4 class="card-title">Categorias presentadas</h4>
+                                </div>
+                                <div class="card-body table-full-width table-responsive">
+                                    <table class="table table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Porcentaje</th>
+                                            <th>Puntos obtenidos</th>
+                                        </tr>
+                                    </thead> 
+                                     <% result.forEach(function(results){ %>
+                                            <%long_c=(results.category_results.length); for(i=0; i<long_c; i++){ %>
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                               <%= results.category_results[i].name %> 
+                                            </th>
+                                            <th>
+                                                <%= results.category_results[i].percentage %>% 
+                                            </th>
+                                            <th>
+                                                <%= results.category_results[i].points_scored %> 
+                                            </th>
+                                            
+                                        </tr>
+                                    </tbody>
+                                    <% } %>  
+                                    <% })%>
+                                    </table>
+                                    </div>
+                                  </div>
+                               </div>
+                               
+                               
+                               <!-- Media promedio en una categoria -->
+                            
+                            <!--
+                             <% finalResult = [] %>
+                             <% finalName = [] %>
+                             <% finalCount = [] %>
+                             <% finalMedia = [] %>
+                             <% 
+                             var var_percentage=0
+                             var id
+                             var id_a=0
+                             
+                             
+                             
+                            result.forEach(function(results){ %>
+                            <%longitud=(results.category_results.length)
+                            for(i=0; i<longitud; i++){ %>
+                            
+                            <%results.category_results[i].category_id  %>
+                            <% 
+                             
+                             var por
+                             var por_a
+                             var por_b=0
+                             var count=0
+                             
+                             %>
+                                    <% allResult.forEach(function(allR){ %>
+                                    <% long=(allR.category_results.length); %>
+                                    <% for(a=0; a<long; a++){ %>
+                                    <% if(allR.category_results[a].category_id==results.category_results[i].category_id){%>
+                            
+                            
+                                        <% id=allR.category_results[a].category_id %>
+                                        <% if((id_a==id)||(id_a==0)){ %>
+                                        <%por=allR.category_results[a].percentage %>
+                                        <% por_a=por_b+por %>
+                                        <% }else{ %>
+                                        <%por_b=0%>
+                                        <%por=allR.category_results[a].percentage %>
+                                        <% por_a=por_b+por %>
+                                        <% } %>
+                                        
+                                        <%name=allR.category_results[a].name%>
+                                        <%por_b=por_a %>
+                                        <% count=count+1 %>
+                                        <% fn=por_b/count %>
+                                        
+                                        
+                                        <br><br>
+                                        <id: <%=allR.category_results[a].category_id%><br>
+                                        name: <%=allR.category_results[a].name%> <br>
+                                        porcentaje: <%=allR.category_results[a].percentage%><br>
+                                        porcentaje suma:<%= por_b %><br>
+                                        <br>
+                                     
+                            <% } %>
+                             
+                            <% } %>  
+                            
+                            <% })%> 
+                            
+                            <br><br><br>
+                            
+                            <b>Resultado TOTAL:</b> <%=por_b%><br>
+                            <b>Nombre Categoria:</b> <%= name %><br>
+                            <b>Cantidad:</b> <%=count%><br>
+                            <b>Porcentaje:</b> <%= fn %>
+                            
+                            <% finalResult.push(por_b) %>
+                            <% finalName.push(name) %>
+                            <% finalCount.push(count) %>
+                            <% finalMedia.push(fn) %>
+                            
+                            <br><br><br>
+                            <% } %>
+                            <% }) %>
+                            
+                            FINAL PORCENTAJES <%=finalResult%><br>
+                            FINAL NAMES <%=finalName%><br>
+                            FINAL COUNT <%=finalCount%><br>
+                            FINAL MEDIA <%=finalMedia%><br>
+                            
+                            
+                        
+                            <!-- Media promedio en una categoria -->
+                      <div class="col-md-12">
+                        <div class="card strpied-tabled-with-hover">      
+                    <div class="card-header ">
+                                <h4 class="card-title">Estadisticas de categorias</h4>
+                                <p class="card-category">Significado de color. <br>
+                                    <br/> 
+                                     En color <b style="background-color: #003851; color:#003851">choosecolor</b> Porcentaje del participante obtenido en la categoría seleccionada
+                                    <br /> 
+                                    En color <b style="background-color: #2E64FE; color:#2E64FE">choosecolor</b> Promedio del porcentaje obtenido por los demas participantes en la categoría seleccionada
+                                    
+                                </p><br>
+                            </div></div>
+                            
+                    
+                    <div class="row">
+                        <!--  ForEach para capturar category_id y mostrarlo en getElementById -->
+                        <% result.forEach(function(results){ %>
+                            <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
+                            <div class="col-6">
+                                <div class="card strpied-tabled-with-hover">
+                                <div class="card-header ">
+                                    <h4 class="card-title"><%= results.category_results[i].name  %></h4>
+                                </div>
+                                <div class="card-body table-full-width table-responsive">
+                                    <canvas id="<%= results.category_results[i].category_id %>" height="400" width="400"></canvas>
+                                </div>
+                                </div>
+                            </div>
+                            <% } %>  
+                        <% })%>   
+                        
+                        <% } %>
+                    </div>
+                    
+                        
                         <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
                                 <h4 class="card-title">Resultados preguntas</h4>
@@ -288,164 +446,11 @@
                                     </div>
                                 </div>
 
-                        <div class="col-md-12">
-                            <div class="card strpied-tabled-with-hover">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Categorias presentadas</h4>
-                                </div>
-                                <div class="card-body table-full-width table-responsive">
-                                    <table class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Categoria</th>
-                                            <th>Porcentaje</th>
-                                            <th>Puntos obtenidos</th>
-                                        </tr>
-                                    </thead> 
-                                     <% result.forEach(function(results){ %>
-                                            <%long_c=(results.category_results.length); for(i=0; i<long_c; i++){ %>
-                                    <tbody>
-                                        <tr>
-                                            <th>
-                                               <%= results.category_results[i].name %> 
-                                            </th>
-                                            <th>
-                                                <%= results.category_results[i].percentage %>% 
-                                            </th>
-                                            <th>
-                                                <%= results.category_results[i].points_scored %> 
-                                            </th>
-                                            
-                                        </tr>
-                                    </tbody>
-                                    <% } %>  
-                                    <% })%>
-                                    </table>
-                                    </div>
-                                  </div>
-                               </div>
+                       
                             </div>
                             
                             
-                            <!-- Media promedio en una categoria -->
                             
-                            <!--
-                             <% finalResult = [] %>
-                             <% finalName = [] %>
-                             <% finalCount = [] %>
-                             <% finalMedia = [] %>
-                             <% 
-                             var var_percentage=0
-                             var id
-                             var id_a=0
-                             
-                             
-                             
-                            result.forEach(function(results){ %>
-                            <%longitud=(results.category_results.length)
-                            for(i=0; i<longitud; i++){ %>
-                            
-                            <%results.category_results[i].category_id  %>
-                            <% 
-                             
-                             var por
-                             var por_a
-                             var por_b=0
-                             var count=0
-                             
-                             %>
-                                    <% allResult.forEach(function(allR){ %>
-                                    <% long=(allR.category_results.length); %>
-                                    <% for(a=0; a<long; a++){ %>
-                                    <% if(allR.category_results[a].category_id==results.category_results[i].category_id){%>
-                            
-                            
-                                        <% id=allR.category_results[a].category_id %>
-                                        <% if((id_a==id)||(id_a==0)){ %>
-                                        <%por=allR.category_results[a].percentage %>
-                                        <% por_a=por_b+por %>
-                                        <% }else{ %>
-                                        <%por_b=0%>
-                                        <%por=allR.category_results[a].percentage %>
-                                        <% por_a=por_b+por %>
-                                        <% } %>
-                                        
-                                        <%name=allR.category_results[a].name%>
-                                        <%por_b=por_a %>
-                                        <% count=count+1 %>
-                                        <% fn=por_b/count %>
-                                        
-                                        
-                                        <br><br>
-                                        <id: <%=allR.category_results[a].category_id%><br>
-                                        name: <%=allR.category_results[a].name%> <br>
-                                        porcentaje: <%=allR.category_results[a].percentage%><br>
-                                        porcentaje suma:<%= por_b %><br>
-                                        <br>
-                                     
-                            <% } %>
-                             
-                            <% } %>  
-                            
-                            <% })%> 
-                            
-                            <br><br><br>
-                            
-                            <b>Resultado TOTAL:</b> <%=por_b%><br>
-                            <b>Nombre Categoria:</b> <%= name %><br>
-                            <b>Cantidad:</b> <%=count%><br>
-                            <b>Porcentaje:</b> <%= fn %>
-                            
-                            <% finalResult.push(por_b) %>
-                            <% finalName.push(name) %>
-                            <% finalCount.push(count) %>
-                            <% finalMedia.push(fn) %>
-                            
-                            <br><br><br>
-                            <% } %>
-                            <% }) %>
-                            
-                            FINAL PORCENTAJES <%=finalResult%><br>
-                            FINAL NAMES <%=finalName%><br>
-                            FINAL COUNT <%=finalCount%><br>
-                            FINAL MEDIA <%=finalMedia%><br>
-                            
-                            
-                        
-                            <!-- Media promedio en una categoria -->
-                      
-                        <div class="card strpied-tabled-with-hover">      
-                    <div class="card-header ">
-                                <h4 class="card-title">Estadisticas de categorias</h4>
-                                <p class="card-category">Significado de color. <br>
-                                    <br/> 
-                                     En color <b style="background-color: #003851; color:#003851">choosecolor</b> Porcentaje del participante obtenido en la categoría seleccionada
-                                    <br /> 
-                                    En color <b style="background-color: #2E64FE; color:#2E64FE">choosecolor</b> Promedio del porcentaje obtenido por los demas participantes en la categoría seleccionada
-                                    
-                                </p><br>
-                            </div></div>
-                            
-                    
-                    <div class="row">
-                        <!--  ForEach para capturar category_id y mostrarlo en getElementById -->
-                        <% result.forEach(function(results){ %>
-                            <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
-                            <div class="col-6">
-                                <div class="card strpied-tabled-with-hover">
-                                <div class="card-header ">
-                                    <h4 class="card-title"><%= results.category_results[i].name  %></h4>
-                                </div>
-                                <div class="card-body table-full-width table-responsive">
-                                    <canvas id="<%= results.category_results[i].category_id %>" height="400" width="400"></canvas>
-                                </div>
-                                </div>
-                            </div>
-                            <% } %>  
-                        <% })%>   
-                        
-                        <% } %>
-                    </div>
                     
                      </div>
                   </div>

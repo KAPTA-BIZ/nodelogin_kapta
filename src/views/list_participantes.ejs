@@ -99,7 +99,14 @@
                                                             <%= p_totales.access_code %>
                                                         </td>
                                                         <td>
-                                                            <%= enlace[index-1] %>
+                                                            <%lresult.forEach(function(lr){ %>
+                                                            <%participantes.forEach(function(participante){%>
+                                                            <% if(participante.access_code==p_totales.access_code){ %>
+                                                            <% if(participante.link_url_id==lr.link_url_id){ %>
+                                                            <%= lr.link_name %>
+                                                            <% } %>
+                                                            <% } }) %>
+                                                            <% }) %>
                                                         </td>
                                                         <td>
                                                             <a href="/viewinfo/<%=p_totales.access_code%>">Ver Detalles</a>
@@ -123,7 +130,7 @@
                                 </div>
                                 
                             </div>
-                            <button onclick="show()">Click me</button>
+                            
                             
                         </div>
                     </div>
