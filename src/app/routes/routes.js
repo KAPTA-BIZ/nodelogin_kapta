@@ -983,7 +983,7 @@ module.exports = (app, passport) => {
                         arrayResult.push(Lresult[i].link_url_id)
                     }
         
-                    //TestSchema.find({$or:[{link_url_id: Lresult[0].link_url_id}, {link_url_id: Lresult[1].link_url_id}]})
+                    //busqueda de fechas y del array con los link_url_id
                     TestSchema.find()
                         .and([
                             {link_url_id: {$in: arrayResult}},
