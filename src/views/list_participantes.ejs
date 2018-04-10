@@ -26,21 +26,27 @@
                                             }
                                         })
                                     })
+                                 
+                            var disponibles = []        
+                            participantes_totales.forEach(function(participante_t) {
+                                disponibles.push(participante_t.access_code)
+                            })
+                            
                             %>
                             
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
-                                <p class="card-category">Códigos de acceso usados: <%= enlace.length-1 %>  </p>
+                                <p class="card-category">Códigos de acceso utilizados: <%= enlace.length %>  </p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
-                                <p class="card-category">Códigos de acceso disponibles: <%= (code_repetido.length+1) %> %> </p>
+                                <p class="card-category">Códigos de acceso disponibles: <%= (disponibles.length)-(enlace.length) %> %> </p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
-                                <p class="card-category">Códigos de acceso Totales: <%= (code_repetido.length)+(enlace.length) %> </p>
+                                <p class="card-category">Códigos de acceso Totales: <%= (disponibles.length) %> </p>
                             </div>
                         </div>
                             
@@ -96,7 +102,7 @@
                                                 <% 
                                                     if(code_repetido.includes(p_totales.access_code)){ %>
                                                         <td style="color: red; text-decoration: line-through;">
-                                                            <%= p_totales.access_code %>
+                                                            <%=p_totales.access_code %>
                                                         </td>
                                                         <td>
                                                             <%lresult.forEach(function(lr){ %>

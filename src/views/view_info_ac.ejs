@@ -49,6 +49,10 @@
                 
                 <% }else{ %>
                 
+                
+                <div class="row">
+                    <div class="col-4"  ><button onclick="history.back()" class="btn">Volver atrás</button>
+                        </div></div>
                 <div class="row">
                     <div class="col-4"  >
                           <br>
@@ -242,44 +246,42 @@
                             FINAL COUNT <%=finalCount%><br>
                             FINAL MEDIA <%=finalMedia%><br>
                             
-                            
+               
                         
                             <!-- Media promedio en una categoria -->
                       <div class="col-md-12">
-                        <div class="card strpied-tabled-with-hover">      
-                    <div class="card-header ">
-                                <h4 class="card-title">Estadisticas de categorias</h4>
-                                <p class="card-category">Significado de color. <br>
-                                    <br/> 
-                                     En color <b style="background-color: #003851; color:#003851">choosecolor</b> Porcentaje del participante obtenido en la categoría seleccionada
-                                    <br /> 
-                                    En color <b style="background-color: #2E64FE; color:#2E64FE">choosecolor</b> Promedio del porcentaje obtenido por los demas participantes en la categoría seleccionada
-                                    
-                                </p><br>
-                            </div></div>
+                        <div class="card strpied-tabled-with-hover">
+                           <div class="card-header ">
+                              <h4 class="card-title">Estadisticas de categorias</h4>
+                              <p class="card-category">Significado de color. <br>
+                              <br/> 
+                              En color <b style="background-color: #3e95cd; color:#3e95cd">choosecolor</b> Porcentaje del participante obtenido en la categoría seleccionada
+                              <br /> 
+                              En color <b style="background-color: #8e5ea2; color:#8e5ea2">choosecolor</b> Promedio del porcentaje obtenido por los demas participantes en la categoría seleccionada
+                              </p>
+                              <br>
+                           </div>
+                        </div>
                             
+         
                     
                     <div class="row">
                         <!--  ForEach para capturar category_id y mostrarlo en getElementById -->
-                        <% result.forEach(function(results){ %>
-                            <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
-                            <div class="col-6">
+                        
+                            <div class="col-12">
                                 <div class="card strpied-tabled-with-hover">
                                 <div class="card-header ">
-                                    <h4 class="card-title"><%= results.category_results[i].name  %></h4>
+                                    <h4 class="card-title">Categorias presentadas</h4>
                                 </div>
                                 <div class="card-body table-full-width table-responsive">
-                                    <canvas id="<%= results.category_results[i].category_id %>" height="400" width="400"></canvas>
+                                    <canvas id="category_chart" height="400" width="900"></canvas>
                                 </div>
                                 </div>
                             </div>
-                            <% } %>  
-                        <% })%>   
-                        
                         <% } %>
                     </div>
                     
-                    
+        
                     
                         
                         <div class="card strpied-tabled-with-hover">
@@ -287,11 +289,11 @@
                                 <h4 class="card-title">Resultados preguntas</h4>
                                 <p class="card-category">Listado de respuestas del participante. 
                                     <br/> 
-                                    En color <b style="background: rgb(17, 216, 93); color: rgb(17, 216, 93);">Verde</b> están las RESPUESTAS CORRECTAS del participante. 
+                                    En color <b style="background: rgb(17, 216, 93); color: rgb(17, 216, 93);">choosecolor</b> están las RESPUESTAS CORRECTAS del participante. 
                                     <br /> 
-                                    En color <b style="background: rgb(216, 17, 17); color: rgb(216, 17, 17);">Rojo</b> están las RESPUESTAS INCORRECTAS del participante. 
+                                    En color <b style="background: rgb(216, 17, 17); color: rgb(216, 17, 17);">choosecolor</b> están las RESPUESTAS INCORRECTAS del participante. 
                                     <br /> 
-                                    En color <b style="background: rgb(174, 211, 158); color: rgb(174, 211, 158);">Verde</b> están las RESPUESTAS CORRECTAS que el participante no acertó.
+                                    En color <b style="background: rgb(174, 211, 158); color: rgb(174, 211, 158);">choosecolor</b> están las RESPUESTAS CORRECTAS que el participante no acertó.
                                 </p>
                             </div>
                             <div class="card-body table-full-width table-responsive">
@@ -447,13 +449,7 @@
                                     </div>
                                     </div>
                                 </div>
-
-                       
                             </div>
-                            
-                            
-                            
-                    
                      </div>
                   </div>
              </div>
@@ -465,8 +461,15 @@
  
  <!--  ForEach para capturar category_id y mostrarlo en getElementById -->
  
+ <%    //defino array para acumular promedio por categoria
+ promedio = [] %>
+ 
  <% result.forEach(function(results){ %>
     <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
+    
+    <% 
+    //se ingresan los promedios al array
+    promedio.push(finalMedia[i]) %>
     
       <script>
       /*global item*/
@@ -518,6 +521,79 @@
 
  <% } %>  
 <% })%>
+
+<!-- datos para grafica conjunta -->
+
+        <% par_array = [] %>
+        <% pro_array = [] %>
+        <% cat_name = [] %>
+        <% var map_participantes = promedio.map(function(x){ %>
+        <% pro_array.push(x.toFixed(2))%> 
+        <% }) %>
+        <br>
+        <% result.forEach(function(results){ %>
+            <%long=(results.category_results.length);%>
+            <% var map_participantes = results.category_results.map(function(x){ %>
+            <% par_array.push(x.percentage.toFixed(2))%> 
+            <% cat_name.push(x.name)%> 
+            <% }) %>
+        <% }) %>
+                    
+                    
+        <!--defino dos arrays -->
+        <%par_array %>
+        <%pro_array  %>
+        <% cat_name %>
+        
+        
+        
+                    
+        
+        
+    
+<!--------------------------------->                    
+
+
+<script>
+     
+    
+    var test = <%-JSON.stringify(par_array) %>; 
+    console.log(test);
+    var test_a = <%-JSON.stringify(pro_array) %>; 
+    console.log(test_a);
+    var test_b = <%-JSON.stringify(cat_name) %>; 
+    console.log(test_b);
+
+    new Chart(document.getElementById("category_chart"), {
+    type: 'bar',
+    data: {
+      labels: test_b,
+      datasets: [
+        {
+          label: "% Participante",
+          backgroundColor: "#3e95cd",
+          data: test
+        }, {
+          label: "% promedio",
+          backgroundColor: "#8e5ea2",
+          data: test_a
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: false,
+        text: 'Population growth (millions)'
+      },
+      scales: {
+        xAxes: [{
+            barThickness : 63
+        }]
+    }
+    }
+});
+   </script>
+
 
 </body>
 
