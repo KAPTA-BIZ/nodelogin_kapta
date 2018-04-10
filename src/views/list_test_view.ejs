@@ -10,16 +10,29 @@
          <% include partials/navbar %>
          <div class="content">
             <div class="container-fluid">
-               <a href="">restablecer búsqueda</a>
                <div class="row">
                   <div class="col-4" style="margin: 20px;" >
                      <form action="/search" method="GET">
                         <label for="exampleInputEmail1">Buscar por categoria</label><br>
                         <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
                            <option selected>Seleccionar...</option>
-                           <% long_cat = cat.length; for(i=0; i<long_cat; i++) { %>  
-                           <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
-                           <% }%>
+                           <% a = [] 
+                        item.forEach(function(items){ 
+                           if(items.category_results){ 
+                              long=(items.category_results.length)
+                                 for(i=0; i<long; i++){ 
+                                    if(!a.includes(items.category_results[i].name)){
+                                       a.push(items.category_results[i].name)
+                                    }
+                                    %>
+                                  <% } %>  
+                           <% } %>
+                         <% } )%>
+                         <%for(i=0;i<a.length;i++){%>
+                         <option value="<%= a[i] %>"><%= a[i] %></option>
+                         <% } %>
+                           
+                          
                         </select>
                         <input type="text" value="<%= url %>" name="id" style="display:none">
                         <button type="submit" class="btn btn-primary">Buscar</button>
@@ -92,6 +105,29 @@
                         <br><p class="card-category" style="padding-left:10px">Códigos de acceso presentados en esta evaluación: <%=access_code.length%>  </p><br>
                      </div>
                   </div>
+                  <div class="col-md-4">
+                     <!--hacer include y push para mostrar las categorias -->
+                     <div class="card strpied-tabled-with-hover">
+                         
+                        <br><p class="card-category" style="padding-left:10px">Categorías presentadas: <%access_code%>  </p><br>
+                        <p class="card-category" style="padding-left:10px">
+                        <% a = [] 
+                        item.forEach(function(items){ 
+                           if(items.category_results){ 
+                              long=(items.category_results.length)
+                                 for(i=0; i<long; i++){ 
+                                    if(!a.includes(items.category_results[i].name)){
+                                       a.push(items.category_results[i].name)
+                                    }
+                                    %>
+                                  <% } %>  
+                           <% } %>
+                         <% } )%>
+                         <%for(i=0;i<a.length;i++){%>
+                         <%= a[i] %><br>
+                         <% } %></p>
+                     </div>
+                  </div>
                         
                   <div class="col-md-12">
                      <div class="card strpied-tabled-with-hover">
@@ -107,7 +143,7 @@
                                     <th>Código de acceso/Participante</th>
                                     <th>Porcentaje</th>
                                     <th>Fecha de presentación</th>
-                                    <th>Categoría(s)</th>
+                                    <!--th>Categoría(s)</th>-->
                                     <th></th>
                               </thead>
                               <tbody>
@@ -136,10 +172,10 @@
                                           %><%= timeConverter(items.time_started) %>
                                     </td>
                                     <% if(items.category_results){ %>
-                                    <td>
+                                    <!--<td>
                                        <%long=(items.category_results.length); for(i=0; i<long; i++){ %>
                                        <%= items.category_results[i].name %><br> <% } %>  
-                                    </td>
+                                    </td>-->
                                     <% } %>
 
                                     <td><a href="/viewinfo/<%=items.access_code%>">Detalles</a></td>
