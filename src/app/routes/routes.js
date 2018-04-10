@@ -580,7 +580,6 @@ module.exports = (app, passport) => {
     }
     
     
-    
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
@@ -849,6 +848,13 @@ module.exports = (app, passport) => {
             var usuario = req.user
             var allresult =  req.cod_sin
             
+            var date_start_get=req.query.start
+            var date_end_get=req.query.end
+            
+            var date_start = ((new Date(date_start_get)/1000)+86400);
+            var date_end = ((new Date(date_end_get)/1000)+86400);
+            
+            
             //Se hace busqueda a partir de la categoria seleccionada en name de categories
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             Categories.find({name: regex}, function(err, allCategories){
@@ -865,7 +871,8 @@ module.exports = (app, passport) => {
             TestSchema.find()
                 .and([
                     {'category_results.name': req.query.search},
-                    {link_url_id: req.query.id}
+                    {link_url_id: req.query.id},
+                    {time_started:{ $gte: date_start, $lte: date_end}}
                 ])
                 .sort({time_finished: -1})
                 .exec((err, result) => {
@@ -908,6 +915,8 @@ module.exports = (app, passport) => {
                         link: resultLink, 
                         user: usuario,
                         result: result,
+                        date_start: req.query.start,
+                        date_end: req.query.end,
                         ByLinkresult: ByLinkresult,
                         User: resultUser,
                         lresult: Lresult
@@ -1057,9 +1066,10 @@ module.exports = (app, passport) => {
        
        if(url==req.user.id)
        {
-           console.log("VIENE DE BUSQUEDA GENERAL")
            
-           var date_start_get=req.query.start
+        console.log("VIENE DE BUSQUEDA GENERAL")
+           
+        var date_start_get=req.query.start
         var date_end_get=req.query.end
         
         //Defino usuario globalmente
@@ -1138,6 +1148,8 @@ module.exports = (app, passport) => {
                             date_start: date_start_get,
                             date_end: date_end_get,
                             url: url,
+                            date_start: req.query.start,
+                            date_end: req.query.end,
                             lresult: resultLink
                             
                         })
@@ -1160,10 +1172,13 @@ module.exports = (app, passport) => {
            
        }else{
            
-           console.log("VIENE DE ENLACE")
+        console.log("VIENE DE ENLACE")
            
-           var date_start_get=req.query.start
+        var date_start_get=req.query.start
         var date_end_get=req.query.end
+        
+        console.log("END",req.query.start)
+        console.log("START", req.query.end)
         
         //Defino usuario globalmente
         var usuario = req.user
@@ -1237,8 +1252,8 @@ module.exports = (app, passport) => {
                             aresult: accessresult,
                             User: resultUser,
                             resultUser: resultUser,
-                            date_start: date_start_get,
-                            date_end: date_end_get,
+                            date_start: req.query.start,
+                            date_end: req.query.end,
                             url: url,
                             lresult: resultLink
                             
