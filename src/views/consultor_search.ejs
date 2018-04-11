@@ -43,8 +43,8 @@
                         </select>
                         <input type="text" value="<%= url %>" name="id" style="display:none">
                         <%if((typeof date_start !== "undefined")&&(typeof date_end !== "undefined")){%>
-                        <input type="text" name="start"  value="<%= date_start %>">
-                        <input type="text" name="end"  value="<%= date_end  %>">
+                        <input type="text" name="start"  value="<%= date_start %>" style="display:none">
+                        <input type="text" name="end"  value="<%= date_end  %>" style="display:none">
                         <% } %>
                         <button type="submit" class="btn btn-primary">Buscar</button>
                      </form>
