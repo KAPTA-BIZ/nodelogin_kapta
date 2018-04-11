@@ -44,8 +44,8 @@
                         </select>
                         <input type="text" value="<%= url %>" name="id" style="display:none">
                         <%if((typeof date_start !== "undefined")&&(typeof date_end !== "undefined")){%>
-                        <input type="text" id="from" name="start" required="" value="<%= date_start %>">
-                        <input type="text" id="to" name="end" required="" value="<%= date_end  %>">
+                        <input type="text" id="from" name="start" required="" value="<%= date_start %>" style="display:none">
+                        <input type="text" id="to" name="end" required="" value="<%= date_end  %>" style="display:none">
                         <% } %>
                         <button type="submit" class="btn btn-primary">Buscar</button>
                      </form>

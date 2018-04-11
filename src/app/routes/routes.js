@@ -759,6 +759,67 @@ module.exports = (app, passport) => {
                         
                 LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                 err?console.log(err):console.log(resultLink)
+                
+                
+                /*---------------------------------------------------------------------------*/
+                
+                var arrayResult = []
+
+                for (var i = 0; i < Lresult.length; i++) 
+                {
+                arrayResult.push(Lresult[i].link_url_id)
+                }
+                                
+                TestSchema.find({link_url_id: {$in: arrayResult}})
+                    .sort({time_finished: -1}) //fecha de mayor a menor
+                    .exec((err, ByLinkresult) => {
+                            
+                err ? console.log(err):console.log(ByLinkresult)
+                    
+                var date_query
+            
+                if(req.query.id==req.user.id)
+                {
+                    if(!date_start)
+                {
+                date_query=
+                    [{'category_results.name': req.query.search},
+                    {link_url_id: {$in: arrayResult}}]
+                }else{
+                    date_query=
+                    [{'category_results.name': req.query.search},
+                    {link_url_id: arrayResult},
+                    {time_started:{ $gte: date_start, $lte: date_end}}]
+                }
+                
+                }else{
+                
+                if(!date_start)
+                {
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id}]
+                }else{
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id},
+                        {time_started:{ $gte: date_start, $lte: date_end}}]
+                    }
+                }
+            
+              
+                 //Query in test from: query.search (category), req.query.id(id link), betwen dates
+                TestSchema.find()
+                .and(
+                    date_query
+                )
+                .sort({time_finished: -1})
+                .exec((err, result) => {
+                    
+                err?console.log(err):
+                
+                /*---------------------------------------------------------------------------*/
+                
                        
                 //Condicion para saber si es supeAdmin o consultor, sa=1 Admin, sa=0 consultor
                 usuario.sa==1?   
@@ -828,6 +889,10 @@ module.exports = (app, passport) => {
                        
                      })//Close TestSchema.find
                   })//Close Categories.find()
+                  
+                }) 
+                
+            })
                 
             })
         }else{
@@ -869,17 +934,58 @@ module.exports = (app, passport) => {
             var querySearch
             (req.query.search=="all")? querySearch = {}: querySearch = {'category_results.name': req.query.search}
               
+            //Query in links is made from id consultor
+            LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
+            err?console.log(err):console.log(resultLink)
+                
+            UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+            err?console.log("Error retrieving"):
+                
+            LSchema.find({id_inst: req.user.id}).exec((err, Lresult) => {
+            err?console.log(err) : console.log("Lresult", Lresult)
+                                
+            var arrayResult = []
+
+            for (var i = 0; i < Lresult.length; i++) 
+            {
+            arrayResult.push(Lresult[i].link_url_id)
+            }
+                                
+            TestSchema.find({link_url_id: {$in: arrayResult}})
+                .sort({time_finished: -1}) //fecha de mayor a menor
+                .exec((err, ByLinkresult) => {
+                            
+                err ? console.log(err):console.log(ByLinkresult)
+                    
             var date_query
             
-            if(!date_start)
+            if(req.query.id==req.user.id)
             {
-                date_query=[
-                    {'category_results.name': req.query.search},
-                    {link_url_id: req.query.id}]
-            }else{date_query=
+                if(!date_start)
+                {
+                date_query=
                     [{'category_results.name': req.query.search},
-                    {link_url_id: req.query.id},
+                    {link_url_id: {$in: arrayResult}}]
+                }else{
+                    date_query=
+                    [{'category_results.name': req.query.search},
+                    {link_url_id: arrayResult},
                     {time_started:{ $gte: date_start, $lte: date_end}}]
+                }
+            }else{
+                
+                if(!date_start)
+                {
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id}]
+                }else{
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id},
+                        {time_started:{ $gte: date_start, $lte: date_end}}]
+                }
+                
             }
             
               
@@ -891,33 +997,7 @@ module.exports = (app, passport) => {
                 .sort({time_finished: -1})
                 .exec((err, result) => {
                     
-                err?console.log(err):console.log(result)
-                
-                var long
-                (result==0)?long=1:long=0
-                
-                //Query in links is made from id consultor
-                LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
-                err?console.log(err):console.log(resultLink)
-                
-                UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
-                err?console.log("Error retrieving"):
-                
-                LSchema.find({id_inst: req.user.id}).exec((err, Lresult) => {
-                err?console.log(err) : console.log("Lresult", Lresult)
-                                
-                var arrayResult = []
-
-                for (var i = 0; i < Lresult.length; i++) 
-                {
-                arrayResult.push(Lresult[i].link_url_id)
-                }
-                                
-                TestSchema.find({link_url_id: {$in: arrayResult}})
-                    .sort({time_finished: -1}) //fecha de mayor a menor
-                    .exec((err, ByLinkresult) => {
-                            
-                    err ? console.log(err):
+                err?console.log(err):
                                 
                     (res.render('searchandlink', 
                     {
@@ -925,7 +1005,6 @@ module.exports = (app, passport) => {
                         allcat: allCategories,
                         url: req.query.id, 
                         cat_search: req.query.search,
-                        val: long, 
                         link: resultLink, 
                         user: usuario,
                         result: result,
@@ -1156,7 +1235,6 @@ module.exports = (app, passport) => {
                         {
                             cat: resultCat, 
                             result: result, 
-                            link: resultLink,
                             user:usuario,
                             aresult: accessresult,
                             date_start: date_start_get,
@@ -1325,14 +1403,54 @@ module.exports = (app, passport) => {
                     arrayResult.push(Lresult[i].link_url_id)
                 }
         
-                //busqueda de fechas y del array con los link_url_id
-                TestSchema.find()
-                    .and([
+                          
+            TestSchema.find({link_url_id: {$in: arrayResult}})
+                .sort({time_finished: -1}) //fecha de mayor a menor
+                .exec((err, ByLinkresult) => {
+                            
+                err ? console.log(err):console.log(ByLinkresult)
+                    
+            var date_query
+            var aux
+            
+            if(req.query.id==req.user.id)
+            {
+                aux = 1
+                date_query=
+                    [
+                    {link_url_id: arrayResult},
+                    {time_started:{ $gte: date_start, $lte: date_end }}
+                    ]
+            }else{
+                
+                if(!date_start)
+                {
+                    aux = 2
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id}]
+                }else{
+                    aux = 3
+                    date_query=
+                        [{'category_results.name': req.query.search},
                         {link_url_id: req.query.id},
-                        {time_started:{ $gte: date_start, $lte: date_end }}
-                        ])
-                    .sort({time_finished: -1}) //fecha de mayor a menor
-                    .exec((err, result)=>{
+                        {time_started:{ $gte: date_start, $lte: date_end}}]
+                        
+                        
+                }
+                
+            }
+            
+            
+            //busqueda de fechas y del array con los link_url_id
+            TestSchema.find()
+                .and(
+                    date_query
+                    )
+                .sort({time_finished: -1}) //fecha de mayor a menor
+                .exec((err, result)=>{
+                    
+                    console.log("AUX", result)
                             
                 err?console.log(err):
             
@@ -1380,7 +1498,8 @@ module.exports = (app, passport) => {
     
         })
            
-       
+        })
+        
     })
     
     
