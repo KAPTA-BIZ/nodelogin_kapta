@@ -844,36 +844,50 @@ module.exports = (app, passport) => {
         
         if(req.query.search){
             
-            // Se recibe el id del instructor, req.query.id
+            //Get id consultor, req.query.id
             var usuario = req.user
             var allresult =  req.cod_sin
             
+            //Get dates
             var date_start_get=req.query.start
             var date_end_get=req.query.end
             
+            //dates are converted to universal format
             var date_start = ((new Date(date_start_get)/1000)+86400);
             var date_end = ((new Date(date_end_get)/1000)+86400);
             
-            
-            //Se hace busqueda a partir de la categoria seleccionada en name de categories
+            //query is mdae from choosen category
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
             Categories.find({name: regex}, function(err, allCategories){
             err?console.log(err):
             
-            //Se hace consulta de todas las categorias para renderizarlas
+            //make a query with every categories to show them
             Categories.find().exec((err, resultCat) => {
             err?console.log(err):console.log(resultCat)
                 
-            //se declara querysearch para saber si se recibe la palabra all y mostrar todas las categorias
+            //querysearch is declared to know if get the word "all" and show all categories
             var querySearch
             (req.query.search=="all")? querySearch = {}: querySearch = {'category_results.name': req.query.search}
-                
-            TestSchema.find()
-                .and([
+              
+            var date_query
+            
+            if(!date_start)
+            {
+                date_query=[
                     {'category_results.name': req.query.search},
+                    {link_url_id: req.query.id}]
+            }else{date_query=
+                    [{'category_results.name': req.query.search},
                     {link_url_id: req.query.id},
-                    {time_started:{ $gte: date_start, $lte: date_end}}
-                ])
+                    {time_started:{ $gte: date_start, $lte: date_end}}]
+            }
+            
+              
+            //Query in test from: query.search (category), req.query.id(id link), betwen dates
+            TestSchema.find()
+                .and(
+                    date_query
+                )
                 .sort({time_finished: -1})
                 .exec((err, result) => {
                     
@@ -881,14 +895,14 @@ module.exports = (app, passport) => {
                 
                 var long
                 (result==0)?long=1:long=0
-                        
+                
+                //Query in links is made from id consultor
                 LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
                 err?console.log(err):console.log(resultLink)
                 
-                       
                 UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
                 err?console.log("Error retrieving"):
-                                
+                
                 LSchema.find({id_inst: req.user.id}).exec((err, Lresult) => {
                 err?console.log(err) : console.log("Lresult", Lresult)
                                 
