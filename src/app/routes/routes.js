@@ -1096,7 +1096,10 @@ module.exports = (app, passport) => {
             err?console.log(err):console.log(allCategories)
             
             var long
-            (allCategories==null)?long=1:long=0
+            (allCategories=="")?long=1:long=0
+            console.log("VALONG", allCategories)
+            console.log("VALONGO", long)
+            
                     
             Categories.find().exec((err, resultCat) => {
             err?console.log(err):
