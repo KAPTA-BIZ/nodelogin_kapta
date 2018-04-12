@@ -35,6 +35,9 @@
                         <input type="text" value="<%= url %>" name="id" style="display:none">
                         <input type="text" name="start"  value="<%= date_start %>" style="display:none">
                         <input type="text" name="end"  value="<%= date_end  %>" style="display:none">
+                        <%if(typeof busqueda_get !== "undefined"){%>
+                        <input type="text" name="busqueda_get"  value="<%= busqueda_get  %>" style="display:none">
+                        <% } %>
                         <button type="submit" class="btn btn-primary">Buscar</button>
                      </form>
                      <br>
@@ -51,6 +54,9 @@
                            <input type="text" value="<%= url %>" name="id" style="display:none">
                            <!--categoria seleccionada -->
                            <input type="text" value="<%= cat_search %>" name="search" style="display:none">
+                           <%if(typeof busqueda_get !== "undefined"){%>
+                           <input type="text" name="busqueda_get"  value="<%= busqueda_get  %>" style="display:none">
+                           <% } %>
                            <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Buscar</button>
                         </div>
                      </form>
@@ -91,10 +97,12 @@
                      </script>
                   </div>
                   <div class="col-md-12">
-                    <%if(url==user.id){%>
-                    <a href="/profile">Restablecer Búsqueda</a>
+                   <%if(url==user.id){%>
+                   <%if(typeof busqueda_get !== 'undefined' ){%>
+                   <a href="/consultor_search?search=<%=busqueda_get%>&id_inst=<%=url%>"><button class="btn btn-primary">Restablecer Búsqueda</button></a>
+                   <% } %>
                     <% }else{ %>
-                    <a href="/list_test/<%=url%>&<%=user.id%>">Restablecer Búsqueda</a>
+                    <a href="/list_test/<%=url%>&<%=user.id%>"><button class="btn btn-primary">Restablecer Búsqueda</button></a>
                     <% } %>
                     <br><br>
                      <div class="card strpied-tabled-with-hover">

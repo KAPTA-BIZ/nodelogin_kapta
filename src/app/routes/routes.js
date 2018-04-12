@@ -762,8 +762,7 @@ module.exports = (app, passport) => {
                 
                 
                 /*---------------------------------------------------------------------------*/
-                
-                var arrayResult = []
+                /*var arrayResult = []
 
                 for (var i = 0; i < Lresult.length; i++) 
                 {
@@ -816,8 +815,8 @@ module.exports = (app, passport) => {
                 .sort({time_finished: -1})
                 .exec((err, result) => {
                     
-                err?console.log(err):
-                
+                err?console.log(err):*/
+
                 /*---------------------------------------------------------------------------*/
                 
                        
@@ -892,10 +891,9 @@ module.exports = (app, passport) => {
                   
                 }) 
                 
-            })
-                
-            })
-        }else{
+            }
+            
+         else{
         //Si no hay query enviada retorna todas las categorias
         Categories.find({}, (err, allCategories) => {
         err?console.log(err):res.render("list_test_b", {categories: allCategories})
@@ -908,6 +906,8 @@ module.exports = (app, passport) => {
     app.get('/searchandlink/', isLoggedIn, cod_sin, (req, res) => {
         
         if(req.query.search){
+            
+            var busqueda_get = req.query.busqueda_get
             
             //Get id consultor, req.query.id
             var usuario = req.user
@@ -1012,7 +1012,8 @@ module.exports = (app, passport) => {
                         date_end: req.query.end,
                         ByLinkresult: ByLinkresult,
                         User: resultUser,
-                        lresult: Lresult
+                        lresult: Lresult,
+                        busqueda_get: busqueda_get
                                     
                     }))
                                 
@@ -1163,6 +1164,9 @@ module.exports = (app, passport) => {
        if(url==req.user.id)
        {
            
+        var busqueda_get = req.query.busqueda_get
+        console.log("busqueda_get", busqueda_get)
+           
         console.log("VIENE DE BUSQUEDA GENERAL")
            
         var date_start_get=req.query.start
@@ -1245,7 +1249,8 @@ module.exports = (app, passport) => {
                             url: url,
                             date_start: req.query.start,
                             date_end: req.query.end,
-                            lresult: resultLink
+                            lresult: resultLink,
+                            busqueda_get: busqueda_get
                             
                         })
                                         
@@ -1350,7 +1355,8 @@ module.exports = (app, passport) => {
                             date_start: req.query.start,
                             date_end: req.query.end,
                             url: url,
-                            lresult: resultLink
+                            lresult: resultLink,
+                            busqueda_get: busqueda_get
                             
                         })
                                         
