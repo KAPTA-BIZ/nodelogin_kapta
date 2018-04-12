@@ -224,7 +224,7 @@
                                     </td>-->
                                     <% } %>
 
-                                    <td><a href="/viewinfo/<%=items.access_code%>">Detalles</a></td>
+                                    <td><a href="/viewinfo/<%=items.access_code%>">Ver Detalles</a></td>
                    
                                     
                                     <%
@@ -267,20 +267,18 @@
                                  <h4 class="card-title">Códigos de acceso sin usar</h4>
                               </div>
                               <div class="card-body table-full-width table-responsive">
-                                 <table class="table table-hover table-striped">
-                                    <tr>
-                                       <th>Código de acceso</th>
-                                    </tr>
+                                 <table id="datalist" class="table table-hover table-striped">
+                                   
                                     <% 
                                     if(aresult!=""){
                                     aresult.forEach(function(aresults, index){ 
                                        if(list_array.includes(aresults.access_code)==false){ %>
-                                    <tr>
-                                       <td><%=aresults.access_code%></td>
-                                    </tr>
+                                        <tr><td><%=aresults.access_code%></td></tr>
                                     <% } %>
                                     <% }); }%>
-                                 </table>
+                                    
+                                 </table> 
+                                 <span ><button>Ver todos</button></span>
                               </div>
                            </div>
                         </div>
@@ -334,6 +332,28 @@
            }]
           }
        }
+   });
+</script>
+<style>
+   #datalist tr:nth-child(n+10) {
+   display:none;
+   }
+   #datalist tr {
+   border: 1px solid #aaa;
+   }
+   span {
+   cursor: pointer;
+   color: #f00;
+   }
+</style>
+<script>
+   $(function () {
+   $('span').click(function () {
+   $('#datalist tr').slice(0, 1000).show();
+   if ($('#datalist tr').length == $('#datalist tr').length) {
+   $('span ').hide();
+   }
+   });
    });
 </script>
    </body>

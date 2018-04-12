@@ -120,7 +120,9 @@
                <div class="card strpied-tabled-with-hover">
                   
                   <div class="card-header ">
+                     <%if(typeof busqueda !== "undefined"){%>
                     <p> Busqueda realizada: "<%= busqueda %>"</p>
+                    <% } %>
                      <%
                         var date_s=''
                         var date_e=''

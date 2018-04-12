@@ -535,8 +535,6 @@ module.exports = (app, passport) => {
         //Consulta a LSchema para igualar el id de consultor con el actual y obtener el link_url_id 
         //de los links del consultor ya que en schema no se asigna id_consultor
         
-        console.log("REQ2", req.user.id)
-        
         LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
         console.log("1BUSQUEDA", Lresult)
         err?console.log(err):
