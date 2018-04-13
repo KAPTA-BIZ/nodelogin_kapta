@@ -332,7 +332,49 @@
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           
                                             <td>
-                                                <%= items.questions[i].question %>
+                                                <% var str = items.questions[i].question %>
+                                                <% var n = str.search("http") %>
+                                                <% var m = str.search("jpg") %>
+                                                <%str%>
+                                                
+                                                <% var img = [] %>
+                                                <% for(b=n; b<=m+2; b++){  %>
+                                                <% img.push(str[b]) %>
+                                                <% } %>
+                                                <% var imgString=img.toString(); %>
+                                                <% var buscar = "," %>
+                                                <% strImg=imgString.replace(new RegExp(buscar,"g"),"") %>
+                                                
+                                                <%str%>
+                                                <!--borrar <img.... del texto -->
+                                                
+                                                <% var NoImg = [] %>
+                                                <% var o = str.search('"/>') %>
+                                                <% for(b=n-10; b<=o+2; b++){  %>
+                                                <% NoImg.push(str[b]) %>
+                                                <% } %>
+                                                <% var NoImgString=NoImg.toString(); %>
+                                                <% NoImgString%>
+                                                <% NoImgString=NoImgString.replace(new RegExp(buscar,"g"),"") %>
+                                                <% NoImgString%>
+                                                
+                                                <% var br = str.search("<br />") %>
+                                                <% brComplete = [] %>
+                                                <% for(b=br; b<=br+5; b++){  %>
+                                                <% brComplete.push(str[b]) %>
+                                                <% } %>
+                                                
+                                                <%brComplete%>
+                                                <%brCompleteString=brComplete.toString()%>
+                                                <% brCompleteString=brCompleteString.replace(new RegExp(buscar,"g"),"") %>
+                                                <%brCompleteString%>
+                                                
+                                                <!--buscar <br /> y borrarlo -->
+                                                <% strNobr=str.replace(new RegExp(NoImgString,"g"),"") %>
+                                                <% strNoimgFinal=strNobr.replace(new RegExp(brCompleteString,"g"),"") %>
+                                                <%= strNoimgFinal%>
+                                                <br><img src="<%=strImg%>" width="200">
+                                                
                                             </td>
                                         <%
                                             if(items.questions[i].question_type == "multiplechoice"){
