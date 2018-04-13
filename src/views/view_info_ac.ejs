@@ -333,6 +333,11 @@
                                           
                                             <td>
                                                 <% var str = items.questions[i].question %>
+                                                
+                                               
+                                                <% if(((str.includes("http"))&&(str.includes("jpg")))||(str.includes('"/>'))){ %>
+                                                    
+                                                    <% var str = items.questions[i].question %>
                                                 <% var n = str.search("http") %>
                                                 <% var m = str.search("jpg") %>
                                                 <%str%>
@@ -346,7 +351,7 @@
                                                 <% strImg=imgString.replace(new RegExp(buscar,"g"),"") %>
                                                 
                                                 <%str%>
-                                                <!--borrar <img.... del texto -->
+                                               
                                                 
                                                 <% var NoImg = [] %>
                                                 <% var o = str.search('"/>') %>
@@ -369,11 +374,21 @@
                                                 <% brCompleteString=brCompleteString.replace(new RegExp(buscar,"g"),"") %>
                                                 <%brCompleteString%>
                                                 
-                                                <!--buscar <br /> y borrarlo -->
+                                                
                                                 <% strNobr=str.replace(new RegExp(NoImgString,"g"),"") %>
                                                 <% strNoimgFinal=strNobr.replace(new RegExp(brCompleteString,"g"),"") %>
                                                 <%= strNoimgFinal%>
                                                 <br><img src="<%=strImg%>" width="200">
+                                                
+                                                <% }else{ %>
+                                                
+                                                <%=items.questions[i].question%>
+                                                
+                                                <% } %>
+                                                
+                                                
+                                                
+                                                
                                                 
                                             </td>
                                         <%

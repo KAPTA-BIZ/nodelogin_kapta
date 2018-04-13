@@ -656,12 +656,13 @@ module.exports = (app, passport) => {
         //Capturo access code y id user por GET
         var access_code = req.params.access_code
         var usuario = req.user
+        console.log("ACCESSRECIBIDO", req.params.access_code)
         
         
         aSchema.find({id_ins: usuario._id}).exec((err, resultAc) => {
         err?console.log(err):  
         
-        console.log("usuario", resultAc)
+        //console.log("usuario", resultAc)
         
             TestSchema.find({access_code: access_code}).exec((err, result) => {
             console.log("resultA", result)
@@ -673,7 +674,7 @@ module.exports = (app, passport) => {
             //usuarios con mismo link_url_id
             
             TestSchema.find({link_url_id: result[0].link_url_id}).exec((err, resultLinkUrlId) => {
-            console.log("resultA", resultLinkUrlId)
+            
             err?console.log(err):
             
             
