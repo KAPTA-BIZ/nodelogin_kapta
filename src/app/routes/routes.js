@@ -656,6 +656,8 @@ module.exports = (app, passport) => {
         //Capturo access code y id user por GET
         var access_code = req.params.access_code
         var usuario = req.user
+        
+        var aux;
         console.log("ACCESSRECIBIDO", req.params.access_code)
         
         
@@ -666,14 +668,23 @@ module.exports = (app, passport) => {
         
             TestSchema.find({access_code: access_code}).exec((err, result) => {
             console.log("resultA", result)
-            err?console.log(err):
+            err?console.log(err):console.log("")
+            
+            if(result==""){
+                aux={}
+            }else{
+                aux={link_url_id: result[0].link_url_id}
+            }
+            
+            console.log("AUXILIAR", aux)
             
             //console.log("link de access", result[0].link_url_id)
             
             //Obtengo link_url_id con result[0].link_url_id
             //usuarios con mismo link_url_id
             
-            TestSchema.find({link_url_id: result[0].link_url_id}).exec((err, resultLinkUrlId) => {
+           
+            TestSchema.find().exec((err, resultLinkUrlId) => {
             
             err?console.log(err):
             

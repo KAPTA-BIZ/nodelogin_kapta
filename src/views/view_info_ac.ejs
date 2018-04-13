@@ -176,7 +176,6 @@
                              var id_a=0
                              
                              
-                             
                             result.forEach(function(results){ %>
                             <%longitud=(results.category_results.length)
                             for(i=0; i<longitud; i++){ %>
@@ -193,8 +192,7 @@
                                     <% allResult.forEach(function(allR){ %>
                                     <% long=(allR.category_results.length); %>
                                     <% for(a=0; a<long; a++){ %>
-                                    <% if(allR.category_results[a].category_id==results.category_results[i].category_id){%>
-                            
+                                    <% if(allR.category_results[a].category_id==results.category_results[i].category_id){ %>
                             
                                         <% id=allR.category_results[a].category_id %>
                                         <% if((id_a==id)||(id_a==0)){ %>
@@ -278,7 +276,7 @@
                                 </div>
                                 </div>
                             </div>
-                        <% } %>
+                       
                     </div>
                     
         
@@ -505,6 +503,7 @@
                                     </table>
                                     </div>
                                     </div>
+                                     <% } %><!--if/else de usuario no encontrado-->
                                 </div>
                             </div>
                      </div>
@@ -585,7 +584,7 @@
         <% pro_array = [] %>
         <% cat_name = [] %>
         <% var map_participantes = promedio.map(function(x){ %>
-        <% pro_array.push(x.toFixed(2))%> 
+        <% pro_array.push(x)%> 
         <% }) %>
         <br>
         <% result.forEach(function(results){ %>
