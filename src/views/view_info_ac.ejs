@@ -247,6 +247,34 @@
                     <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
                             <h4 class="card-title">Resultados de preguntas</h4>
+
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <i class="fas fa-check text-success"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <p>Respuesta.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <i class="fas fa-times text-danger"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <p>Respuesta incorrecta.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <i class="fas fa-check text-info"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <p>Respuesta correcta.</p>
+                                </div>
+                            </div>
+
+
                             <p class="card-category">Listado de respuestas del participante. 
                                 <br/> 
                                 En color <b style="background: rgb(17, 216, 93); color: rgb(17, 216, 93);">choosecolor</b> están las RESPUESTAS CORRECTAS del participante. 
@@ -335,8 +363,6 @@
                                         <thead>
                                             <tr>
                                                 <th>Opciones de respuesta</th>
-                                                <th>Selección del participante</th>
-                                                <th>Opción correcta</th>
                                             </tr>
                                         </thead>
                                             <tbody>
@@ -349,34 +375,54 @@
                                             var keyAnswers = Object.keys(numberAnswers);
                                             var splitCorrect = correct_opt.split(',');
                                             var splitUserAns = userres.split(',');
-
-                                            for(var ans=0; ans<keyAnswers.length;ans++){                                             %>
-                                                <tr>
-                                                    <td><%= numberAnswers[keyAnswers[ans]] %></td>
-                                                    <% 
-                                                    
-                                                        if(items.questions[i].result=="correct"){
-                                                            for(var rans=0; rans<splitCorrect.length;rans++){
-                                                                if(keyAnswers[ans] == splitCorrect[rans]){
-                                                        %>
-                                                            <td><i class="fas fa-user text-success"></i></td>
-                                                            <td><i class="fas fa-check text-success"></i></td>
-                                                        <% }else{ %>
-                                                            <td></td>
-                                                            <td></td>
-                                                        <%
-                                                            }}
-                                                        }else{
-                                                            for(var rans=0; rans<splitCorrect.length;rans++){
-                                                                console.log(splitCorrect[rans],splitUserAns[rans])
+                                            var classRender = "bg-light text-dark";
+                                            var classRenderAr = []
+                                            /** * Render the answer options */
+                                            for(var ans=0; ans<keyAnswers.length;ans++){
+                                                /** CORRECT Correct Option */
+                                                if(items.questions[i].result=="correct"){
+                                                    /** Right Answer = rans */
+                                                    for(var rans=0; rans<splitCorrect.length;rans++){
+                                                        
+                                                        /** Answers with more than 1 correct option */
+                                                        if(splitCorrect.length > 1){
+                                                            for(var ra=0; ra<=rans;ra++){
+                                                                /** To do Render all the rigth colors */
+                                                                classRender = "bg-warning text-white " + ra;
                                                             }
                                                         }
-                                                            
-                                                    %>
-                                                    
+
+                                                        /** Answers with 1 correct option */
+                                                        else{
+                                                            if(keyAnswers[ans] == splitCorrect[rans]){
+                                                                classRender = "bg-success text-white";
+                                                            }else{
+                                                                classRender = "bg-light text-dark";
+                                                            }
+                                                        }
+                                                    }
+                                                /** Wrong Answers */
+                                                }else{
+                                                    for(var rus=0; rus<splitUserAns.length;rus++){
+                                                        if(keyAnswers[ans] == splitUserAns[rus]){ 
+                                                            classRender = "bg-danger text-white";
+                                                        }else{
+                                                            for(var rans=0; rans<splitCorrect.length;rans++){
+                                                                /** To Do: For many answers */
+                                                                if(splitCorrect[ans] == 'A'){
+                                                                    classRender = "bg-success text-white";
+                                                                }else{
+                                                                    classRender = "bg-light text-dark";
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                %>
+                                                <tr class="<%= classRender %>">
+                                                    <td style="width:100%; border-top: 1px solid white;"><%= numberAnswers[keyAnswers[ans]] %></td>
                                                 </tr>
                                             <% } %>
-
                                             </tbody>
                                         </table>                            
                                     </div>
@@ -421,6 +467,10 @@
                                                 </div>
                                             </div>
                                         <% } %>
+                                        <hr />
+                                        <p>Rta : <%= items.questions[i].result %></p>
+                                        <p>Correcta: <%= items.questions[i].correct_option %></p>
+                                        <p>User: <%= items.questions[i].user_response %></p>
                                     </div>
                                 </div> 
                             </div>
@@ -552,4 +602,4 @@
 
 </body>
 
-</html>
+</html0>
