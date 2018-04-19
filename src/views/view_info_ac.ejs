@@ -561,7 +561,7 @@
                  new Chart(document.getElementById(category_id), {
                  type: 'bar',
                   data: {
-                    labels: ["", "", "participante " + valor.toFixed(2) + "%", "promedio " + media.toFixed(2) + "%", "" ],
+                    labels: ["", "", "Participante " + valor.toFixed(2) + "%", "Promedio " + media.toFixed(2) + "%", "" ],
                     datasets: [
                       {
                         label: "",
@@ -637,7 +637,7 @@
                    backgroundColor: "#0B0B61",
                    data: test
                    }, {
-                   label: "% promedio",
+                   label: "% Promedio por categoría",
                    backgroundColor: "#FF8000",
                    data: test_a
                    }
@@ -645,12 +645,18 @@
                options: {
                title: {
                    display: false,
-                   text: 'Population growth (millions)'
+                   text: 'Resultados Participante y Categorías'
                },
                scales: {
                    xAxes: [{
                        barThickness : 63
-                   }]
+                   }],
+                   yAxes: [{
+                          display: true,
+                          ticks: {
+                          max: 100
+                          }
+                      }]
                }
            }
            });
