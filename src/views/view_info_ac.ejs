@@ -247,14 +247,14 @@
                     <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
                             <h4 class="card-title">Resultados de preguntas</h4>
-
+                            <p class="card-category">Significado de simbolos de preguntas. <br>
                             <hr />
                             <div class="row">
                                 <div class="col-md-3">
                                     <i class="fas fa-check text-success"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <p>Respuesta.</p>
+                                    <p>Respuesta Correcta.</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -267,22 +267,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <i class="fas fa-check text-info"></i>
+                                    <i class="fas fa-check text-danger"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <p>Respuesta correcta.</p>
+                                    <p>Respuesta que falta por añadir.</p>
                                 </div>
                             </div>
-
-
-                            <p class="card-category">Listado de respuestas del participante. 
-                                <br/> 
-                                En color <b style="background: rgb(17, 216, 93); color: rgb(17, 216, 93);">choosecolor</b> están las RESPUESTAS CORRECTAS del participante. 
-                                <br /> 
-                                En color <b style="background: rgb(216, 17, 17); color: rgb(216, 17, 17);">choosecolor</b> están las RESPUESTAS INCORRECTAS del participante. 
-                                <br /> 
-                                En color <b style="background: rgb(174, 211, 158); color: rgb(174, 211, 158);">choosecolor</b> están las RESPUESTAS CORRECTAS que el participante no acertó.
-                            </p>
                         </div>
                     </div>
 
@@ -379,6 +369,25 @@
                                             var classRender = "bg-light text-dark";
                                             var classRenderAr = []
 
+                                            function arr_diff (a1, a2) {
+                                                var a = [], diff = [];
+                                                for (var i = 0; i < a1.length; i++) {
+                                                    a[a1[i]] = true;
+                                                }
+                                                for (var i = 0; i < a2.length; i++) {
+                                                    if (a[a2[i]]) {
+                                                        delete a[a2[i]];
+                                                    } else {
+                                                        a[a2[i]] = true;
+                                                    }
+                                                }
+                                                for (var k in a) {
+                                                    diff.push(k);
+                                                }
+                                                return diff;
+                                            }
+
+
                                             // Review of to do
                                             /** * Render the answer options */
                                             for(var ans=0; ans<keyAnswers.length;ans++){                                                
@@ -390,7 +399,6 @@
                                                     if(items.questions[i].result=="correct"){
                                                         /** Right Answer = rans */
                                                         for(var rans=0; rans<splitCorrect.length;rans++){
-                                                            
                                                             /** Answers with 1 or more correct options */
                                                                 if(keyAnswers[ans] == splitCorrect[rans]){ %>
                                                                     <td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td>
@@ -398,32 +406,64 @@
                                                         }
                                                     /** Wrong Answers */
                                                     }else{
+                                                        var contMultiAnswe = 0;
+                                                        var contMultWrong = 0;
+                                                        /** Go through user answers */
                                                         for(var rus=0; rus<splitUserAns.length;rus++){
-                                                            if(keyAnswers[ans] == splitUserAns[rus]){ 
-                                                                /** For more than 1 wrong option */
-                                                                if(splitUserAns.length > 1){  
-                                                                    %>
-                                                                    <td style="border-top: 1px solid white;">
-                                                                        <%
+
+                                                            /** If there are more than one answer */
+                                                            if(splitUserAns.length > 1){
+                                                                for(var rans=0; rans<splitCorrect.length;rans++){
                                                                     
-                                                                        for(var rans=0; rans<splitCorrect.length;rans++){ 
-                                                                            if(keyAnswers[ans] == splitCorrect[rans]){ %>
-                                                                                <i class="fas fa-check text-success"></i>
-                                                                            <% }
+                                                                    /** Get the correct answers to compare */
+                                                                    if(keyAnswers[ans] == splitCorrect[rans]){
+                                                                        contMultiAnswe ++;
+                                                                        /* Render once */
+                                                                        if(contMultiAnswe == 1){ 
+                                                                            /** The user answer minus or more options than the correct answer */
+                                                                            if(splitCorrect.length < splitUserAns.length){ %>
+                                                                                <td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td>
+                                                                            <% }else{ 
+                                                                                /** Compare and dif arrays when the user response is lowest than the correct option */
+                                                                                var overdifAnsw = arr_diff(splitUserAns,splitCorrect);
+
+                                                                                for(var miss=0;miss<overdifAnsw.length;miss++){
+                                                                                    if(keyAnswers[ans] == overdifAnsw[miss]){ %>
+                                                                                        <td style="border-top: 1px solid white;"><i class="fas fa-check text-danger"></i></td>
+                                                                                    <%}else{ %>
+                                                                                        <td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td>
+                                                                                    <% }
+                                                                   
+                                                                                }
+                                                                             }
                                                                         }
-                                                                    
-                                                                        %>
-                                                                    </td>
-                                                                    <td style="border-top: 1px solid white;"><i class="fas fa-times text-warning"></i></td>
-                                                                <% }else{ %>
-                                                                    <td style="border-top: 1px solid white;"><i class="fas fa-times text-danger"></i></td>
-                                                                <%} 
+                                                                    /** Get the wrong options */
+                                                                    }else if(keyAnswers[ans] == splitUserAns[rus]){
+                                                                        contMultWrong ++;
+                                                                        if(contMultWrong == 1){
+                                                                            /** Make difference between arrays */
+                                                                            var difWrongandRight = arr_diff(splitCorrect, splitUserAns)
+
+                                                                            for(var dif=0; dif<difWrongandRight.length;dif++){
+                                                                                if(keyAnswers[ans] == difWrongandRight[dif]){
+                                                                                    %>
+                                                                                    <td style="border-top: 1px solid white;">
+                                                                                        <i class="fas fa-times text-danger"></i>
+                                                                                    </td>
+                                                                                    <%
+                                                                                }
+                                                                            }    
+                                                                        }
+                                                                    }
+                                                                }
                                                             }else{
-                                                                /** For 1 wrong option */
-                                                                for(var rans=0; rans<splitCorrect.length;rans++){ 
-                                                                    if(keyAnswers[ans] == splitCorrect[rans] && splitUserAns.length == 1){ %>
-                                                                        <td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td>
-                                                                    <% }
+                                                                /** For one correct answer */
+                                                                for(var rans=0; rans<splitCorrect.length;rans++){
+                                                                    if(keyAnswers[ans] == splitCorrect[rans]){
+                                                                        %><td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td><%
+                                                                    }else if(keyAnswers[ans] == splitUserAns[rus]){
+                                                                        %><td style="border-top: 1px solid white;"><i class="fas fa-times text-danger"></i></td><%
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -476,10 +516,12 @@
                                                 </div>
                                             </div>
                                         <% } %>
-                                        <hr />
-                                        <p>Rta : <%= items.questions[i].result %></p>
-                                        <p>Correcta: <%= items.questions[i].correct_option %></p>
-                                        <p>User: <%= items.questions[i].user_response %></p>
+                                        <%
+                                          if(items.questions[i].result != "correct"){ %>
+                                            <hr />
+                                            <p>Respuesta correcta: <%= items.questions[i].correct_option %></p>
+                                            <p>Respuesta del participante: <%= items.questions[i].user_response %></p>                                          
+                                        <% } %>
                                     </div>
                                 </div> 
                             </div>
