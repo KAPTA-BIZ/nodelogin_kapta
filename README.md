@@ -1,6 +1,6 @@
 # Results Classmarker tests
 
-Implementation of one platform oriented to retrieve and handle the results of (Classmarker)[https://classmarker.com] tests. The idea behind this project is to connect and make easier for the consultants the way of visualize its evaluations.
+Implementation of one platform oriented to retrieve and handle the results of [Classmarker](https://classmarker.com) tests. The idea behind this project is to connect and make easier for the consultants the way of visualize its evaluations.
 
 This project is composed of the follow technologies:
 
@@ -33,7 +33,7 @@ Open your browser and type: ``` http://localhost:3001 ```
 
 ## Database
 
-The database is a NonSQL DB used with Mongoose and mLab(https://mlab.com). It was used due is one of the best trusted platform to handle all the information. It is splitted by the follow collections.
+The database is a NonSQL DB used with Mongoose and [mLab](https://mlab.com). It was used due is one of the best trusted platform to handle all the information. It is splitted by the follow collections.
 
 - userschema
 - linkschema
@@ -49,11 +49,11 @@ Where the information is storaged and handled.
 
 ## Deploy
 
-This project is deployed to the (Heroku)[https://heroku.com] platform as a service. Where the server storage and launch all the application. 
+This project is deployed to the [Heroku](https://heroku.com) platform as a service. Where the server storage and launch all the application. 
 
 ## Team
 
-Project created and developed by @camiloibarrak and @kmiloarguello
+Project created and developed by [@camiloibarrak](https://github.com/camiloibarrayepes) and [@kmiloarguello](https://github.com/kmiloarguello)
 
 ## Copyright
 
