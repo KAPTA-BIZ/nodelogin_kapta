@@ -363,6 +363,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Opciones de respuesta</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                             <tbody>
@@ -380,50 +381,55 @@
 
                                             // Review of to do
                                             /** * Render the answer options */
-                                            for(var ans=0; ans<keyAnswers.length;ans++){
-                                                console.log(items.questions[i].result)
-                                                /** CORRECT Correct Option */
-                                                if(items.questions[i].result=="correct"){
-                                                    /** Right Answer = rans */
-                                                    for(var rans=0; rans<splitCorrect.length;rans++){
-                                                        
-                                                        /** Answers with more than 1 correct option */
-                                                        if(splitCorrect.length > 1){
-                                                            for(var ra=0; ra<=rans;ra++){
-                                                                /** To do Render all the right colors */
-                                                                classRender = "bg-warning text-white " + ra;
-                                                            }
+                                            for(var ans=0; ans<keyAnswers.length;ans++){                                                
+                                                %>
+                                                <tr class="bg-light  text-dark">
+                                                    <td style="width:100%; border-top: 1px solid white;"><%= numberAnswers[keyAnswers[ans]] %></td>
+                                                    <%
+                                                     /** CORRECT Correct Option */
+                                                    if(items.questions[i].result=="correct"){
+                                                        /** Right Answer = rans */
+                                                        for(var rans=0; rans<splitCorrect.length;rans++){
+                                                            
+                                                            /** Answers with 1 or more correct options */
+                                                                if(keyAnswers[ans] == splitCorrect[rans]){ %>
+                                                                    <td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td>
+                                                                <% }
                                                         }
-
-                                                        /** Answers with 1 correct option */
-                                                        else{
-                                                            if(keyAnswers[ans] == splitCorrect[rans]){
-                                                                classRender = "bg-success text-white";
+                                                    /** Wrong Answers */
+                                                    }else{
+                                                        for(var rus=0; rus<splitUserAns.length;rus++){
+                                                            if(keyAnswers[ans] == splitUserAns[rus]){ 
+                                                                /** For more than 1 wrong option */
+                                                                if(splitUserAns.length > 1){  
+                                                                    %>
+                                                                    <td style="border-top: 1px solid white;">
+                                                                        <%
+                                                                    
+                                                                        for(var rans=0; rans<splitCorrect.length;rans++){ 
+                                                                            if(keyAnswers[ans] == splitCorrect[rans]){ %>
+                                                                                <i class="fas fa-check text-success"></i>
+                                                                            <% }
+                                                                        }
+                                                                    
+                                                                        %>
+                                                                    </td>
+                                                                    <td style="border-top: 1px solid white;"><i class="fas fa-times text-warning"></i></td>
+                                                                <% }else{ %>
+                                                                    <td style="border-top: 1px solid white;"><i class="fas fa-times text-danger"></i></td>
+                                                                <%} 
                                                             }else{
-                                                                classRender = "bg-light text-dark";
-                                                            }
-                                                        }
-                                                    }
-                                                /** Wrong Answers */
-                                                }else{
-                                                    for(var rus=0; rus<splitUserAns.length;rus++){
-                                                        if(keyAnswers[ans] == splitUserAns[rus]){ 
-                                                            classRender = "bg-danger text-white";
-                                                        }else{
-                                                            for(var rans=0; rans<splitCorrect.length;rans++){
-                                                                /** To Do: For many answers */
-                                                                if(splitCorrect[ans] == 'A'){
-                                                                    classRender = "bg-success text-white";
-                                                                }else{
-                                                                    classRender = "bg-light text-dark";
+                                                                /** For 1 wrong option */
+                                                                for(var rans=0; rans<splitCorrect.length;rans++){ 
+                                                                    if(keyAnswers[ans] == splitCorrect[rans] && splitUserAns.length == 1){ %>
+                                                                        <td style="border-top: 1px solid white;"><i class="fas fa-check text-success"></i></td>
+                                                                    <% }
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                }
-                                                %>
-                                                <tr class="<%= classRender %>">
-                                                    <td style="width:100%; border-top: 1px solid white;"><%= numberAnswers[keyAnswers[ans]] %></td>
+
+                                                    %>
                                                 </tr>
                                             <% } %>
                                             </tbody>
