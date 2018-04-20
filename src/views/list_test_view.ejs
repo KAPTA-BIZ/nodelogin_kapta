@@ -277,16 +277,6 @@
                         <div class="col-6">
                            <div class="card strpied-tabled-with-hover">
                               <div class="card-header ">
-                                 <h4 class="card-title">Estadísticas - Porcentaje General Participantes</h4>
-                              </div>
-                              <div class="card-body table-full-width table-responsive">
-                                 <canvas id="bar-chart" height="400" width="400"></canvas>
-                           </div>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                           <div class="card strpied-tabled-with-hover">
-                              <div class="card-header ">
                                  <h4 class="card-title">Códigos de acceso sin usar</h4>
                               </div>
                               <div class="card-body table-full-width table-responsive">
@@ -378,14 +368,116 @@
    }
    });
    });
+   
+   
 </script>
+           
+                       
+               <% finalResult = [] %>
+                <% finalName = [] %>
+                <% finalCount = [] %>
+                <% finalMedia = [] %>
+                        
+                         <% 
+                             var var_percentage=0
+                             var id
+                             var id_a=0
+                             
+                             
+                            item.forEach(function(results){ %>
+                            <%longitud=(results.category_results.length)
+                            for(i=0; i<longitud; i++){ %>
+                            
+                            <%results.category_results[i].category_id  %>
+                            <% 
+                             
+                             var por
+                             var por_a
+                             var por_b=0
+                             var count=0
+                             
+                             %>
+                                    <% allResult.forEach(function(allR){ %>
+                                    <% long=(allR.category_results.length); %>
+                                    <% for(a=0; a<long; a++){ %>
+                                    <% if(allR.category_results[a].category_id==results.category_results[i].category_id){ %>
+                            
+                                        <% id=allR.category_results[a].category_id %>
+                                        <% if((id_a==id)||(id_a==0)){ %>
+                                        <%por=allR.category_results[a].percentage %>
+                                        <% por_a=por_b+por %>
+                                        <% }else{ %>
+                                        <%por_b=0%>
+                                        <%por=allR.category_results[a].percentage %>
+                                        <% por_a=por_b+por %>
+                                        <% } %>
+                                        
+                                        <%name=allR.category_results[a].name%>
+                                        <%por_b=por_a %>
+                                        <% count=count+1 %>
+                                        <% fn=por_b/count %>
+                                        
+                                     
+                            <% } %>
+                             
+                            <% } %>  
+                            
+                            <% })%> 
+                            
+                            <% finalResult.push(por_b) %>
+                            <% finalName.push(name) %>
+                            <% finalCount.push(count) %>
+                            <% finalMedia.push(fn) %>
+                            
+                            <% } %>
+                            <% }) %>
+                            
+                            
+         <% promedio = [] %>
+         <% item.forEach(function(results){ %>
+         <%long=(results.category_results.length); for(i=0; i<long; i++){ %>
+         <% promedio.push(finalMedia[i]) %>
+         <% } %>  
+         <% })%>
 
 
+           <% pro_array = [] %>
+           <% cat_name = [] %>
+           <% var map_participantes = promedio.map(function(x){ %>
+           <% pro_array.push(x.toFixed(2))%> 
+           <% }) %>
+           <br>
+           <% item.forEach(function(results){ %>
+               <%long=(results.category_results.length);%>
+               <% var map_participantes = results.category_results.map(function(x){ %>
+               <% cat_name.push(x.name)%> 
+               <% }) %>
+           <% }) %>
+                       
+                       
+           <%par_array %>
+           <%pro_array  %>
+           <% cat_name %>
+           
+           <% a = [] 
+               item.forEach(function(items){ 
+               if(items.category_results){ 
+               long=(items.category_results.length)
+               for(i=0; i<long; i++){ 
+                  if(!a.includes(items.category_results[i].name)){
+                     a.push(items.category_results[i].name)
+                     }
+                     %>
+                  <% } %>  
+               <% } %>
+            <% } )%>
+                         
+                         
+          
 <script>
    
-           var test = <%-JSON.stringify(par_array) %>; 
            var test_a = <%-JSON.stringify(pro_array) %>; 
-           var test_b = <%-JSON.stringify(cat_name) %>; 
+           var test_b = <%-JSON.stringify(a) %>; 
    
            new Chart(document.getElementById("category_chart"), {
                type: 'bar',

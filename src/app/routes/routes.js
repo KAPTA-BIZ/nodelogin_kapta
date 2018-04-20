@@ -602,13 +602,11 @@ module.exports = (app, passport) => {
         err?console.log(err):
         
             TestSchema.find({link_url_id: req.params.id}).sort({time_finished: -1}).exec((err, result) => {
-            err?console.log(err):
+            err?console.log(err):console.log("")
                 
                 LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
                     err?console.log(err):
                       
-                      LSchema.find({ link_url_id: req.params.id }).exec((err,resultLink) => {
-                      err?console.log(err):
                       
                         aSchema.find({id_ins: id_user}).exec((err,accessresult)=>{
                             
@@ -616,6 +614,10 @@ module.exports = (app, passport) => {
                         
                             UserSchema.find({_id: id_user}).exec((err, resultUser)=>{
                             err?console.log(err):console.log(resultUser)
+                            
+                           
+                             TestSchema.find().exec((err, allResult) => {
+                            err?console.log(err):console.log("")
                             
                         // Cuando long es 0 pasa a la lista
                         // Cuando long es 1 pasa a la busqueda
@@ -632,13 +634,16 @@ module.exports = (app, passport) => {
                             list_test: list_test,
                             resultUser: resultUser,
                             id_user: id_user,
-                            id_link: id_link
+                            id_link: id_link,
+                            allResult: allResult
                           })
+                          
+                             })
                             
                           })//UserSchema.find({id: resultCat.id_inst})
                          
                         })//alSchema
-                    })//LSchema
+                    
                    
                 })//LSchema.find({ link_url_id: req.params.id })
                 
