@@ -185,6 +185,35 @@
                                  </tbody>
                               </table>
                            </div>
+                           
+                           <div class="card strpied-tabled-with-hover">
+                            <div class="card-header ">
+                                <h4 class="card-title">Categorías presentadas</h4>
+                            </div>
+                            <div class="card-body table-full-width table-responsive">
+                                <canvas id="category_chart" height="400" width="900"></canvas>
+                            </div>
+                           </div>
+                           <!-- captura promedio porcentaje categoria -->
+                           
+                           <% promedio_cat = [] %>
+                           <% var promedio=0 %>
+                           <% var aux=0, count=0, total=0 %>
+                           <% result.forEach(function(items) { %>
+                           
+                           
+                              <% for(i=0; i<items.category_results.length; i++){ %>
+                                 <% if(cat_search==items.category_results[i].name){ %>
+                                    <% items.category_results[i].percentage %>
+                                    <% promedio=items.category_results[i].percentage 
+                                     aux = aux + promedio 
+                                     count+=1 %>
+                              <% } %> 
+                           <% } %>
+                           <% }) %>
+                           
+                           <%total=(aux/count).toFixed(2)%>
+                           <!-- captura promedio porcentaje categoria -->
                         </div>
                      </div>
                   </div>
@@ -192,5 +221,44 @@
             </div>
          </div>
       </div>
+      
+      <!-- grafica por categoria -->
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+      <script>
+           var test_a = <%-JSON.stringify(total) %>; 
+   
+           new Chart(document.getElementById("category_chart"), {
+               type: 'bar',
+               data: {
+               labels: ['<%=cat_search %>'],
+               datasets: [
+                   {
+                   label: "% Promedio por categoría",
+                   backgroundColor: "#FF8000",
+                   data: [test_a],
+                   }
+                   ]},
+               options: {
+               title: {
+                   display: false,
+                   text: 'Resultados Participante y Categorías'
+               },
+               scales: {
+                   xAxes: [{
+                       barThickness : 63
+                   }],
+                   yAxes: [{
+                          display: true,
+                          ticks: {
+                          stepSize: 25,
+                          max: 100,
+                          min: 0
+                          }
+                      }],
+                      
+               }
+           }
+           });
+       </script>
    </body>
 </html>
