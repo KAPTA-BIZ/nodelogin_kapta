@@ -249,6 +249,30 @@
                      </div>
                      
                      
+                    <div class="card strpied-tabled-with-hover">
+                        <div class="card-header ">
+                            <h4 class="card-title">Estadísticas de categorías</h4>
+                            <p class="card-category">Significado de color. <br>
+                            <br/>
+                            En color <b style="background-color: #FF8000; color:#FF8000">choosecolor</b> Promedio del porcentaje obtenido por los demas participantes en la categoría seleccionada
+                            </p>
+                            <br>
+                        </div>
+                    </div>
+                
+                      
+                        <div class="card strpied-tabled-with-hover">
+                            <div class="card-header ">
+                                <h4 class="card-title">Categorías presentadas</h4>
+                            </div>
+                            <div class="card-body table-full-width table-responsive">
+                                <canvas id="category_chart" height="400" width="900"></canvas>
+                            </div>
+                        </div>
+                   
+               
+                
+                
                      <div class="row">
                         <div class="col-6">
                            <div class="card strpied-tabled-with-hover">
@@ -355,5 +379,44 @@
    });
    });
 </script>
+
+
+<script>
+   
+           var test = <%-JSON.stringify(par_array) %>; 
+           var test_a = <%-JSON.stringify(pro_array) %>; 
+           var test_b = <%-JSON.stringify(cat_name) %>; 
+   
+           new Chart(document.getElementById("category_chart"), {
+               type: 'bar',
+               data: {
+               labels: test_b,
+               datasets: [
+                   {
+                   label: "% Promedio por categoría",
+                   backgroundColor: "#FF8000",
+                   data: test_a
+                   }
+                   ]},
+               options: {
+               title: {
+                   display: false,
+                   text: 'Resultados Participante y Categorías'
+               },
+               scales: {
+                   xAxes: [{
+                       barThickness : 63
+                   }],
+                   yAxes: [{
+                          display: true,
+                          ticks: {
+                          max: 100
+                          }
+                      }]
+               }
+           }
+           });
+       </script>
+
    </body>
 </html>
