@@ -36,20 +36,36 @@
                             
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
-                                <p class="card-category">Códigos de acceso utilizados: <%= enlace.length %>  </p>
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">Códigos de acceso utilizados</h6>    
+                                    <h2 class="card-title text-center">
+                                    <%= enlace.length %>
+                                    </h2>
+                                </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
-                                <p class="card-category">Códigos de acceso disponibles: <%= (disponibles.length)-(enlace.length) %> %> </p>
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">Códigos de acceso disponibles</h6>    
+                                    <h2 class="card-title text-center">
+                                        <%= (disponibles.length)-(enlace.length) %>
+                                    </h2>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
-                                <p class="card-category">Códigos de acceso Totales: <%= (disponibles.length) %> </p>
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">Códigos de acceso Totales</h6>    
+                                    <h2 class="card-title text-center">
+                                        <%= (disponibles.length) %>
+                                    </h2>
+                                </div>
                             </div>
                         </div>
-                            
                             
                         <div class="col-md-12">
                             
