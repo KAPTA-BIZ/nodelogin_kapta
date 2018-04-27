@@ -1059,7 +1059,7 @@ module.exports = (app, passport) => {
            var usuario = req.user
            
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-            TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}, (err, allCategories)=>{
+            TestSchema.find({$or:[{access_code: regex}, {id_inst: regex}, {link_url_id: regex}]}).sort({time_finished: -1}).exec((err, allCategories)=>{
             err?console.log(err):console.log(allCategories)
                 
                 var long
