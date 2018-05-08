@@ -1094,6 +1094,140 @@ module.exports = (app, passport) => {
     })
     
     
+    
+     /*-------------- ADMIN Busqueda por categorias desde enlace  -------------------------*/
+    
+    app.get('/adminsearchandlink/', isLoggedIn, cod_sin, (req, res) => {
+        
+        if(req.query.search){
+            
+            var busqueda_get = req.query.busqueda_get
+            
+            //Get id consultor, req.query.id
+            var usuario = req.user
+            var allresult =  req.cod_sin
+            
+            //Get dates
+            var date_start_get=req.query.start
+            var date_end_get=req.query.end
+            
+            //dates are converted to universal format
+            var date_start = ((new Date(date_start_get)/1000)+86400);
+            var date_end = ((new Date(date_end_get)/1000)+86400);
+            
+            //query is mdae from choosen category
+            const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            Categories.find({name: regex}, function(err, allCategories){
+            err?console.log(err):
+            
+            //make a query with every categories to show them
+            Categories.find().exec((err, resultCat) => {
+            err?console.log(err):console.log(resultCat)
+                
+            //querysearch is declared to know if get the word "all" and show all categories
+            var querySearch
+            (req.query.search=="all")? querySearch = {}: querySearch = {'category_results.name': req.query.search}
+              
+            //Query in links is made from id consultor
+            LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
+            err?console.log(err):console.log(resultLink)
+                
+            UserSchema.find({id: allCategories.id_inst}).exec((err, resultUser)=>{
+            err?console.log("Error retrieving"):
+                
+            LSchema.find({id_inst: req.user.id}).exec((err, Lresult) => {
+            err?console.log(err) : console.log("Lresult", Lresult)
+                                
+            var arrayResult = []
+
+            for (var i = 0; i < Lresult.length; i++) 
+            {
+            arrayResult.push(Lresult[i].link_url_id)
+            }
+                                
+            TestSchema.find({link_url_id: {$in: arrayResult}})
+                .sort({time_finished: -1}) //fecha de mayor a menor
+                .exec((err, ByLinkresult) => {
+                            
+                err ? console.log(err):console.log(ByLinkresult)
+                    
+            var date_query
+            
+            if(req.query.id==req.user.id)
+            {
+                if(!date_start)
+                {
+                date_query=
+                    [{'category_results.name': req.query.search},
+                    {link_url_id: {$in: arrayResult}}]
+                }else{
+                    date_query=
+                    [{'category_results.name': req.query.search},
+                    {link_url_id: arrayResult},
+                    {time_started:{ $gte: date_start, $lte: date_end}}]
+                }
+            }else{
+                
+                if(!date_start)
+                {
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id}]
+                }else{
+                    date_query=
+                        [{'category_results.name': req.query.search},
+                        {link_url_id: req.query.id},
+                        {time_started:{ $gte: date_start, $lte: date_end}}]
+                }
+                
+            }
+            
+              
+            //Query in test from: query.search (category), req.query.id(id link), betwen dates
+            TestSchema.find()
+                .and(
+                    date_query
+                )
+                .sort({time_finished: -1})
+                .exec((err, result) => {
+                    
+                err?console.log(err):
+                                
+                    (res.render('searchandlink', 
+                    {
+                        cat: resultCat, 
+                        allcat: allCategories,
+                        url: req.query.id, 
+                        cat_search: req.query.search,
+                        link: resultLink, 
+                        user: usuario,
+                        result: result,
+                        date_start: req.query.start,
+                        date_end: req.query.end,
+                        ByLinkresult: ByLinkresult,
+                        User: resultUser,
+                        lresult: Lresult,
+                        busqueda_get: busqueda_get
+                                    
+                    }))
+                                
+                    })//TestSchema.find({link_url_id: {$in: arrayResult}})
+                            
+                    })//LSchema.find({id_inst: req.user.id})
+                                    
+                    })//UserSchema.find({id: allCategories.id_inst})
+                                
+                    }) //LSchema.find({ link_url_id: req.query.id })
+                       
+                 })//Close TestSchema.find
+                 
+                })//Close Categories.find()
+                
+            })
+        }
+    })
+    
+    
     /*-------------------    BUSQUEDA PARA CONSULTAR ------------------------*/
     
     app.get('/consultor_search/', isLoggedIn, (req, res) => {

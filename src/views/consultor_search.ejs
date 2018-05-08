@@ -22,7 +22,7 @@
                    </div>
                 </div>
                 <% }else{ %>
-            <% } %>
+           
             <div class="col-5" style="margin: 20px;" >
                <form action="/searchandlink" method="GET">
                   <label for="exampleInputEmail1">Buscar por categoria</label><br>
@@ -109,6 +109,7 @@
                   } );
                </script>
             </div>
+             
             <div class="col-md-12">
                <%if(url==user.id){%>
                    <a href="/profile">Restablecer Búsqueda</a>
@@ -212,6 +213,8 @@
                   </div>
                </div>
             </div>
+            <% } %>
+            <!--else-->
             <% } %>
          </div>
       </div>

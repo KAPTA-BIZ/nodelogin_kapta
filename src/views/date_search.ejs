@@ -17,6 +17,17 @@
           <div class="container-fluid">
             
               <div class="row">
+             
+                <%if(typeof result !== "undefined"){%>
+              <%if(result==""){%>
+                <div class="col-md-12">
+                   <div class="card strpied-tabled-with-hover">
+                      <div class="card-header ">
+                         No hubo resultado para la busqueda <br><br>
+                      </div>
+                   </div>
+                </div>
+                <% }  }else {%>
                 
                   <div class="col-4" style="margin: 20px;" >
                         <form action="/searchandlink" method="GET">
@@ -152,6 +163,7 @@
                             </div>
                             </form>-->
                             <!-- Search Bar End -->
+                           
 
                           <div class="card-body table-full-width table-responsive">
                            
@@ -211,7 +223,7 @@
                               </table>
                               
                           </div>
-                          
+                          <% } %>
                          </div>
                       </div>
                   </div>
