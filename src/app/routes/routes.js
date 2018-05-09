@@ -665,8 +665,8 @@ module.exports = (app, passport) => {
         var aux;
         console.log("ACCESSRECIBIDO", req.params.access_code)
         
-        
-        aSchema.find({id_ins: usuario._id}).exec((err, resultAc) => {
+        if(req.user.sa==1){var aschemaquery = {id_ins: usuario._id}}else{aschemaquery={}}
+        aSchema.find().exec((err, resultAc) => {
         err?console.log(err):  
         
         //console.log("usuario", resultAc)
@@ -1117,12 +1117,16 @@ module.exports = (app, passport) => {
             
             //query is mdae from choosen category
             const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-            Categories.find({name: regex}, function(err, allCategories){
+            Categories.find({name: regex}, function(err, allCategories){  console.log("CATEGORIA SELECCIONADA: ", allCategories)
             err?console.log(err):
+            
+            
+            console.log("fecha inicio: ", date_start_get)
+            console.log("fecha final: ", date_end_get)
             
             //make a query with every categories to show them
             Categories.find().exec((err, resultCat) => {
-            err?console.log(err):console.log(resultCat)
+            err?console.log(err):console.log("resultCat")
                 
             //querysearch is declared to know if get the word "all" and show all categories
             var querySearch
@@ -1144,52 +1148,36 @@ module.exports = (app, passport) => {
             {
             arrayResult.push(Lresult[i].link_url_id)
             }
-                                
-            TestSchema.find({link_url_id: {$in: arrayResult}})
-                .sort({time_finished: -1}) //fecha de mayor a menor
-                .exec((err, ByLinkresult) => {
-                            
-                err ? console.log(err):console.log(ByLinkresult)
-                    
+            
+            // Se define variable date_query,si existe una fecha inicial 
+            // se realiza busqueda por fecha, si no solo busqueda por query
+            
             var date_query
             
-            if(req.query.id==req.user.id)
+            if(!date_start)
             {
-                if(!date_start)
-                {
-                date_query=
-                    [{'category_results.name': req.query.search},
-                    {link_url_id: {$in: arrayResult}}]
-                }else{
-                    date_query=
-                    [{'category_results.name': req.query.search},
-                    {link_url_id: arrayResult},
-                    {time_started:{ $gte: date_start, $lte: date_end}}]
-                }
+            date_query=
+                [{'category_results.name': req.query.search}]
             }else{
-                
-                if(!date_start)
-                {
-                    date_query=
-                        [{'category_results.name': req.query.search},
-                        {link_url_id: req.query.id}]
-                }else{
-                    date_query=
-                        [{'category_results.name': req.query.search},
-                        {link_url_id: req.query.id},
-                        {time_started:{ $gte: date_start, $lte: date_end}}]
-                }
-                
+                date_query=
+                [{'category_results.name': req.query.search},
+                {time_started:{ $gte: date_start, $lte: date_end}}]
             }
-            
+             
               
-            //Query in test from: query.search (category), req.query.id(id link), betwen dates
             TestSchema.find()
-                .and(
-                    date_query
-                )
+                .and(date_query)
+                .sort({time_finished: -1}) //fecha de mayor a menor
+                .exec((err, ByLinkresult) => { 
+                            
+                err ? console.log(err):console.log("ByLinkresult")
+                
+            // *** Consulta no usada en esta ruta, se envia como resultado ByLinkresult            
+            // Query in test from: query.search (category), req.query.id(id link), betwen dates
+            TestSchema.find()
+                .and(date_query)
                 .sort({time_finished: -1})
-                .exec((err, result) => {
+                .exec((err, result) => { console.log("RESULTADO ADMIN ")
                     
                 err?console.log(err):
                                 
@@ -1201,10 +1189,9 @@ module.exports = (app, passport) => {
                         cat_search: req.query.search,
                         link: resultLink, 
                         user: usuario,
-                        result: result,
+                        result: ByLinkresult,
                         date_start: req.query.start,
                         date_end: req.query.end,
-                        ByLinkresult: ByLinkresult,
                         User: resultUser,
                         lresult: Lresult,
                         busqueda_get: busqueda_get
@@ -1257,7 +1244,7 @@ module.exports = (app, passport) => {
             
                 //Se encuentran los link_url_id segun req.user.id                
                 LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
-                err?console.log(err):console.log(Lresult)
+                err?console.log(err):console.log("LRESULT",Lresult)
         
                     //for para iterar los link_url_id pertenecientes a cada consultor
                     var arrayResult = []
@@ -1310,7 +1297,7 @@ module.exports = (app, passport) => {
       
        var url=req.query.id
        
-       if(url==req.user.id)
+       if(url==req.user.id || req.user.sa==1)
        {
            
         var busqueda_get = req.query.busqueda_get
@@ -1333,7 +1320,7 @@ module.exports = (app, passport) => {
         
         
         LSchema.find({id_inst: req.user.id}).exec((err, Lresult)=>{
-                err?console.log(err):console.log(Lresult)
+                err?console.log(err):console.log("Lresult")
         
                     //for para iterar los link_url_id pertenecientes a cada consultor
                     var arrayResult = []
@@ -1342,15 +1329,18 @@ module.exports = (app, passport) => {
                     {
                         arrayResult.push(Lresult[i].link_url_id)
                     }
+                    
+                    if(req.user.sa==1)
+                    { var querycomplete = [{time_started:{ $gte: date_start, $lte: date_end }}]
+                    } else{
+                        querycomplete = [{link_url_id: {$in: arrayResult}},{time_started:{ $gte: date_start, $lte: date_end }}]
+                    }
         
                     //busqueda de fechas y del array con los link_url_id
                     TestSchema.find()
-                        .and([
-                            {link_url_id: {$in: arrayResult}},
-                            {time_started:{ $gte: date_start, $lte: date_end }}
-                            ])
+                        .and(querycomplete)
                         .sort({time_finished: -1}) //fecha de mayor a menor
-                        .exec((err, result)=>{
+                        .exec((err, result)=>{ console.log("RESULT TOTAL ")
                             
       
             err?console.log(err):
@@ -1359,7 +1349,7 @@ module.exports = (app, passport) => {
             //console.log(req.query.search)
             //res.render("list_test_b", {categories: allCategories});
             Categories.find().exec(function(err, resultCat){
-                err?console.log(err):console.log(resultCat)
+                err?console.log(err):console.log("resultCat")
                 
                 
                 //Captura de variable query.admin para validar si la busqueda la hace admin
@@ -1367,26 +1357,14 @@ module.exports = (app, passport) => {
                 //Si hace nueva busqueda UserSchema para hayar los datos segun el id del instructor hayado
                         
                 aSchema.find().exec((err,accessresult)=>{
-                err?console.log(err):
+                err?console.log(err):console.log("accessresult")
                             
-                //COMMENT GIt
-                LSchema.find({ link_url_id: req.query.id }).exec((err,resultLink) => {
-                err?console.log(err):console.log(resultLink)
+                //se busca en schema de links segun el id del instructor
+                if(req.user.sa==0){var resultLinkVar = { id_inst: req.query.id }}else{resultLinkVar={}}
+                LSchema.find(resultLinkVar).exec((err,resultLink) => {
+                err?console.log(err):console.log("RESULTLINK ", resultLink)
                 
-                    usuario.sa==1?
-                                        
-                        res.render('list_test', 
-                        {
-                            cat: resultCat, 
-                            link: resultLink,
-                            user:usuario,
-                            aresult: accessresult,
-                            date_start: date_start_get,
-                            date_end: date_end_get,
-                            url: url
-                        })
-                                            
-                        ://else
+                    
                         res.render('date_search', 
                         {
                             cat: resultCat, 
@@ -1441,12 +1419,14 @@ module.exports = (app, passport) => {
         
         var search_date = {time_started:{ $gte: date_start, $lte: date_end }}
         
+        
+        
         TestSchema.find()
             .and([
                 {time_started:{ $gte: date_start, $lte: date_end }},
                 {link_url_id: req.query.id}
                 ])
-                .exec(function(err, resultDate){
+                .exec(function(err, resultDate){ 
 
         err?console.log(err):
             
@@ -1454,7 +1434,7 @@ module.exports = (app, passport) => {
             //console.log(req.query.search)
             //res.render("list_test_b", {categories: allCategories});
             Categories.find().exec(function(err, resultCat){
-                err?console.log(err):console.log(resultCat)
+                err?console.log(err):console.log("RESULTCAT ")
                 
                 var long
                 (resultDate==0)?long=1:long=0
@@ -1471,14 +1451,14 @@ module.exports = (app, passport) => {
                 
                         
                 UserSchema.find({id: resultDate.id_inst}).exec((err, resultUser)=>{
-                err?console.log(err):console.log(resultUser)
+                err?console.log(err):console.log("lista asesores")
                 
                     usuario.sa==1?
                                         
                         res.render('list_test', 
                         {
                             cat: resultCat, 
-                            result: resultDate, 
+                            result: resultCat, 
                             val: long, 
                             link: resultLink,
                             user:usuario,

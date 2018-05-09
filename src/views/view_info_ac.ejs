@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 
-            <% } else { %>
+            <% } else if ((rAc_array.includes(access_code)) || (req.user.sa==1))  { %>
 
                 <div class="row">
                     <div class="col-4">
@@ -152,10 +152,10 @@
                         </div>
                     </div>
                     
-                <% finalResult = [] %>
-                <% finalName = [] %>
-                <% finalCount = [] %>
-                <% finalMedia = [] %>
+                <% var finalResult = [] %>
+                <% var finalName = [] %>
+                <% var finalCount = [] %>
+                <% var finalMedia = [] %>
                         
                          <% 
                              var var_percentage=0
