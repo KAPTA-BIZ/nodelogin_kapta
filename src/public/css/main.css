@@ -113,6 +113,7 @@ p,span{
   padding: 8px 10px !important;
 }
 
+
 form input[type=password]:focus:not([readonly]),
 form input[type=email]:focus:not([readonly]) {
   border-bottom: 1px solid #ff5423;
