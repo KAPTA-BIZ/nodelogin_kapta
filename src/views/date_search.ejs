@@ -36,7 +36,9 @@
                   <div class="col-4" style="margin: 20px;" >
                         <% if(sa==1){ var actionsearchdate = "/adminsearchandlink"}else{actionsearchdate = "/searchandlink"} %>
                         <form action=<%=actionsearchdate%> method="GET">
-                        <label for="exampleInputEmail1">Buscar por categoria</label><br>
+                        <label lang="es" for="exampleInputEmail1">Buscar por categoria</label>
+                        <label lang="en" for="exampleInputEmail1">Buscar por categoria</label>
+                        <br />
                         <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
                            <% a = [] 
                         result.forEach(function(items){ 
