@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<title>Resultados por Evaluación</title>
+    <title lang="es">Lista de consultores</title>
+    <title lang="en">Consultants</title>
 	<% include partials/head %>
 </head>
 <body>
@@ -18,12 +19,18 @@
                     <% if((typeof access_code !== 'undefined')&&(typeof existe !== 'undefined')){ 
                     if(existe==2){
                     %>
-                    <div class="alert alert-success" role="alert">
+                    <div lang="es" class="alert alert-success" role="alert">
                        <strong>Código de accesso!</strong><h3><%= access_code %> </h3> agregado con éxito.
                     </div>
+                    <div lang="en" class="alert alert-success" role="alert">
+                       <strong>Access code</strong><h3><%= access_code %> </h3> successfully added.
+                    </div>
                     <% }else if(existe==1){ %>
-                    <div class="alert alert-danger" role="alert">
+                    <div lang="es" class="alert alert-danger" role="alert">
                        <strong>Código de accesso </strong><h3><%= access_code %> </h3>ya registrado.
+                    </div>  
+                    <div lang="en" class="alert alert-danger" role="alert">
+                       <strong>Access code </strong><h3><%= access_code %> </h3> already exists.
                     </div>  
                     <% }
                     } %>
@@ -33,13 +40,16 @@
                     <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Instructores</h4>
-                                <p class="card-category">Lista de asistentes creados desde Classmarker.</p>
+                                <h4 lang="es" class="card-title">Consultores</h4>
+                                <h4 lang="en" class="card-title">Consultants</h4>
+                                <p lang="es" class="card-category">Lista de asistentes creados desde Classmarker.</p>
+                                <p lang="en" class="card-category">Assistants list available.</p>
                             </div>
                             <div class="card-body table-full-width table-responsive">
                                 <table class="table table-hover table-striped">
                                     <thead>
-                                        <th>Correo electrónico</th>
+                                        <th lang="es">Correo electrónico</th>
+                                        <th lang="en">Email</th>
                                         <th></th>
                                         <th></th>
                                     </thead>
@@ -51,8 +61,14 @@
                                               <% if(item.sa==0){ %>
                                                 <td><%= item.local.email%></td>
                                                 <!-- Se envia por GET el id del instructor -->
-                                                <td><a href="/newlink/<%= item._id %>">Asociar código de accesso</a></td>
-                                                <td><a href="/link_inst/<%= item._id %>">Ver enlace</a></td>
+                                                <td>
+                                                    <a lang="es" href="/newlink/<%= item._id %>">Asociar código de accesso</a>
+                                                    <a lang="en" href="/newlink/<%= item._id %>">Asociate access code</a>
+                                                </td>
+                                                <td>
+                                                    <a lang="es" href="/link_inst/<%= item._id %>">Ver enlace</a>
+                                                    <a lang="en" href="/link_inst/<%= item._id %>">Links</a>
+                                                </td>
                                           </tr>
                                           <% }}}); %>
                                     </tbody>
