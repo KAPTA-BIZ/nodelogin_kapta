@@ -108,7 +108,10 @@ p,span{
 	background-image: linear-gradient(rgba(196, 102, 0, 0.1), #ff5423);
 }
 
-
+#switch-lang{
+  background-size: 100%;
+  padding: 8px 10px !important;
+}
 
 
 form input[type=password]:focus:not([readonly]),

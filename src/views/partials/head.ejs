@@ -23,4 +23,88 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+<script>
+$(function () {
+  
+  function langButtonListen(){
+    $("#switch-lang").click(function(e){
+      e.preventDefault();
+      $('[lang="en"]').toggle();
+      $('[lang="es"]').toggle();
+
+      //Switch cookie
+      if (Cookies.get('lang') === 'en') {
+        Cookies.set('lang', 'es', { expires: 7 });
+      } else {
+        Cookies.set('lang', 'en', { expires: 7 });
+      }
+
+    })
+  }
+  console.log(Cookies.get('lang'))
+
+  if (Cookies.get('lang')) {
+    var lang = Cookies.get('lang');
+    if (lang === 'en') {
+      console.log("english")
+      $('[lang="es"]').hide();
+      langButtonListen();
+    } else {
+      $('[lang="en"]').hide();
+      langButtonListen();
+    }
+  }else{
+    $('[lang="en"]').hide();
+    if("geolocation" in navigator){
+      console.log("available", navigator)
+      navigator.geolocation.getCurrentPosition(function(position){
+        var lat = position.coords.latitude, lon = position.coords.longitude
+        $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+lon+'&sensor=true', null, function (response) {
+          var country = response.results[response.results.length-1].formatted_address;
+          
+          if(country === 'Colombia' || country === 'Peru' || country === 'Argentina' || country === 'Panama' || country === 'España' || country === 'Chile' || country === 'Salvador' || country === 'Costa Rica'){
+            $('[lang="en"]').hide();
+            Cookies.set('lang','es', {expires: 7})
+            langButtonListen();
+          }else{
+            $('[lang="es"]').hide();
+            Cookies.set('lang','en', {expires: 7})
+            langButtonListen();
+          }
+        }).fail(
+          function (err){
+            console.log("Failed to connect", err);
+            $('[lang="en"]').hide();
+            Cookies.set('lang','es', {expires: 7})
+            langButtonListen();
+          })
+      },
+      function(err){
+        if(err.code == err.PERMISSION_DENIED){
+          console.log("Permission denied", err);
+          $('[lang="en"]').hide();
+          Cookies.set('lang','es', {expires: 7})
+          langButtonListen();
+        }else{
+          console.log("Unknown error ", err);
+          $('[lang="en"]').hide();
+          Cookies.set('lang','es', {expires: 7})
+          langButtonListen();
+        }
+      })
+    }else{
+      console.log("Geo is not available ", err);
+      $('[lang="en"]').hide();
+      Cookies.set('lang','es', {expires: 7})
+      langButtonListen();
+    }
+  }
+
+
+})
+
+
+</script>
 

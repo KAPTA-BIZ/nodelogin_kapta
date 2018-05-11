@@ -2,51 +2,82 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Login</title>
+    <title lang="es">Registrar consultor</title>
+    <title lang="en">Login</title>
     <% include partials/head %>
   </head>
   <body class="signup">
-    <div id="bg-cont">
-        <div class="container">
-            <div class="col-sm-12 col-lg-6 mx-auto" style="margin-top: 25vh;">
-              <div class="card mt-5">
-                <div class="card-body">
-                  <!-- messages -->
-                    <div class="col-sm-12 ">
-                      <div class="row">
-                        <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
-                            <img src=/img/logo/kapta.png alt="logo de K@PTA"/>
-                        </div>
+    <section class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <div style="position: absolute; max-width: 80%; z-index: 3; margin: 30vh auto auto 5%; ">
+            <div class="col-sm-3">
+            <button lang="es" onclick="history.back()" class="btn">Volver atrás</button>
+            <button lang="en" onclick="history.back()" class="btn">Go back</button>
+            </div>
+            <h3 style="color: white;">
+              <span lang="es">Registre sus consultores en esta pantalla. Debe añadir el correo para que ellos accedan y la contraseña.</span>
+              <span lang="en">Register yours consultants at this screen. You must add the email and the password.</span>
+            </h3>
+            <br />
+            <div class="col-sm-2">
+              <button id="switch-lang" class="btn">
+                <span lang="en">EN</span>
+                <span lang="es">ES</span>
+                <img lang="es" src="../../img/lang/spanish.png" width="30" />
+                <img lang="en" src="../../img/lang/english.png" width="30" />
+              </button>
+            </div>
+
+          </div>
+          <div id="bg-cont"></div>
+        </div>
+        
+        <div class="col" style="background:white; height: 100vh;">
+          <div class="container">
+            <div class="col-sm-12 col-lg-8 mx-auto" style="margin-top: 25vh;">
+
+                <div class="col-sm-12 ">
+                    <div class="row">
+                      <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
+                          <img src=/img/logo/kapta.png alt="logo de K@PTA"/>
                       </div>
                     </div>
-
-                    <br />
-   
-                  <% if (message.length > 0) { %>
-                    <div class="alert alert-danger">
-                      <%= message %>
-                    </div>
-                  <% } %>
-      
-                  <!-- form -->
-                  <form action="/signup" method="post">
-                    <div class="form-group">
-                      <label for="email">Correo electrónico</label>
-                      <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="password">Contraseña</label>
-                      <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <input type="submit" class="btn btn-dark btn-lg" value="Registrar Instructor">
-                  </form>
-                  <div class="text-center">
                   </div>
+                  <hr />
+
+                <% if (message.length > 0) { %>
+                  <div class="alert alert-danger">
+                    <%= message %>
+                  </div>
+                <% } %>
+
+                <!-- form -->
+                <form action="/signup" method="post">
+                  <div class="form-group">
+                    <label for="email">
+                      <span lang="en">Email</span>
+                      <span lang="es">Correo electrónico</span>
+                    </label>
+                    <input type="email" name="email" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">
+                      <span lang="en">Password</span>
+                      <span lang="es">Contraseña</span>
+                    </label>
+                    <input type="password" name="password" class="form-control" required>
+                  </div>
+                  <input lang="es" type="submit" class="btn btn-dark btn-lg" value="Registrar">
+                  <input lang="en" type="submit" class="btn btn-dark btn-lg" value="Sign up">
+                </form>
+                <div class="text-center">
                 </div>
-              </div>
             </div>
           </div>
-      
-    </div>
+        </div>
+      </div>
+    </section>
+
     </body>
 </html>

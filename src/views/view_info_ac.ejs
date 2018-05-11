@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<title>Detalles de Evaluación</title>
+    <title lang="es">Detalles de Evaluación</title>
+    <title lang="en">Evaluation details</title>
+
     <% include partials/head %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 </head>
@@ -40,7 +42,8 @@
                     <div class="col-md-12">
                       <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Enlace "<%= access_code %>" no encontrado<br><br></h4>
+                                <h4 lang="es" class="card-title">Enlace "<%= access_code %>" no encontrado<br><br></h4>
+                                <h4 lang="en" class="card-title">Link "<%= access_code %>" not found<br><br></h4>
                             </div>
                         </div>
                     </div>
@@ -50,7 +53,8 @@
 
                 <div class="row">
                     <div class="col-4">
-                        <button onclick="history.back()" class="btn">Volver atrás</button>
+                        <button lang="es" onclick="history.back()" class="btn">Volver atrás</button>
+                        <button lang="en" onclick="history.back()" class="btn">Go back</button>
                     </div>
                 </div>
                 <br>
@@ -59,7 +63,8 @@
                     <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Usuario con código de accesso: <%= access_code %><br><br></h4>
+                                <h4 lang="es" class="card-title">Participante con código de accesso: <%= access_code %><br><br></h4>
+                                <h4 lang="en" class="card-title">Participant with access code: <%= access_code %><br><br></h4>
                             </div>
                         </div>
                     </div>
@@ -67,12 +72,13 @@
                 
                 <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
-                            <h4 class="card-title">Resultados generales</h4>
+                            <h4 lang="es" class="card-title">Resultados generales</h4>
+                            <h4 lang="en" class="card-title">Overall results</h4>
                         </div>
                         <div class="card-body table-full-width table-responsive">
                         <table class="table table-hover table-striped">
                                 <thead>
-                                    <tr>
+                                    <tr lang="es">
                                         <th>Código de Accesso</th>
                                         <th>Puntos Obtenidos</th>
                                         <th>Puntos Totales</th>
@@ -81,6 +87,16 @@
                                         <th>Tiempo</th>
                                         <th>Fecha presentación</th>
                                         <th>Categoría(s)</th>
+                                    </tr>
+                                    <tr lang="en">
+                                        <th>Access code</th>
+                                        <th>Points scored</th>
+                                        <th>Points available</th>
+                                        <th>Percentage</th>
+                                        <th>Questions amount</th>
+                                        <th>Time</th>
+                                        <th>Date</th>
+                                        <th>Category</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,15 +135,21 @@
                 
                     <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
-                            <h4 class="card-title">Resultados por categorías</h4>
+                            <h4 lang="es" class="card-title">Resultados por categorías</h4>
+                            <h4 lang="en" class="card-title">Category statistics</h4>
                         </div>
                         <div class="card-body table-full-width table-responsive">
                             <table class="table table-hover table-striped">
                             <thead>
-                                <tr>
+                                <tr lang="es">
                                     <th>Categoria</th>
                                     <th>Porcentaje</th>
                                     <th>Puntos obtenidos</th>
+                                </tr>
+                                <tr lang="en">
+                                    <th>Category</th>
+                                    <th>Percentage</th>
+                                    <th>Points scored</th>
                                 </tr>
                             </thead> 
                                 <% result.forEach(function(results){ %>
@@ -217,12 +239,27 @@
                 
                     <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
-                            <h4 class="card-title">Estadísticas de categorías</h4>
-                            <p class="card-category">Significado de color. <br>
-                            <br/> 
-                            En color <b style="background-color: #0B0B61; color:#0B0B61">choosecolor</b> Porcentaje del participante obtenido en la categoría seleccionada
-                            <br /> 
-                            En color <b style="background-color: #FF8000; color:#FF8000">choosecolor</b> Promedio del porcentaje obtenido por los demas participantes en la categoría seleccionada
+                            <h4 lang="es" class="card-title">Estadísticas de categorías</h4>
+                            <h4 lang="en" class="card-title">Statistics of Categories</h4>
+
+                            <p class="card-category">
+                            <span lang="es">
+                                Significado de color. 
+                            </span>
+                            <span lang="en">
+                                Color meaning.
+                            </span>
+
+                            <br />
+                            <br/>
+
+                            <span lang="es">
+                                En color <b style="background-color: #FF8000; color:#FF8000">choosecolor</b> Promedio del porcentaje obtenido por los participantes en esta categoría.
+                            </span>
+                            <span lang="en">
+                                With <b style="background-color: #FF8000; color:#FF8000">choosecolor</b> color : Average of percentage obtained by the participants in this category.
+                            </span>
+                            
                             </p>
                             <br>
                         </div>
@@ -231,7 +268,8 @@
                 
                         <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Categorías presentadas</h4>
+                                <h4 lang="es" class="card-title">Categorías presentadas</h4>
+                                <h4 lang="en" class="card-title">Categories</h4>
                             </div>
                             <div class="card-body table-full-width table-responsive">
                                 <canvas id="category_chart" height="400" width="900"></canvas>
@@ -241,15 +279,19 @@
                 
                     <div class="card strpied-tabled-with-hover">
                         <div class="card-header ">
-                            <h4 class="card-title">Resultados de preguntas</h4>
-                            <p class="card-category">Significado de simbolos de preguntas. <br>
+                            <h4 lang="es" class="card-title">Resultados de preguntas</h4>
+                            <h4 lang="en" class="card-title">Results by question</h4>
+                            <p lang="es" class="card-category">Significado de simbolos de preguntas.</p>
+                            <p lang="en" class="card-category">Icons and their meaning.</p>
+                            <br />
                             <hr />
                             <div class="row">
                                 <div class="col-md-3">
                                     <i class="fas fa-check text-success"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <p>Respuesta Correcta.</p>
+                                    <p lang="es">Respuesta Correcta.</p>
+                                    <p lang="en">Correct answer.</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -257,7 +299,8 @@
                                     <i class="fas fa-times text-danger"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <p>Respuesta incorrecta.</p>
+                                    <p lang="es">Respuesta incorrecta.</p>
+                                    <p lang="en">Wrong answer.</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -265,7 +308,8 @@
                                     <i class="fas fa-check text-danger"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <p>Respuesta correcta que el participante no seleccionó.</p>
+                                    <p lang="es">Respuesta correcta sin responder.</p>
+                                    <p lang="en">Correct answer without responding.</p>
                                 </div>
                             </div>
                         </div>
@@ -346,7 +390,8 @@
                                         <table class="table table-hover table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Opciones de respuesta</th>
+                                                <th lang="es">Opciones de respuesta</th>
+                                                <th lang="en">Question options</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -383,10 +428,6 @@
                                                 var splitUserAns = userres.split(',');
                                                 var classRender = "bg-light text-dark";
                                                 var classRenderAr = []
-    
-                                                console.log(items.questions[i])
-    
-                                                
     
                                                 // Review of to do
                                                 /** * Render the answer options */
@@ -474,7 +515,10 @@
                                                     </tr>
                                                 <% } 
                                                 }else{ %>
-                                                    <tr><td class="text-warning">Esta pregunta no ha sido respondida por el participante.</td></tr>
+                                                    <tr>
+                                                        <td lang="es" class="text-warning">Esta pregunta no ha sido respondida por el participante.</td>
+                                                        <td lang="en" class="text-warning">This question wasn't answered.</td>
+                                                    </tr>
                                                 <% } %>
                                             </tbody>
                                         </table>                            
@@ -484,7 +528,8 @@
                             <div class="col-md-3">
                                 <div class="card strpied-tabled-with-hover">
                                     <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted">Nombre de categoría</h6>    
+                                        <h6 lang="es" class="card-subtitle mb-2 text-muted">Nombre de categoría</h6>    
+                                        <h6 lang="en" class="card-subtitle mb-2 text-muted">Category name</h6>    
                                         <h4 class="card-title">
                                         
                                         <% long_b=(items.category_results.length);
@@ -495,7 +540,9 @@
                                         
                                         </h4>
                                         <hr />
-                                        <h6 class="card-subtitle mb-2 text-muted">Estado</h6>  
+                                        <h6 lang="es" class="card-subtitle mb-2 text-muted">Estado</h6> 
+                                        <h6 lang="en" class="card-subtitle mb-2 text-muted">Status</h6>  
+
                                         <% if(items.questions[i].result=="correct"){ %>
                                             <div class="row">
                                                 <div class="col-md-3">
@@ -504,7 +551,8 @@
                                                     src='http://img110.xooimage.com/files/6/f/0/si-5434f08.png'>
                                                 </div>
                                                 <div class="col-md-9">
-                                                    <p>El participante respondió correctamente.</p>
+                                                    <p lang="es">El participante respondió correctamente.</p>
+                                                    <p lang="en">Participant answered correctly.</p>
                                                 </div>
                                             </div>
                                             
@@ -516,15 +564,19 @@
                                                     src='http://img110.xooimage.com/files/5/7/3/no-5434f0b.png'>
                                                 </div>
                                                 <div class="col-md-9">
-                                                    <p>El participante no respondió correctamente.</p>
+                                                    <p lang="es">El participante no respondió correctamente.</p>
+                                                    <p lang="en">Participant answered incorrectly.</p>
                                                 </div>
                                             </div>
                                         <% } %>
                                         <%
                                           if(items.questions[i].result != "correct"){ %>
                                             <hr />
-                                            <p>Respuesta correcta: <%= items.questions[i].correct_option %></p>
-                                            <p>Respuesta del participante: <%= items.questions[i].user_response %></p>                                          
+                                            <p lang="es">Respuesta correcta: <%= items.questions[i].correct_option %></p>
+                                            <p lang="en">Correct answer: <%= items.questions[i].correct_option %></p>
+                                            
+                                            <p lang="es">Respuesta del participante: <%= items.questions[i].user_response %></p>
+                                            <p lang="en">Participant answer: <%= items.questions[i].user_response %></p>                                          
                                         <% } %>
                                     </div>
                                 </div> 

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<title>Busqueda Consultor</title>
+  <title lang="es">Busqueda Consultor</title>
+  <title lang="en">Busqueda Consultor</title>
 	<% include partials/head %>
 	 
 <body>
@@ -13,7 +14,7 @@
       <% include partials/navbar %>
 
       <div class="content">
-          <strong>Consultor</strong> : <% iduser=user.local.email %><%= iduser %> <br>   <br>
+          <strong lang="es">Consultor</strong><strong lang="en">Consultant</strong> : <% iduser=user.local.email %><%= iduser %> <br>   <br>
           <div class="container-fluid">
             
               <div class="row">
@@ -22,8 +23,11 @@
               <%if(result==""){%>
                 <div class="col-md-12">
                    <div class="card strpied-tabled-with-hover">
-                      <div class="card-header ">
-                         No hubo resultado para la busqueda <br><br>
+                      <div lang="es" class="card-header ">
+                         No hubo resultado para la busqueda. <br><br>
+                      </div>
+                      <div lang="en" class="card-header ">
+                         Sorry, there wasn't result for the search. <br><br>
                       </div>
                    </div>
                 </div>
@@ -32,7 +36,9 @@
                   <div class="col-4" style="margin: 20px;" >
                         <% if(sa==1){ var actionsearchdate = "/adminsearchandlink"}else{actionsearchdate = "/searchandlink"} %>
                         <form action=<%=actionsearchdate%> method="GET">
-                        <label for="exampleInputEmail1">Buscar por categoria</label><br>
+                        <label lang="es" for="exampleInputEmail1">Buscar por categoria</label>
+                        <label lang="en" for="exampleInputEmail1">Buscar por categoria</label>
+                        <br />
                         <select name="search" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
                            <% a = [] 
                         result.forEach(function(items){ 

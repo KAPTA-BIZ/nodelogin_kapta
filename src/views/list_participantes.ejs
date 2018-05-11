@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <title>Listado de participantes</title>
+    <title lang="es">Listado de participantes</title>
+    <title lang="en">Participants</title>
     <% include partials/head %>
 </head>
 
@@ -37,7 +38,8 @@
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Códigos de acceso utilizados</h6>    
+                                    <h6 lang="es" class="card-subtitle mb-2 text-muted">Códigos de acceso utilizados</h6>  
+                                    <h6 lang="en" class="card-subtitle mb-2 text-muted">Access code used</h6>    
                                     <h2 class="card-title text-center">
                                     <%= enlace.length %>
                                     </h2>
@@ -48,7 +50,8 @@
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Códigos de acceso disponibles</h6>    
+                                    <h6 lang="es" class="card-subtitle mb-2 text-muted">Códigos de acceso disponibles</h6>   
+                                    <h6 lang="en" class="card-subtitle mb-2 text-muted">Access code available</h6>    
                                     <h2 class="card-title text-center">
                                         <%= (disponibles.length)-(enlace.length) %>
                                     </h2>
@@ -59,7 +62,8 @@
                         <div class="col-md-4">
                             <div class="card strpied-tabled-with-hover">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Códigos de acceso Totales</h6>    
+                                    <h6 lang="es" class="card-subtitle mb-2 text-muted">Códigos de acceso Totales</h6>
+                                    <h6 lang="en" class="card-subtitle mb-2 text-muted">Total access code</h6>     
                                     <h2 class="card-title text-center">
                                         <%= (disponibles.length) %>
                                     </h2>
@@ -76,17 +80,24 @@
                             
                                 
                                 <div class="card-header ">
-                                    <h4 class="card-title">Mis Participantes</h4>
-                                    <p class="card-category">Listado de los participantes asignados a mi perfil.</p><br>
-                                     
+                                    <h4 lang="es" class="card-title">Mis Participantes</h4>
+                                    <h4 lang="en" class="card-title">My participants</h4>
+                                    <p lang="es" class="card-category">Listado de los participantes asignados a mi perfil.</p>
+                                    <p lang="en" class="card-category">List of participants assigned to my profile.</p>
+                                    <br /> 
                                 </div>
                                 
                                 <div class="card-body table-full-width table-responsive">
                                     <table class="table table-hover table-striped">
                                         <thead>
-                                            <tr>
+                                            <tr lang="es">
                                                 <th>Código de Acceso</th>
                                                 <th>Nombre de enlace de Evaluación</th>
+                                                <th></th>
+                                            </tr>
+                                            <tr lang="en">
+                                                <th>Access code</th>
+                                                <th>Link name</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -131,14 +142,16 @@
                                                             <% }) %>
                                                         </td>
                                                         <td>
-                                                            <a href="/viewinfo/<%=p_totales.access_code%>">Ver Detalles</a>
+                                                            <a lang="es" href="/viewinfo/<%=p_totales.access_code%>">Ver Detalles</a>
+                                                            <a lang="en" href="/viewinfo/<%=p_totales.access_code%>">Details</a>
                                                         </td>
                                                     <%
                                                     }else{ %>
                                                         <td>
                                                             <%= p_totales.access_code %>
                                                         </td>
-                                                        <td style="color: #ccc; font-weight: light;">Código sin usar</td>
+                                                        <td lang="es" style="color: #ccc; font-weight: light;">Código sin usar</td>
+                                                        <td lang="en" style="color: #ccc; font-weight: light;">Access code without using</td>
                                                         <td></td>
                                                     <% } %>
                                                         

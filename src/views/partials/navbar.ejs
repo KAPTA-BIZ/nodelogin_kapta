@@ -4,9 +4,11 @@
                 <% sa=user.sa; 
                     
                     if(sa==1){ %> 
-                        Administrador 
+                    <span lang="en">Admin</span>
+                    <span lang="es">Administrador</span>
                     <% }else{ %>
-                       Consultor  
+                    <span lang="en">Consultant</span>
+                    <span lang="es">Consultor</span> 
                     <% } %> 
                 
                 </a>
@@ -14,13 +16,22 @@
                 <div class="collapse navbar-collapse" id="navigation">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
+                            <button id="switch-lang" class="btn">
+                                <span lang="en">EN</span>
+                                <span lang="es">ES</span>
+                                <img lang="es" src="../../img/lang/spanish.png" width="30" />
+                                <img lang="en" src="../../img/lang/english.png" width="30" />
+                            </button>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link">
                                 <span style="color:gray" class="no-icon"><%= user.local.email %></span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">
-                                <span style="color:gray"  class="no-icon">Salir</span>
+                                <span lang="en" style="color:gray" class="no-icon">Log out</span>
+                                <span lang="es" style="color:gray" class="no-icon">Salir</span>
                             </a>
                         </li>
                     </ul>

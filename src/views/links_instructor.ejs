@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<title>Evaluaciones</title>
+    <title lang="es">Evaluaciones</title>
+    <title lang="en">Evaluations</title>
 	<% include partials/head %>
 </head>
 <body>
@@ -18,14 +19,16 @@
                     <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover">
                             <div class="card-header ">
-                                <h4 class="card-title">Evaluaciones asociadas a <%= resultUser[0].local.email %></h4>
-                                <p class="card-category">Lista de nombres de evaluaciones disponibles para su perfil. Haga clic en el botón azul de la derecha para ingresar a la evaluación y ver sus resultados.</p>
+                                
+                                <p lang="es" class="card-category">Lista de nombres de evaluaciones disponibles para su perfil. Haga clic en el botón azul de la derecha para ingresar a la evaluación y ver sus resultados.</p>
+                                <p lang="en" class="card-category">Evaluation's list availables for your profile. Click on the blue button at rigth to see the evaluation and its results.</p>
                             </div>
                             <div class="card-body table-full-width table-responsive">
                                 <table class="table table-hover table-striped">
                                     <thead>
                                         <tr>
-                                          <th>Nombre de evaluación</th>
+                                          <th lang="es">Nombre de evaluación</th>
+                                          <th lang="en">Evaluation's name</th>
                                           <th></th>
                                           <th></th>
                                         </tr>
@@ -36,7 +39,10 @@
                                           <!-- Filtrar id_inst con id capturado del instructor -->
                                           <% if((item.id_inst)==(id_inst)){ %>
                                               <td><%= item.link_name %></td>
-                                              <td><a href="/list_test/<%= item.link_url_id %>&<%= resultUser[0].id %>">Ver resultados</a></td>
+                                              <td>
+                                                <a lang="es" href="/list_test/<%= item.link_url_id %>&<%= resultUser[0].id %>">Ver resultados</a>
+                                                <a lang="en" href="/list_test/<%= item.link_url_id %>&<%= resultUser[0].id %>">See results</a>
+                                              </td>
                                               <td></td>
                                         </tr>
                                         <% }}); %>
