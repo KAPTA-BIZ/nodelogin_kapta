@@ -6,10 +6,12 @@ const userSchema = new mongoose.Schema({
         email: String,
         password: String,
     },
-    sa: String
+    sa: String,
+    admin_id: String,
+    admin_name: String
 });
 
-userSchema.methods.generateHash = function(password) {
+userSchema.methods.generateHash = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 

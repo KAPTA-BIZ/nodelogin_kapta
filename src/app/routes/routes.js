@@ -494,9 +494,9 @@ module.exports = (app, passport) => {
     
     //busqueda general de usuarios para despliegue de lista
     app.get('/list', isLoggedIn, (req, res) => {
-        UserSchema.find().exec((err, resultArray) => {
+        UserSchema.find({},null,{sort:{'local.email':1}},(err, resultArray) => {
             err?console.log(err):res.render('list', {items: resultArray, user:req.user})
-        })
+        });
     })
     
     

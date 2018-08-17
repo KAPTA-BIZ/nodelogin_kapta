@@ -1,85 +1,147 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title lang="es">Lista de consultores</title>
     <title lang="en">Consultants</title>
-	<% include partials/head %>
+    <% include partials/head %>
 </head>
+
 <body>
 
-     <% include partials/left_column %>
+    <% include partials/left_column %>
 
-    <div class="main-panel">
-        
-        <% include partials/navbar %>
+        <div class="main-panel">
 
-        <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <% if((typeof access_code !== 'undefined')&&(typeof existe !== 'undefined')){ 
+            <% include partials/navbar %>
+
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <% if((typeof access_code !== 'undefined')&&(typeof existe !== 'undefined')){ 
                     if(existe==2){
                     %>
-                    <div lang="es" class="alert alert-success" role="alert">
-                       <strong>Código de accesso!</strong><h3><%= access_code %> </h3> agregado con éxito.
-                    </div>
-                    <div lang="en" class="alert alert-success" role="alert">
-                       <strong>Access code</strong><h3><%= access_code %> </h3> successfully added.
-                    </div>
-                    <% }else if(existe==1){ %>
-                    <div lang="es" class="alert alert-danger" role="alert">
-                       <strong>Código de accesso </strong><h3><%= access_code %> </h3>ya registrado.
-                    </div>  
-                    <div lang="en" class="alert alert-danger" role="alert">
-                       <strong>Access code </strong><h3><%= access_code %> </h3> already exists.
-                    </div>  
-                    <% }
+                                <div lang="es" class="alert alert-success" role="alert">
+                                    <strong>Código de accesso!</strong>
+                                    <h3>
+                                        <%= access_code %>
+                                    </h3> agregado con éxito.
+                                </div>
+                                <div lang="en" class="alert alert-success" role="alert">
+                                    <strong>Access code</strong>
+                                    <h3>
+                                        <%= access_code %>
+                                    </h3> successfully added.
+                                </div>
+                                <% }else if(existe==1){ %>
+                                    <div lang="es" class="alert alert-danger" role="alert">
+                                        <strong>Código de accesso </strong>
+                                        <h3>
+                                            <%= access_code %>
+                                        </h3>ya registrado.
+                                    </div>
+                                    <div lang="en" class="alert alert-danger" role="alert">
+                                        <strong>Access code </strong>
+                                        <h3>
+                                            <%= access_code %>
+                                        </h3> already exists.
+                                    </div>
+                                    <% }
                     } %>
-                   
-                    
-                    
-                    <div class="col-md-12">
-                        <div class="card strpied-tabled-with-hover">
-                            <div class="card-header ">
-                                <h4 lang="es" class="card-title">Consultores</h4>
-                                <h4 lang="en" class="card-title">Consultants</h4>
-                                <p lang="es" class="card-category">Lista de asistentes creados desde Classmarker.</p>
-                                <p lang="en" class="card-category">Assistants list available.</p>
-                            </div>
-                            <div class="card-body table-full-width table-responsive">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <th lang="es">Correo electrónico</th>
-                                        <th lang="en">Email</th>
-                                        <th></th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody>
-                                        <% items.forEach(function(item) { %> 
-                                          <tr>
-                                            <% if(item.local) {%>
-                                            <!-- Muestra solo instructores -->
-                                              <% if(item.sa==0){ %>
-                                                <td><%= item.local.email%></td>
-                                                <!-- Se envia por GET el id del instructor -->
-                                                <td>
-                                                    <a lang="es" href="/newlink/<%= item._id %>">Asociar código de accesso</a>
-                                                    <a lang="en" href="/newlink/<%= item._id %>">Asociate access code</a>
-                                                </td>
-                                                <td>
-                                                    <a lang="es" href="/link_inst/<%= item._id %>">Ver enlace</a>
-                                                    <a lang="en" href="/link_inst/<%= item._id %>">Links</a>
-                                                </td>
-                                          </tr>
-                                          <% }}}); %>
-                                    </tbody>
-                                </table>
-                            </div>
+
+
+
+                                        <div class="col-md-12">
+                                            <div class="card strpied-tabled-with-hover">
+                                                <div class="card-header ">
+                                                    <h4 lang="es" class="card-title">Administradores</h4>
+                                                    <h4 lang="en" class="card-title">Administrators</h4>
+                                                </div>
+                                                <div class="card-body table-full-width table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <th lang="es">Correo electrónico</th>
+                                                            <th lang="en">Email</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% items.forEach(function(item) { %>
+                                                                <tr>
+                                                                    <% if(item.local) {%>
+                                                                        <!-- Muestra solo Administradores -->
+                                                                        <% if(item.sa==2){ %>
+                                                                            <td>
+                                                                                <%= item.local.email%>
+                                                                            </td>
+                                                                            <td>
+                                                                                <a lang="es" href="/newlink/<%= item._id %>">Asignar prueba</a>
+                                                                                <a lang="en" href="/newlink/<%= item._id %>">Assign test</a>
+                                                                            </td>
+                                                                            <td>
+                                                                                <a lang="es" href="/link_inst/<%= item._id %>">Ver pruebas</a>
+                                                                                <a lang="en" href="/link_inst/<%= item._id %>">Tests</a>
+                                                                            </td>
+                                                                </tr>
+                                                                <% }}}); %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="card strpied-tabled-with-hover">
+                                                <div class="card-header ">
+                                                    <h4 lang="es" class="card-title">Consultores</h4>
+                                                    <h4 lang="en" class="card-title">Consultants</h4>
+                                                </div>
+                                                <div class="card-body table-full-width table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <th lang="es">Correo electrónico</th>
+                                                            <th lang="en">Email</th>
+                                                            <th lang="es">Administrador</th>
+                                                            <th lang="en">Administrator</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% items.forEach(function(item) { %>
+                                                                <tr>
+                                                                    <% if(item.local) {%>
+                                                                        <!-- Muestra solo Administradores -->
+                                                                        <% if(item.sa==0){ %>
+                                                                            <td>
+                                                                                <%= item.local.email%>
+                                                                            </td>
+                                                                            <% if(item.admin_name){%>
+                                                                                <td>
+                                                                                    <%= item.admin_name%>
+                                                                                </td>
+                                                                            <%}else{%>
+                                                                                <td>*</td>
+                                                                            <%}%>
+                                                                            <td>
+                                                                                <a lang="es" href="/newlink/<%= item._id %>">Asignar prueba</a>
+                                                                                <a lang="en" href="/newlink/<%= item._id %>">Assign test</a>
+                                                                            </td>
+                                                                            <td>
+                                                                                <a lang="es" href="/link_inst/<%= item._id %>">Ver pruebas</a>
+                                                                                <a lang="en" href="/link_inst/<%= item._id %>">Tests</a>
+                                                                            </td>
+                                                                </tr>
+                                                                <% }}}); %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                         </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-    </div>
+        </div>
 
 </body>
+
 </html>
