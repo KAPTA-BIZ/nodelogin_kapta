@@ -63,10 +63,27 @@
                   </div>
                   <div class="form-group">
                     <label for="password">
-                      <span lang="en">Password</span>
-                      <span lang="es">Contraseña</span>
+                      <span lang="en">New password</span>
+                      <span lang="es">Contraseña nueva</span>
                     </label>
                     <input type="password" name="password" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="validatePwd">
+                      <span lang="en">Confirm new password</span>
+                      <span lang="es">Confirmar ontraseña</span>
+                    </label>
+                    <input type="password" onpaste="return false" name="validatePwd" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="userType">
+                      <span lang="en">User Type</span>
+                      <span lang="es">Tipo de usuario</span>
+                    </label>
+                    <select type="password" name="userType" class="form-control" required>
+                      <option>Administrador</option>
+                      <option>Consultor</option>
+                    </select>
                   </div>
                   <input lang="es" type="submit" class="btn btn-dark btn-lg" value="Registrar">
                   <input lang="en" type="submit" class="btn btn-dark btn-lg" value="Sign up">

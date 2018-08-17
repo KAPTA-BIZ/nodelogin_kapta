@@ -27,6 +27,7 @@ var storageTestHook = require('./storage/StorageTestHook');
 var storageTestWh = require('./storageWebHook/StorageTestWh');
 var mongo = require('mongodb');
 var assert = require('assert');
+const API_Test = require('../models/API_Test');
 
 
 mongoose.Promise = global.Promise;
@@ -149,14 +150,11 @@ module.exports = (app, passport) => {
     });*/
 
 
-    /*------- REGISTRO VIEW ONLY SUPER ADMIN -------
+    /* ----------------  REGISTER NEW USER ONLY SUPER ADMIN --------------*/
+    //Autentica a SuperAdmin comprobando que req.user.sa exista
     app.get('/signup', isLoggedIn, (req, res) => {
-        res.render('signup', {
-            message: req.flash('signupMessage')
-        });
-    });*/
-
-    //Vista simple para SignUp (Todos los usuarios)
+        req.user.sa==1?(res.render('signup', { user: req.user, message: req.flash('signupMessage')})):(res.sendStatus(404))
+    });
 
 
     /*----------------- REGISTRO POST-------------------*/
@@ -175,10 +173,23 @@ module.exports = (app, passport) => {
     app.get('/profile', isLoggedIn, (req, res) => {
         
         console.log("USERAQUI", req.user.sa)
-        
-        //user.sa=1 Admin
+        if(req.user.sa==1){
+            API_Test.find({},null,{sort:{test_name:1}},(err,results)=>{
+                if(err){
+                    console.log(err);
+                }
+                res.render('profile',
+                {
+                    Tests: results,
+                    participantes: "0", ///---->pendiente ppor verificar
+                    user:req.user
+                });
+            })
+        }
+
+/*
+
         req.user.sa==1?
-        
             res.render('profile', 
             {
             lresult: "0",
@@ -243,6 +254,7 @@ module.exports = (app, passport) => {
             })//aSchema.find({id_ins: req.user.id})
           })//TestSchema.find({link_url_id: {$in: arrayResult}})
         })//LSchema
+*/
     })
         
         
@@ -339,12 +351,7 @@ module.exports = (app, passport) => {
     }
 
 
-    /* ---------------- LOGIN SUPER ADMIN --------------*/
-    //Autentica a SuperAdmin comprobando que req.user.sa exista
     
-    app.get('/signup', isLoggedIn, (req, res) => {
-        req.user.sa==1?(res.render('signup', { user: req.user, message: req.flash('signupMessage')})):(res.sendStatus(404))
-    });
 
     /* --------------- REGISTRAR PARTICIPANTE -------------*/
     
@@ -436,13 +443,8 @@ module.exports = (app, passport) => {
     //para sincronizar link con instructor
     
     app.post('/newlink', isLoggedIn, (req, res) => {
-        
         //accesscode ingresado
-        var access_code = req.body.access_code;
-        
-        //console.log("primera_letra", access_code.charAt(0))
-        //console.log("segunda_letra", access_code.charAt(1))
-        
+        var access_code = req.body.access_code;        
         
         //id inst
         var id_ins = req.body.id_inst
@@ -452,45 +454,39 @@ module.exports = (app, passport) => {
         aSchema.find({access_code: access_code }).exec((err, existAc) => {
             if(err){console.log(err)}
             
-            else{
+            else
+            {                           
+                if(existAc.length)
+                {
+                    UserSchema.find().exec((err, resultArray) => {
+                    err?console.log(err):res.render('list', {
+                        items: resultArray, 
+                        user:req.user,
+                        existe: 1,
+                        access_code: access_code})
+                    })
+                }else{            
+                    const Save = new aSchema({		
+                    access_code: access_code,
+                    id_ins: id_ins
+                    });	
+        
+                    Save.save(function (err, access_code_inserted){		
+                        console.log("----- access_code_inserted ----- ")		
+                        err?console.log(err):
+                        UserSchema.find().exec((err, resultArray) => {
+                        err?console.log(err):res.render('list', {
+                            items: resultArray, 
+                            user:req.user,
+                            access_code: access_code,
+                            existe: 2})
+                        })	
+                    }) 
                 
+                }  
+            }
             
-        if(existAc.length)
-        {
-            UserSchema.find().exec((err, resultArray) => {
-            err?console.log(err):res.render('list', {
-                items: resultArray, 
-                user:req.user,
-                existe: 1,
-                access_code: access_code
-            })
-          })
-        }else{
-            
-            const Save = new aSchema({		
-            access_code: access_code,
-            id_ins: id_ins
-            
-        });	
-        
-        Save.save(function (err, access_code_inserted){		
-            console.log("----- access_code_inserted ----- ")		
-            err?console.log(err):
-            UserSchema.find().exec((err, resultArray) => {
-            err?console.log(err):res.render('list', {
-                items: resultArray, 
-                user:req.user,
-                access_code: access_code,
-                existe: 2
-            })
-          })	
-        }) 
-        
-        }  
-        }//else aSchema
-            
-        })//aSchema.find({access_code: access_code })
-        
+        })        
     });
     
     
@@ -505,24 +501,22 @@ module.exports = (app, passport) => {
     
     
     /*-------------------- VISTA DE LINKS POR INSTRUCTOR ---------------------*/
-    
-    
     app.get('/link_inst/:id', isLoggedIn, (req, res) => {
         if((req.user._id==req.params.id)||(req.user.sa==1))
-        {
-            
-        LSchema.find().exec((err, resultArray) => {
-            err?console.log(err):
-            UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
+        {            
+            LSchema.find().exec((err, resultArray) => {
                 err?console.log(err):
-                console.log("COMPROBAR",resultUser)
-                res.render('links_instructor', {
-                    items: resultArray, 
-                    user: req.user, 
-                    id_inst: req.params.id, 
-                    resultUser: resultUser})
-          })
-        })
+                UserSchema.find({_id: req.params.id}).exec((err, resultUser) => {
+                    err?console.log(err):
+                    console.log("COMPROBAR",resultUser)
+                    res.render('links_instructor', {
+                        items: resultArray, 
+                        user: req.user, 
+                        id_inst: req.params.id, 
+                        resultUser: resultUser
+                    })
+                    })
+                })
         
         }else{ (res.sendStatus(404)) }
     });
@@ -581,16 +575,13 @@ module.exports = (app, passport) => {
     /*-------------------- VISTA DE TEST POR LINK ---------------------*/
     //Se hace busqueda en categorias en general, dentro de esta se hace busqueda en Test con el link_url_id
     //igualando al id enviado, se retornan variables de las categorias, del test asociado y val=0 por defecto para posterior busqueda
-    
-   
-    
+  
     app.get('/list_test/:id&:iduser', isLoggedIn, cod_sin, (req, res) => {
         
         var usuario = req.user
         var id_link = req.params.id
         var id_user = req.params.iduser
         var allresult =  req.cod_sin
-        
         
         //valida si el usuario actual coincide con la url, con el fin de evitar ver otros usuarios
         
