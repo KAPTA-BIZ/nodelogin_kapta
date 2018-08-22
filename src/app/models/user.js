@@ -7,8 +7,12 @@ const userSchema = new mongoose.Schema({
         password: String,
     },
     sa: String,
+    admin_name: String,
     admin_id: String,
-    admin_name: String
+    assignments: [{
+        assignment_id: String,
+        by: String
+    }]
 });
 
 userSchema.methods.generateHash = function (password) {

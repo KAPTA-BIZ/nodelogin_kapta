@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <script type="text/javascript">
+        var Tests = <%- JSON.stringify(Tests) %>;
+        function populate() {
+            var s1 = document.getElementById("testlist");
+            var s2 = document.getElementById("linklist");
+            var test_name_input = document.getElementById("test_name");
+            var test_id_input = document.getElementById("test_id");
+            s2.innerHTML = "";
+            if (s1.value > -1) {
+                var option = document.createElement("option");
+                option.value = "-1";
+                option.innerHTML = "...";
+                s2.options.add(option);
+                test_name_input.value = Tests[s1.value].test_name;
+                test_id_input.value = Tests[s1.value].test_id;
+                for (link in Tests[s1.value].links) {
+                    var option = document.createElement("option");
+                    option.value = link;
+                    option.innerHTML = Tests[s1.value].links[link].link_name;
+                    s2.options.add(option);
+                }
+            }
+        }
+        function set_link() {
+            var s1 = document.getElementById("testlist");
+            var s2 = document.getElementById("linklist");
+            var link_name_input = document.getElementById("link_name")
+            var link_id_input = document.getElementById("link_id")
+            var link_url_id_input = document.getElementById("link_url_id")
+            var access_list_id_input = document.getElementById("access_list_id")
+
+            if (s2.value < 0) {
+                link_name_input.value = "";
+                link_id_input.value = "";
+                link_url_id_input.value = "";
+                access_list_id_input.value = "";
+            } else {
+                link_name_input.value = Tests[s1.value].links[s2.value].link_name;
+                link_id_input.value = Tests[s1.value].links[s2.value].link_id;
+                link_url_id_input.value = Tests[s1.value].links[s2.value].link_url_id;
+                access_list_id_input.value = Tests[s1.value].links[s2.value].access_list_id;
+            }
+
+        }
+
+    </script>
+    <% include partials/head %>
+</head>
+
+<body class="signup">
+    <section id="bg-cont">
+
+
+        <div class="container">
+            <div class="col-sm-6 mx-auto">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <!-- messages -->
+
+                        <div class="col-sm-12 ">
+                            <div class="row">
+                                <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
+                                    <img src=/img/logo/kapta.png alt="logo de K@PTA" />
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="col-sm-12" style="margin-top: 20px;">
+                            <h1>Asignar prueba</h1>
+                        </div>
+
+                        <!-- form -->
+                        <form action="/setnewtest" method="post">
+                            <div class="form-group">
+                                <label for="testlist">
+                                    <span lang="es">Seleccione prueba</span>
+                                    <span lang="en">Choose test</span>
+                                </label>
+                                <select name="testlist" id="testlist" class="form-control" required onchange="populate()">
+                                    <option selecte value="-1">...</option>
+                                    <% Tests.forEach(function(Test,index) { %>
+                                        <option value="<%=index%>">
+                                            <%=Test.test_name %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                                <input name="test_name" id="test_name" style="display:none" />
+                                <input name="test_id" id="test_id" style="display:none" />
+                                <input name="user_id" id="user_id" style="display:none" value="<%=user%>" />
+                            </div>
+                            <div class="form-group">
+                                <label for="linklist">
+                                    <span lang="es">Seleccione link</span>
+                                    <span lang="en">Choose link</span>
+                                </label>
+                                <select name="linklist" id="linklist" class="form-control" required onchange="set_link()">
+                                    <option selected></option>
+                                </select>
+                                <input name="link_name" id="link_name" style="display:none" />
+                                <input name="link_id" id="link_id" style="display:none" />
+                                <input name="link_url_id" id="link_url_id" style="display:none" />
+                                <input name="access_list_id" id="access_list_id" style="display:none" />
+                            </div>
+                            <div class="form-group">
+                                <label for="MaxCodes">
+                                    <span lang="es">Indique el número máximo de códigos</span>
+                                    <span lang="en">Specify the maximum number of codes</span>
+                                </label>
+                                <input type="number" name="MaxCodes" id="MaxCodes" class="form-control" required/>
+
+                            </div>
+                            <a lang="es" href="" class="btn btn-dark btn-lg">Actualizar</a>
+                            <a lang="en" href="" class="btn btn-dark btn-lg">Update</a>
+
+                            <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
+                        </form>
+
+                        <hr>
+                        <div class="text-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+</body>
+
+</html>

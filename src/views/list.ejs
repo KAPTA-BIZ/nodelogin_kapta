@@ -69,17 +69,19 @@
                                                             <% items.forEach(function(item) { %>
                                                                 <tr>
                                                                     <% if(item.local) {%>
-                                                                        <!-- Muestra solo Administradores -->
                                                                         <% if(item.sa==2){ %>
                                                                             <td>
                                                                                 <%= item.local.email%>
                                                                             </td>
                                                                             <td>
-                                                                                <a lang="es" href="/newlink/<%= item._id %>">Asignar prueba</a>
-                                                                                <a lang="en" href="/newlink/<%= item._id %>">Assign test</a>
+                                                                                <a lang="es" href="/setnewtest/<%= item._id %>">Asignar
+                                                                                    prueba</a>
+                                                                                <a lang="en" href="/setnewtest/<%= item._id %>">Assign
+                                                                                    test</a>
                                                                             </td>
                                                                             <td>
-                                                                                <a lang="es" href="/link_inst/<%= item._id %>">Ver pruebas</a>
+                                                                                <a lang="es" href="/link_inst/<%= item._id %>">Ver
+                                                                                    pruebas</a>
                                                                                 <a lang="en" href="/link_inst/<%= item._id %>">Tests</a>
                                                                             </td>
                                                                 </tr>
@@ -110,7 +112,6 @@
                                                             <% items.forEach(function(item) { %>
                                                                 <tr>
                                                                     <% if(item.local) {%>
-                                                                        <!-- Muestra solo Administradores -->
                                                                         <% if(item.sa==0){ %>
                                                                             <td>
                                                                                 <%= item.local.email%>
@@ -119,17 +120,31 @@
                                                                                 <td>
                                                                                     <%= item.admin_name%>
                                                                                 </td>
-                                                                            <%}else{%>
-                                                                                <td>*</td>
-                                                                            <%}%>
-                                                                            <td>
-                                                                                <a lang="es" href="/newlink/<%= item._id %>">Asignar prueba</a>
-                                                                                <a lang="en" href="/newlink/<%= item._id %>">Assign test</a>
-                                                                            </td>
-                                                                            <td>
-                                                                                <a lang="es" href="/link_inst/<%= item._id %>">Ver pruebas</a>
-                                                                                <a lang="en" href="/link_inst/<%= item._id %>">Tests</a>
-                                                                            </td>
+                                                                                <td>
+                                                                                    <a lang="es" href="/setnewtest/<%= item._id %>/<%= item.admin_id %>">Asignar
+                                                                                        prueba</a>
+                                                                                    <a lang="en" href="/setnewtest/<%= item._id %>/<%= item.admin_id %>">Assign
+                                                                                        test</a>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <a lang="es" href="/link_inst/<%= item._id %>/<%= item.admin_id %>">Ver
+                                                                                        pruebas</a>
+                                                                                    <a lang="en" href="/link_inst/<%= item._id %>/<%= item.admin_id %>">Tests</a>
+                                                                                </td>
+                                                                                <%}else{%>
+                                                                                    <td>*</td>
+                                                                                    <td>
+                                                                                        <a lang="es" href="/setnewtest/<%= item._id %>">Asignar
+                                                                                            prueba</a>
+                                                                                        <a lang="en" href="/setnewtest/<%= item._id %>">Assign
+                                                                                            test</a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <a lang="es" href="/link_inst/<%= item._id %>">Ver
+                                                                                            pruebas</a>
+                                                                                        <a lang="en" href="/link_inst/<%= item._id %>">Tests</a>
+                                                                                    </td>
+                                                                                    <%}%>
                                                                 </tr>
                                                                 <% }}}); %>
                                                         </tbody>
