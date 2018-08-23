@@ -1,12 +1,12 @@
 <div style="position:fixed;" class="sidebar" data-color="orange" data-image="/img/sidebar-kapta.png">
-        <div class="sidebar-wrapper">
-            <div class="logo">
-                <a href="/profile" rel="noopener noreferrer" className="simple-text">
-                    <img src="/img/logo/kapta_white.png" alt="logo de K@PTA"/>
-                </a>
-            </div>
-            <ul class="nav">
-                <% if (sa == 1){ %>
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <a href="/profile" rel="noopener noreferrer" className="simple-text">
+                <img src="/img/logo/kapta_white.png" alt="logo de K@PTA" />
+            </a>
+        </div>
+        <ul class="nav">
+            <% if (sa == 1){ %>
                 <li class="nav-item">
                     <a class="nav-link" href="/profile">
                         <i class="nc-icon nc-notes"></i>
@@ -17,8 +17,8 @@
                 <li>
                     <a class="nav-link" href="/list">
                         <i class="nc-icon nc-circle-09"></i>
-                        <p lang="en">Consultants</p>
-                        <p lang="es">Consultores</p>
+                        <p lang="en">Users</p>
+                        <p lang="es">Usuarios</p>
                     </a>
                 </li>
                 <li>
@@ -29,10 +29,10 @@
                     </a>
                 </li>
                 <% } %>
-                        
-                <% if (sa == 0){ %>
 
-                    <li class="nav-item">
+                    <% if (sa == 0){ %>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="/profile">
                                 <i class="nc-icon nc-notes"></i>
                                 <p lang="en">Home</p>
@@ -54,15 +54,15 @@
                             </a>
                         </li>
 
-                <% } %>
+                        <% } %>
 
-                <li class="nav-item active active-pro">
-                    <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">
-                        <i class="nc-icon nc-bag"></i>
-                        <p lang="en">About K@PTA</p>
-                        <p lang="es">Acerca de K@PTA</p>
-                    </a>
-                </li>
-            </ul>
-        </div>
+                            <li class="nav-item active active-pro">
+                                <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">
+                                    <i class="nc-icon nc-bag"></i>
+                                    <p lang="en">About K@PTA</p>
+                                    <p lang="es">Acerca de K@PTA</p>
+                                </a>
+                            </li>
+        </ul>
     </div>
+</div>

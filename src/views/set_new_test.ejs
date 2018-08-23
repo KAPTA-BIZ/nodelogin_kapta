@@ -61,8 +61,6 @@
             <div class="col-sm-6 mx-auto">
                 <div class="card mt-5">
                     <div class="card-body">
-                        <!-- messages -->
-
                         <div class="col-sm-12 ">
                             <div class="row">
                                 <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
@@ -75,55 +73,69 @@
                             <h1>Asignar prueba</h1>
                         </div>
 
-                        <!-- form -->
-                        <form action="/setnewtest" method="post">
-                            <div class="form-group">
-                                <label for="testlist">
-                                    <span lang="es">Seleccione prueba</span>
-                                    <span lang="en">Choose test</span>
-                                </label>
-                                <select name="testlist" id="testlist" class="form-control" required onchange="populate()">
-                                    <option selecte value="-1">...</option>
-                                    <% Tests.forEach(function(Test,index) { %>
-                                        <option value="<%=index%>">
-                                            <%=Test.test_name %>
-                                        </option>
-                                        <% }); %>
-                                </select>
-                                <input name="test_name" id="test_name" style="display:none" />
-                                <input name="test_id" id="test_id" style="display:none" />
-                                <input name="user_id" id="user_id" style="display:none" value="<%=user%>" />
+                        <!-- Message -->
+                        <% if(typeof message !== 'undefined' && message==1){ %>
+                            <div class="alert alert-danger" role="alert">
+                                <strong lang="es">Error!! Debe seleccionar un link</strong>
+                                <strong lang="en">Error!!! You must select a link</strong>
                             </div>
-                            <div class="form-group">
-                                <label for="linklist">
-                                    <span lang="es">Seleccione link</span>
-                                    <span lang="en">Choose link</span>
-                                </label>
-                                <select name="linklist" id="linklist" class="form-control" required onchange="set_link()">
-                                    <option selected></option>
-                                </select>
-                                <input name="link_name" id="link_name" style="display:none" />
-                                <input name="link_id" id="link_id" style="display:none" />
-                                <input name="link_url_id" id="link_url_id" style="display:none" />
-                                <input name="access_list_id" id="access_list_id" style="display:none" />
-                            </div>
-                            <div class="form-group">
-                                <label for="MaxCodes">
-                                    <span lang="es">Indique el número máximo de códigos</span>
-                                    <span lang="en">Specify the maximum number of codes</span>
-                                </label>
-                                <input type="number" name="MaxCodes" id="MaxCodes" class="form-control" required/>
+                            <%}else if(typeof message !== 'undefined' && message==2){ %>
+                                <div class="alert alert-success" role="alert">
+                                    <strong lang="es">Las pruebas fueron actualizadas</strong>
+                                    <strong lang="en">the tests were updated</strong>
+                                </div>
+                                <%}%>
 
-                            </div>
-                            <a lang="es" href="/setnewtest_updated/<%=user%>" class="btn btn-dark btn-lg">Actualizar</a>
-                            <a lang="en" href="/setnewtest_updated/<%=user%>" class="btn btn-dark btn-lg">Update</a>
+                                    <!-- form -->
+                                    <form action="/setnewtest" method="post">
+                                        <div class="form-group">
+                                            <label for="testlist">
+                                                <span lang="es">Seleccione prueba</span>
+                                                <span lang="en">Choose test</span>
+                                            </label>
+                                            <select name="testlist" id="testlist" class="form-control" required onchange="populate()">
+                                                <option selecte value="-1">...</option>
+                                                <% Tests.forEach(function(Test,index) { %>
+                                                    <option value="<%=index%>">
+                                                        <%=Test.test_name %>
+                                                    </option>
+                                                    <% }); %>
+                                            </select>
+                                            <input name="test_name" id="test_name" style="display:none" />
+                                            <input name="test_id" id="test_id" style="display:none" />
+                                            <input name="user_id" id="user_id" style="display:none" value="<%=user%>" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="linklist">
+                                                <span lang="es">Seleccione link</span>
+                                                <span lang="en">Choose link</span>
+                                            </label>
+                                            <select name="linklist" id="linklist" class="form-control" required onchange="set_link()">
+                                                <option selected></option>
+                                            </select>
+                                            <input name="link_name" id="link_name" style="display:none" />
+                                            <input name="link_id" id="link_id" style="display:none" />
+                                            <input name="link_url_id" id="link_url_id" style="display:none" />
+                                            <input name="access_list_id" id="access_list_id" style="display:none" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="MaxCodes">
+                                                <span lang="es">Indique el número máximo de códigos</span>
+                                                <span lang="en">Specify the maximum number of codes</span>
+                                            </label>
+                                            <input type="number" name="MaxCodes" id="MaxCodes" class="form-control" required/>
 
-                            <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
-                        </form>
+                                        </div>
 
-                        <hr>
-                        <div class="text-center">
-                        </div>
+                                        <a lang="es" href="/setnewtest_updated/<%=user%>" class="btn btn-dark btn-lg">Actualizar</a>
+                                        <a lang="en" href="/setnewtest_updated/<%=user%>" class="btn btn-dark btn-lg">Update</a>
+
+                                        <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
+                                    </form>
+
+                                    <hr>
+                                    <div class="text-center">
+                                    </div>
                     </div>
                 </div>
             </div>

@@ -446,6 +446,7 @@ module.exports = (app, passport) => {
                 if (err) { throw err }
                 res.render('set_new_test_cons', {
                     user: req.params.cons_id,
+                    user_admin: req.params.admin_id,
                     Tests: tests
                 });
             });
@@ -453,15 +454,43 @@ module.exports = (app, passport) => {
     })
 
     app.post('/setnewtest_cons', isLoggedIn, (req, res) => {
-        UserSchema.findByIdAndUpdate(req.body.user_id, { $push: { assignments: { assignment_id: req.body.testlist, by: req.user.local.email } } }, (err, doc) => {
-            if (err) { throw err }
-            UserSchema.find({}, null, {sort:{'local.email':1}},(err, resultArray) => {
-                err ? console.log(err) : res.render('list', {
-                    items: resultArray,
-                    user: req.user,
+        if (req.body.testlist == -1) {
+            UserSchema.findById(req.body.user_id, 'assignments', (err, consult_assigments) => {
+                console.log("holaaaa");
+                console.log(consult_assigments);
+                if (err) { throw err }
+                var exceptions = [];
+                if (consult_assigments.assignments.length > 0) {
+                    console.log("???");
+                    consult_assigments.assignments.forEach(function (item) {
+                        exceptions.push(item.assignment_id);
+                        console.log(item);
+                    });
+                }
+                console.log(exceptions);
+                Assignments.find({ $and: [{ 'user_id': req.body.admin_id }, { '_id': { $nin: exceptions } }] }, 'test_name', { sort: { test_name: 1 } }, (err, tests) => {
+                    console.log("adiosssss");
+                    console.log(tests);
+                    if (err) { throw err }
+                    res.render('set_new_test_cons', {
+                        user: req.body.user_id,
+                        user_admin: req.body.admin_id,
+                        Tests: tests,
+                        message: 1
+                    });
+                });
+            });
+        } else {
+            UserSchema.findByIdAndUpdate(req.body.user_id, { $push: { assignments: { assignment_id: req.body.testlist, by: req.user.local.email } } }, (err, doc) => {
+                if (err) { throw err }
+                UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+                    err ? console.log(err) : res.render('list', {
+                        items: resultArray,
+                        user: req.user,
+                    })
                 })
             })
-        })
+        }
     })
 
 
@@ -481,34 +510,57 @@ module.exports = (app, passport) => {
                 console.log(tests.length);
                 res.render('set_new_test', {
                     user: req.params.id,
-                    Tests: tests
+                    Tests: tests,
                 });
             })
         })
     })
 
     app.post('/setnewtest', isLoggedIn, (req, res) => {
-        var newAssignment = new Assignments();
-        newAssignment.test_id = req.body.test_id;
-        newAssignment.test_name = req.body.test_name;
-        newAssignment.link_name = req.body.link_name;
-        newAssignment.link_id = req.body.link_id;
-        newAssignment.link_url_id = req.body.link_url_id;
-        newAssignment.access_list_id = req.body.access_list_id;
-        newAssignment.user_id = req.body.user_id;
-        newAssignment.codes_max = req.body.MaxCodes;
-        newAssignment.codes_created = 0;
-        newAssignment.codes_used = 0;
-        newAssignment.save(function (err) {
-            if (err) { console.log(err); }
-
-            UserSchema.find({}, null, {sort:{'local.email':1}},(err, resultArray) => {
-                err ? console.log(err) : res.render('list', {
-                    items: resultArray,
-                    user: req.user,
+        console.log(req.body.linklist)
+        if (req.body.linklist == -1) {
+            Assignments.find({ 'user_id': req.body.user_id }, 'test_id', (err, results) => {
+                if (err) { throw err }
+                var exceptions = [];
+                if (results.length > 0) {
+                    results.forEach(function (item) {
+                        exceptions.push(item.test_id);
+                    });
+                }
+                API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
+                    if (err) { throw err }
+                    console.log("estoy aca");
+                    console.log(tests.length);
+                    res.render('set_new_test', {
+                        user: req.body.user_id,
+                        Tests: tests,
+                        message: 1
+                    });
                 })
             })
-        });
+        } else {
+            var newAssignment = new Assignments();
+            newAssignment.test_id = req.body.test_id;
+            newAssignment.test_name = req.body.test_name;
+            newAssignment.link_name = req.body.link_name;
+            newAssignment.link_id = req.body.link_id;
+            newAssignment.link_url_id = req.body.link_url_id;
+            newAssignment.access_list_id = req.body.access_list_id;
+            newAssignment.user_id = req.body.user_id;
+            newAssignment.codes_max = req.body.MaxCodes;
+            newAssignment.codes_created = 0;
+            newAssignment.codes_used = 0;
+            newAssignment.save(function (err) {
+                if (err) { console.log(err); }
+
+                UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+                    err ? console.log(err) : res.render('list', {
+                        items: resultArray,
+                        user: req.user,
+                    })
+                })
+            });
+        }
     })
 
     app.get('/setnewtest_updated/:id', isLoggedIn, (req, res) => {
@@ -521,7 +573,7 @@ module.exports = (app, passport) => {
                     var newTest = new Object;
                     newTest.test_id = cleanBody['links'][0]['link']['assigned_tests'][0]['test']['test_id'];
                     newTest.test_name = cleanBody['links'][0]['link']['assigned_tests'][0]['test']['test_name'];
-        
+
                     var newLink = new Object;
                     newLink.link_name = cleanBody['links'][0]['link']['link_name'];
                     newLink.link_url_id = cleanBody['links'][0]['link']['link_url_id'];
@@ -529,7 +581,7 @@ module.exports = (app, passport) => {
                     newLink.access_list_id = cleanBody['links'][0]['link']['access_list_id'];
                     newTest.links = [newLink];
                     testsArray.push(newTest);
-        
+
                     for (var j = 1; j < LinksNumber; j++) {
                         var testFromJson = cleanBody['links'][j]['link']['assigned_tests'][0]['test']['test_id'];
                         for (var i = 0; i < testsArray.length; i++) {
@@ -556,9 +608,9 @@ module.exports = (app, passport) => {
                             }
                         }
                     }
-        
+
                 }
-        
+
                 API_Test.remove({}, (err) => {
                     if (!err) { }
                     updateTests(0, testsArray.length);
@@ -567,24 +619,24 @@ module.exports = (app, passport) => {
                 //->se debe manejar este error (no se pudo actualizar)
                 console.log(error);
             }
-        
+
         });
-        
+
         function updateTests(i, imax) {
             if (i < imax) {
-        
+
                 var newAPI_Test = new API_Test({
                     test_id: testsArray[i].test_id,
                     test_name: testsArray[i].test_name,
                     links: testsArray[i].links
                 });
-        
+
                 newAPI_Test.save((err) => {
                     if (err) console.log(err);
                     //--->se debe manejar este error al guardar datos
                     updateTests(i + 1, imax)
                 })
-        
+
             } else {
                 Assignments.find({ 'user_id': req.params.id }, 'test_id', (err, results) => {
                     if (err) { throw err }
@@ -600,7 +652,8 @@ module.exports = (app, passport) => {
                         console.log(tests.length);
                         res.render('set_new_test', {
                             user: req.params.id,
-                            Tests: tests
+                            Tests: tests,
+                            message: 2
                         });
                     })
                 })

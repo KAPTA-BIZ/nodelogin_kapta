@@ -9,13 +9,11 @@
 
 <body class="signup">
     <section id="bg-cont">
-
-
         <div class="container">
             <div class="col-sm-6 mx-auto">
                 <div class="card mt-5">
                     <div class="card-body">
-                         <div class="col-sm-12 ">
+                        <div class="col-sm-12 ">
                             <div class="row">
                                 <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
                                     <img src=/img/logo/kapta.png alt="logo de K@PTA" />
@@ -26,31 +24,38 @@
                         <div class="col-sm-12" style="margin-top: 20px;">
                             <h1>Asignar prueba</h1>
                         </div>
-
-                        <!-- form -->
-                        <form action="/setnewtest_cons" method="post">
-                            <div class="form-group">
-                                <label for="testlist">
-                                    <span lang="es">Seleccione prueba</span>
-                                    <span lang="en">Choose test</span>
-                                </label>
-                                <select name="testlist" id="testlist" class="form-control" required>
-                                    <option selecte value="-1">...</option>
-                                    <% Tests.forEach(function(Test) { %>
-                                        <option value="<%=Test._id%>">
-                                            <%=Test.test_name %>
-                                        </option>
-                                        <% }); %>
-                                </select>
-                                <input name="user_id" id="user_id" style="display:none" value="<%=user%>" />
+                        <!-- Message -->
+                        <% if(typeof message !== 'undefined' && message==1){ %>
+                            <div class="alert alert-danger" role="alert">
+                                <strong lang="es">Error!! Debe seleccionar un link</strong>
+                                <strong lang="en">Error!!! You must select a link</strong>
                             </div>
+                            <%}%>
+                                <!-- form -->
+                                <form action="/setnewtest_cons" method="post">
+                                    <div class="form-group">
+                                        <label for="testlist">
+                                            <span lang="es">Seleccione prueba</span>
+                                            <span lang="en">Choose test</span>
+                                        </label>
+                                        <select name="testlist" id="testlist" class="form-control" required>
+                                            <option selecte value="-1">...</option>
+                                            <% Tests.forEach(function(Test) { %>
+                                                <option value="<%=Test._id%>">
+                                                    <%=Test.test_name %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                        <input name="user_id" id="user_id" style="display:none" value="<%=user%>" />
+                                        <input name="admin_id" id="admin_id" style="display:none" value="<%=user_admin%>" />
+                                    </div>
 
-                            <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
-                        </form>
+                                    <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
+                                </form>
 
-                        <hr>
-                        <div class="text-center">
-                        </div>
+                                <hr>
+                                <div class="text-center">
+                                </div>
                     </div>
                 </div>
             </div>
