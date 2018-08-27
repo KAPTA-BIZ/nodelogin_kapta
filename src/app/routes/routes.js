@@ -133,24 +133,6 @@ module.exports = (app, passport) => {
         });
     });
 
-
-    /*-------------------------- JOIN PROJECT END ----------------------------*/
-
-    /*app.get('/', (req, res) => {
-        //res.render('index');
-        res.render('login', {
-            message: req.flash('loginMessage')
-        });
-    });*/
-
-    /*------------- LOGIN VIEW ------------------*/
-    /*app.get('/login', (req, res) => {
-        res.render('login', {
-            message: req.flash('loginMessage')
-        });
-    });*/
-
-
     /* ----------------  REGISTER NEW USER ONLY SUPER ADMIN --------------*/
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     app.get('/signup', isLoggedIn, (req, res) => {
@@ -167,28 +149,40 @@ module.exports = (app, passport) => {
         session: false
     }));
 
-
-
     /*------------------- VIEW PERFIL ------------------*/
-
     app.get('/profile', isLoggedIn, (req, res) => {
-        if (req.user.sa == 1) {
-            API_Test.find({}, null, { sort: { test_name: 1 } }, (err, results) => {
-                if (err) {
-                    console.log(err);
-                }
+        switch (req.user.sa) {
+            case '1':
+                API_Test.find({}, null, { sort: { test_name: 1 } }, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    res.render('profile',
+                        {
+                            Tests: results,
+                            participantes: "0", ///---->pendiente ppor verificar
+                            user: req.user
+                        });
+                })
+                break;
+
+            case '2':
                 res.render('profile',
                     {
-                        Tests: results,
-                        participantes: "0", ///---->pendiente ppor verificar
                         user: req.user
                     });
-            })
-        } else if (req.user.sa == 2) {
-            res.render('profile',
-                {
-                    user: req.user
-                });
+                break;
+
+            case '0':
+                res.render('profile', {
+                    user: req.user,
+                    participantes: ''
+                })
+                break;
+
+            default:
+                console.log('emmm');
+                console.log(req.user.sa);
         }
 
         /*
@@ -754,6 +748,18 @@ module.exports = (app, passport) => {
                     user: req.user,
                     items: resultArray
                 });
+            });
+        } else if (req.user.sa == 0) {
+            var assignedTests = [];
+            req.user.assignments.forEach(function (item) {
+                assignedTests.push(item.assignment_id);
+            });
+            Assignments.find({ _id: { $in: assignedTests } }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
+                if (err) { throw err; }
+                res.render('tests_list', {
+                    user: req.user,
+                    items: resultArray
+                })
             });
         }
     });
