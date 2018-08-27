@@ -30,10 +30,16 @@ module.exports = function (passport) {
                     var newUser = new User();
                     newUser.local.email = email;
                     newUser.local.password = newUser.generateHash(password);
-                    if (req.body.userType == 'Administrador')
-                        newUser.sa = '2';
-                    else
-                        newUser.sa = '0'
+                    if (req.user.sa == 1) {
+                        if (req.body.userType == 'Administrador')
+                            newUser.sa = '2';
+                        else
+                            newUser.sa = '0';
+                    } else if (req.user.sa == 2) {
+                        newUser.sa = '0';
+                        newUser.admin_name = req.user.local.email,
+                            newUser.admin_id = req.user._id
+                    }
                     newUser.save(function (err) {
                         if (err) { throw err; }
                         return done(null, newUser);
@@ -57,8 +63,8 @@ module.exports = function (passport) {
                 }
                 if (!user.validatePassword(password)) {
                     return done(null, false, req.flash('loginMessage', 'Password incorrecto'));
-                }                   
-                return done(null, user);              
+                }
+                return done(null, user);
             })
         }));
 

@@ -15,7 +15,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link" href="/list">
+                    <a class="nav-link" href="/users_list">
                         <i class="nc-icon nc-circle-09"></i>
                         <p lang="en">Users</p>
                         <p lang="es">Usuarios</p>
@@ -55,6 +55,39 @@
                         </li>
 
                         <% } %>
+
+                        <% if (sa == 2){ %>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/profile">
+                                    <i class="nc-icon nc-notes"></i>
+                                    <p lang="en">Home</p>
+                                    <p lang="es">Inicio</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="/tests_list/<%= user._id %>">
+                                    <i class="nc-icon nc-attach-87"></i>
+                                    <p lang="en">Evaluations</p>
+                                    <p lang="es">Evaluaciones</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="/users_list/<%= user._id %>">
+                                    <i class="nc-icon nc-circle-09"></i>
+                                    <p lang="en">Consultants</p>
+                                    <p lang="es">Consultores</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="/list_part">
+                                    <i class="nc-icon nc-badge"></i>
+                                    <p lang="en">My participants</p>
+                                    <p lang="es">Mis participantes</p>
+                                </a>
+                            </li>
+    
+                            <% } %>
 
                             <li class="nav-item active active-pro">
                                 <a class="nav-link active" href="http://kapta.biz" rel="noopener noreferrer" target="_blank">

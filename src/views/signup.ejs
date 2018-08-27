@@ -75,6 +75,7 @@
                     </label>
                     <input type="password" onpaste="return false" name="validatePwd" class="form-control" required>
                   </div>
+                  <% if (user.sa==1){%>
                   <div class="form-group">
                     <label for="userType">
                       <span lang="en">User Type</span>
@@ -85,6 +86,7 @@
                       <option>Consultor</option>
                     </select>
                   </div>
+                  <%}%>
                   <input lang="es" type="submit" class="btn btn-dark btn-lg" value="Registrar">
                   <input lang="en" type="submit" class="btn btn-dark btn-lg" value="Sign up">
                 </form>

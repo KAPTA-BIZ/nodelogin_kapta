@@ -154,7 +154,7 @@ module.exports = (app, passport) => {
     /* ----------------  REGISTER NEW USER ONLY SUPER ADMIN --------------*/
     //Autentica a SuperAdmin comprobando que req.user.sa exista
     app.get('/signup', isLoggedIn, (req, res) => {
-        req.user.sa == 1 ? (res.render('signup', { user: req.user, message: req.flash('signupMessage') })) : (res.sendStatus(404))
+        req.user.sa >= 1 ? (res.render('signup', { user: req.user, message: req.flash('signupMessage') })) : (res.sendStatus(404))
     });
 
 
@@ -172,8 +172,6 @@ module.exports = (app, passport) => {
     /*------------------- VIEW PERFIL ------------------*/
 
     app.get('/profile', isLoggedIn, (req, res) => {
-
-        console.log("USERAQUI", req.user.sa)
         if (req.user.sa == 1) {
             API_Test.find({}, null, { sort: { test_name: 1 } }, (err, results) => {
                 if (err) {
@@ -186,6 +184,11 @@ module.exports = (app, passport) => {
                         user: req.user
                     });
             })
+        } else if (req.user.sa == 2) {
+            res.render('profile',
+                {
+                    user: req.user
+                });
         }
 
         /*
@@ -727,35 +730,32 @@ module.exports = (app, passport) => {
         })
     });
 
-
-    /*-------------------- VISTA INSTRUCTOR ---------------------*/
-
-    //busqueda general de usuarios para despliegue de lista
-    app.get('/list', isLoggedIn, (req, res) => {
+    //busqueda total de usuarios (solo superadmin)
+    app.get('/users_list', isLoggedIn, (req, res) => {
         UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
             err ? console.log(err) : res.render('list', { items: resultArray, user: req.user })
         });
     })
 
+    //busqueda  usuarios asociados a un administrador (solo admin)
+    app.get('/users_list/:id', isLoggedIn, (req, res) => {
+        UserSchema.find({ 'admin_id': req.params.id }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+            if (err) { throw err; }
+            res.render('list', { items: resultArray, user: req.user });
+        });
+    })
 
     /*-------------------- VISTA DE LINKS POR INSTRUCTOR ---------------------*/
-    app.get('/link_inst/:id', isLoggedIn, (req, res) => {
-        if ((req.user._id == req.params.id) || (req.user.sa == 1)) {
-            LSchema.find().exec((err, resultArray) => {
-                err ? console.log(err) :
-                    UserSchema.find({ _id: req.params.id }).exec((err, resultUser) => {
-                        err ? console.log(err) :
-                            console.log("COMPROBAR", resultUser)
-                        res.render('links_instructor', {
-                            items: resultArray,
-                            user: req.user,
-                            id_inst: req.params.id,
-                            resultUser: resultUser
-                        })
-                    })
-            })
-
-        } else { (res.sendStatus(404)) }
+    app.get('/tests_list/:id', isLoggedIn, (req, res) => {
+        if (req.user.sa == 2) {
+            Assignments.find({ 'user_id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
+                if (err) { throw err; }
+                res.render('tests_list', {
+                    user: req.user,
+                    items: resultArray
+                });
+            });
+        }
     });
 
 
