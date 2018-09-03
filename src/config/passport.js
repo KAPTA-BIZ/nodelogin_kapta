@@ -37,8 +37,7 @@ module.exports = function (passport) {
                             newUser.sa = '0';
                     } else if (req.user.sa == 2) {
                         newUser.sa = '0';
-                        newUser.admin_name = req.user.local.email,
-                            newUser.admin_id = req.user._id
+                        newUser.admin_email = req.user.local.email
                     }
                     newUser.save(function (err) {
                         if (err) { throw err; }

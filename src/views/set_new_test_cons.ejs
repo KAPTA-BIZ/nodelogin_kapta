@@ -4,6 +4,17 @@
 <head>
     <meta charset="utf-8">
     <title>Login</title>
+    <script type="text/javascript">
+        var Tests = <%- JSON.stringify(Tests) %>;
+        function changeMaxValue(index) {
+
+            var inputMaxCodes = document.getElementById("maxcodes");
+            if (index > 0)
+                inputMaxCodes.setAttribute("max", Tests[index - 1].codes_availables);
+            else
+                inputMaxCodes.setAttribute("max", 0);
+        }
+    </script>
     <% include partials/head %>
 </head>
 
@@ -38,7 +49,7 @@
                                             <span lang="es">Seleccione prueba</span>
                                             <span lang="en">Choose test</span>
                                         </label>
-                                        <select name="testlist" id="testlist" class="form-control" required>
+                                        <select name="testlist" id="testlist" class="form-control" onchange="changeMaxValue(this.selectedIndex)" required>
                                             <option selecte value="-1">...</option>
                                             <% Tests.forEach(function(Test) { %>
                                                 <option value="<%=Test._id%>">
@@ -46,8 +57,13 @@
                                                 </option>
                                                 <% }); %>
                                         </select>
-                                        <input name="user_id" id="user_id" style="display:none" value="<%=user%>" />
-                                        <input name="admin_id" id="admin_id" style="display:none" value="<%=user_admin%>" />
+                                        <label for="maxcodes">
+                                            <span lang="es">Indique el número máximo de códigos</span>
+                                            <span lang="en">Specify the maximum number of codes</span>
+                                        </label>
+                                        <input type="number" class="form-control" name="maxcodes" id="maxcodes" min="1" max="0" required>
+                                        <input name="consultant_email" id="consultant_email" style="display:none" value="<%=consultant.local.email%>" />
+                                        <input name="admin_email" id="admin_email" style="display:none" value="<%=admin.local.email%>" />
                                     </div>
 
                                     <input type="submit" class="btn btn-dark btn-lg" value="Registrar">

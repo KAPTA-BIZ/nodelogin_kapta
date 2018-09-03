@@ -44,7 +44,10 @@ module.exports = (app, passport) => {
     /*------------------------- JOIN PROJECT START----------------------------*/
 
     app.get('/', (req, res, next) => {
-        //res.render('home/index.jsx', {foo: 'bar'});
+        /*res.render('signup',{
+            message: "",
+            user: {sa:1}
+        });*/
         res.render('login', {
             message: req.flash('loginMessage')
         });
@@ -422,101 +425,49 @@ module.exports = (app, passport) => {
     });
 
     /*-------------- Assign new test (consult users)--------------*/
-    app.get('/setnewtest/:cons_id/:admin_id', isLoggedIn, (req, res) => {
-        UserSchema.findById(req.params.cons_id, 'assignments', (err, consult_assigments) => {
-            console.log("holaaaa");
-            console.log(consult_assigments);
+    app.get('/setnewtest_cons/:cons_id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.cons_id, null, (err, consulant) => {
             if (err) { throw err }
-            var exceptions = [];
-            console.log();
-            if (consult_assigments.assignments.length > 0) {
-                console.log("???");
-                consult_assigments.assignments.forEach(function (item) {
-                    exceptions.push(item.assignment_id);
-                    console.log(item);
-                });
-            }
-            console.log(exceptions);
-            Assignments.find({ $and: [{ 'user_id': req.params.admin_id }, { '_id': { $nin: exceptions } }] }, 'test_name', { sort: { test_name: 1 } }, (err, tests) => {
-                console.log("adiosssss");
-                console.log(tests);
+            Assignments.find({ $and: [{ 'admin_email': req.user.local.email }, { 'users.email': { $ne: consulant.local.email } }] }, null, { sort: { 'test_name': 1 } }, (err, tests) => {
                 if (err) { throw err }
                 res.render('set_new_test_cons', {
-                    user: req.params.cons_id,
-                    user_admin: req.params.admin_id,
+                    consultant: consulant,
+                    admin: req.user,
                     Tests: tests
-                });
+                })
             });
         });
+
     })
 
     app.post('/setnewtest_cons', isLoggedIn, (req, res) => {
-        if (req.body.testlist == -1) {
-            UserSchema.findById(req.body.user_id, 'assignments', (err, consult_assigments) => {
-                console.log("holaaaa");
-                console.log(consult_assigments);
+        if (req.body.testlist != -1) {
+            Assignments.findByIdAndUpdate(req.body.testlist, {
+                $push: {
+                    'users': {
+                        email: req.body.consultant_email,
+                        codes_max: req.body.maxcodes,
+                        codes_created: 0,
+                        codes_used: 0,
+                        created_by: req.body.admin_email
+                    }
+                }, $inc: { 'codes_availables': -req.body.maxcodes }
+            }, (err, doc) => {
                 if (err) { throw err }
-                var exceptions = [];
-                if (consult_assigments.assignments.length > 0) {
-                    console.log("???");
-                    consult_assigments.assignments.forEach(function (item) {
-                        exceptions.push(item.assignment_id);
-                        console.log(item);
-                    });
-                }
-                console.log(exceptions);
-                Assignments.find({ $and: [{ 'user_id': req.body.admin_id }, { '_id': { $nin: exceptions } }] }, 'test_name', { sort: { test_name: 1 } }, (err, tests) => {
-                    console.log("adiosssss");
-                    console.log(tests);
-                    if (err) { throw err }
-                    res.render('set_new_test_cons', {
-                        user: req.body.user_id,
-                        user_admin: req.body.admin_id,
-                        Tests: tests,
-                        message: 1
-                    });
+                UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+                    if (err) { throw err; }
+                    res.render('list', { items: resultArray, user: req.user });
                 });
             });
-        } else {
-            UserSchema.findByIdAndUpdate(req.body.user_id, { $push: { assignments: { assignment_id: req.body.testlist, by: req.user.local.email } } }, (err, doc) => {
-                if (err) { throw err }
-                UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
-                    err ? console.log(err) : res.render('list', {
-                        items: resultArray,
-                        user: req.user,
-                    })
-                })
-            })
         }
     })
 
 
     /*-------------- Assign new test (admin users)--------------*/
     app.get('/setnewtest/:id', isLoggedIn, (req, res) => {
-        Assignments.find({ 'user_id': req.params.id }, 'test_id', (err, results) => {
+        UserSchema.findById(req.params.id, 'local.email', (err, admin) => {
             if (err) { throw err }
-            var exceptions = [];
-            if (results.length > 0) {
-                results.forEach(function (item) {
-                    exceptions.push(item.test_id);
-                });
-            }
-            API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
-                if (err) { throw err }
-                console.log("estoy aca");
-                console.log(tests.length);
-                res.render('set_new_test', {
-                    user: req.params.id,
-                    Tests: tests,
-                });
-            })
-        })
-    })
-
-    app.post('/setnewtest', isLoggedIn, (req, res) => {
-        console.log(req.body.linklist)
-        if (req.body.linklist == -1) {
-            Assignments.find({ 'user_id': req.body.user_id }, 'test_id', (err, results) => {
+            Assignments.find({ 'admin_email': admin.local.email }, 'test_id', (err, results) => {
                 if (err) { throw err }
                 var exceptions = [];
                 if (results.length > 0) {
@@ -526,38 +477,13 @@ module.exports = (app, passport) => {
                 }
                 API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
                     if (err) { throw err }
-                    console.log("estoy aca");
-                    console.log(tests.length);
                     res.render('set_new_test', {
-                        user: req.body.user_id,
+                        admin: { id: req.params.id, email: admin.local.email },
                         Tests: tests,
-                        message: 1
                     });
-                })
-            })
-        } else {
-            var newAssignment = new Assignments();
-            newAssignment.test_id = req.body.test_id;
-            newAssignment.test_name = req.body.test_name;
-            newAssignment.link_name = req.body.link_name;
-            newAssignment.link_id = req.body.link_id;
-            newAssignment.link_url_id = req.body.link_url_id;
-            newAssignment.access_list_id = req.body.access_list_id;
-            newAssignment.user_id = req.body.user_id;
-            newAssignment.codes_max = req.body.MaxCodes;
-            newAssignment.codes_created = 0;
-            newAssignment.codes_used = 0;
-            newAssignment.save(function (err) {
-                if (err) { console.log(err); }
-
-                UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
-                    err ? console.log(err) : res.render('list', {
-                        items: resultArray,
-                        user: req.user,
-                    })
-                })
+                });
             });
-        }
+        });
     })
 
     app.get('/setnewtest_updated/:id', isLoggedIn, (req, res) => {
@@ -635,7 +561,35 @@ module.exports = (app, passport) => {
                 })
 
             } else {
-                Assignments.find({ 'user_id': req.params.id }, 'test_id', (err, results) => {
+                UserSchema.findById(req.params.id, 'local.email', (err, admin) => {
+                    if (err) { throw err }
+                    Assignments.find({ 'admin_email': admin.local.email }, 'test_id', (err, results) => {
+                        if (err) { throw err }
+                        var exceptions = [];
+                        if (results.length > 0) {
+                            results.forEach(function (item) {
+                                exceptions.push(item.test_id);
+                            });
+                        }
+                        API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
+                            if (err) { throw err }
+                            res.render('set_new_test', {
+                                admin: { id: req.params.id, email: admin.local.email },
+                                Tests: tests,
+                                message: 2
+                            });
+                        });
+                    });
+                });
+            }
+        }
+    })
+
+    app.post('/setnewtest', isLoggedIn, (req, res) => {
+        if (req.body.linklist == -1) {
+            UserSchema.findOne({ 'local.email': req.body.admin_email }, '_id', (err, admin) => {
+                if (err) { throw err }
+                Assignments.find({ 'admin_email': req.body.admin_email }, 'test_id', (err, results) => {
                     if (err) { throw err }
                     var exceptions = [];
                     if (results.length > 0) {
@@ -645,18 +599,41 @@ module.exports = (app, passport) => {
                     }
                     API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
                         if (err) { throw err }
-                        console.log("estoy aca");
-                        console.log(tests.length);
                         res.render('set_new_test', {
-                            user: req.params.id,
+                            admin: { id: admin._id, email: req.body.admin_email },
                             Tests: tests,
-                            message: 2
+                            message: 1
                         });
+                    });
+                });
+            });
+        } else {
+            var newAssignment = new Assignments();
+            newAssignment.test_id = req.body.test_id;
+            newAssignment.test_name = req.body.test_name;
+            newAssignment.link_name = req.body.link_name;
+            newAssignment.link_id = req.body.link_id;
+            newAssignment.link_url_id = req.body.link_url_id;
+            newAssignment.access_list_id = req.body.access_list_id;
+            newAssignment.admin_email = req.body.admin_email;
+            newAssignment.codes_max = req.body.MaxCodes;
+            newAssignment.codes_created = 0;
+            newAssignment.codes_used = 0;
+            newAssignment.codes_availables = req.body.MaxCodes;
+            newAssignment.save(function (err) {
+                if (err) { console.log(err); }
+
+                UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+                    err ? console.log(err) : res.render('list', {
+                        items: resultArray,
+                        user: req.user,
                     })
                 })
-            }
+            });
         }
     })
+
+
 
     /*-------------- REGISTRAR LINK --------------*/
     //Se accede por GET al id del instructor y se lo pasa a la vista 
@@ -733,16 +710,16 @@ module.exports = (app, passport) => {
 
     //busqueda  usuarios asociados a un administrador (solo admin)
     app.get('/users_list/:id', isLoggedIn, (req, res) => {
-        UserSchema.find({ 'admin_id': req.params.id }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+        UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
             if (err) { throw err; }
             res.render('list', { items: resultArray, user: req.user });
         });
     })
 
-    /*-------------------- VISTA DE LINKS POR INSTRUCTOR ---------------------*/
+    /*-------------------- Vista de pruebas asignadas---------------------*/
     app.get('/tests_list/:id', isLoggedIn, (req, res) => {
         if (req.user.sa == 2) {
-            Assignments.find({ 'user_id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
+            Assignments.find({ 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
                 if (err) { throw err; }
                 res.render('tests_list', {
                     user: req.user,
@@ -762,6 +739,15 @@ module.exports = (app, passport) => {
                 })
             });
         }
+    });
+
+
+
+    /*-------------------VISTA DE PRUEBAS-------------------------------------------*/
+    app.get('/test_view/:assig_id', isLoggedIn, (req, res) => {
+        res.render('test_view', {
+            user: req.user
+        });
     });
 
 

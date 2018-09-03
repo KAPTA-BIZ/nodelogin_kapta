@@ -126,15 +126,15 @@
                                                                                     <td>
                                                                                         <%= item.local.email%>
                                                                                     </td>
-                                                                                    <% if(item.admin_name){%>
+                                                                                    <% if(item.admin_email){%>
                                                                                         <td>
-                                                                                            <%= item.admin_name%>
+                                                                                            <%= item.admin_email%>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <a lang="es" href="/setnewtest/<%= item._id %>/<%= item.admin_id %>">Asignar
+                                                                                            <a lang="es" href="/setnewtest_cons/<%= item._id %>">Asignar
                                                                                                 prueba
                                                                                             </a>
-                                                                                            <a lang="en" href="/setnewtest/<%= item._id %>/<%= item.admin_id %>">Assign
+                                                                                            <a lang="en" href="/setnewtest_cons/<%= item._id %>">Assign
                                                                                                 test
                                                                                             </a>
                                                                                         </td>
