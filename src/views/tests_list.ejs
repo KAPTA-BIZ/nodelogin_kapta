@@ -8,94 +8,111 @@
 </head>
 
 <body>
-
     <% include partials/left_column %>
-
         <div class="main-panel">
-
             <% include partials/navbar %>
-
                 <div class="content">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="card trpied-tabled-with-hover container-fluid">
-
+                                <div class="card container-fluid">
                                     <div class="card-header ">
-
                                         <h4 lang="es">Lista de evaluaciones disponibles para su perfil.</h4>
-
                                     </div>
-
-                                    <div class="list-group list-group-flush" id="accordion">
-                                        <% items.forEach(function(item,index) { %>
-                                            <a class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapse<%= index%>" aria-expanded="true"
-                                                aria-controls="collapse<%= index%>">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <%= item.test_name %>
+                                    <% if(user.sa==2){%>
+                                        <div class="list-group list-group-flush" id="accordion">
+                                            <% items.forEach(function(item,index) { %>
+                                                <a class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapse<%= index%>" aria-expanded="true"
+                                                    aria-controls="collapse<%= index%>">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <%= item.test_name %>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <span class="badge badge-pill badge-dark"><%= item.codes_max %> Códigos asignados</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <span class="badge badge-pill badge-dark"><%= item.codes_max %> Códigos asignados</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <div id="collapse<%= index%>" class="collapse container-fluid <%if (index==0){%>show<% }; %>" aria-labelledby="headingOne"
-                                                data-parent="#accordion">
-                                                <table class="table table-hover table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col" width="50%">usuario</th>
-                                                            <th scope="col" width="15%">Códigos Usados</th>
-                                                            <th scope="col" width="15%">Códigos Asignados</th>
-                                                            <th scope="col" width="20%"></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <%=user.local.email%>
-                                                            </td>
-                                                            <td>
-                                                                <%=item.codes_used%>
-                                                            </td>
-                                                            <td>
-                                                                <%=item.codes_availables%>
-                                                            </td>
-                                                            <td><a href="#">ver prueba</a></td>
-                                                        </tr>
-                                                        <% item.users.forEach(function(item_user) { %>
+                                                </a>
+                                                <div id="collapse<%= index%>" class="collapse container-fluid <%if (index==0){%>show<% }; %>" aria-labelledby="headingOne"
+                                                    data-parent="#accordion">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" width="50%">usuario</th>
+                                                                <th scope="col" width="15%">Códigos Usados</th>
+                                                                <th scope="col" width="15%">Códigos Asignados</th>
+                                                                <th scope="col" width="20%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
                                                             <tr>
                                                                 <td>
-                                                                    <%=item_user.email%>
+                                                                    <%=user.local.email%>
                                                                 </td>
                                                                 <td>
-                                                                    <%=item_user.codes_used%>
+                                                                    <%=item.codes_used%>
                                                                 </td>
                                                                 <td>
-                                                                    <%=item_user.codes_max%>
+                                                                    <%=item.codes_availables%>
                                                                 </td>
                                                                 <td><a href="#">ver prueba</a></td>
                                                             </tr>
-                                                            <% }); %>
-                                                    </tbody>
-                                                </table>
-
-
-                                            </div>
-                                            <% }); %>
-                                    </div>
+                                                            <% item.users.forEach(function(item_user) { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <%=item_user.email%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=item_user.codes_used%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=item_user.codes_max%>
+                                                                    </td>
+                                                                    <td><a href="#">ver prueba</a></td>
+                                                                </tr>
+                                                                <% }); %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                        <%} else if(user.sa==0){%>
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" width="50%">Prueba</th>
+                                                        <th scope="col" width="15%">Códigos Usados</th>
+                                                        <th scope="col" width="15%">Códigos Asignados</th>
+                                                        <th scope="col" width="20%"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% items.forEach(function(assignment){%>
+                                                        <tr>
+                                                            <td>
+                                                                <%=assignment.test_name%>
+                                                            </td>
+                                                            <% assignment.users.forEach(function(consl){
+                                                                    if(consl.email==user.local.email){%>
+                                                                <td>
+                                                                    <%=consl.codes_used%>
+                                                                </td>
+                                                                <td>
+                                                                    <%=consl.codes_max%>
+                                                                </td>
+                                                                <%}})%>
+                                                                    <td><a href="/test_view/<%=assignment._id%>">Ver prueba</a></td>
+                                                        </tr>
+                                                        <%})%>
+                                                </tbody>
+                                            </table>
+                                            <%}%>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
         </div>
-
-
 </body>
 
 </html>

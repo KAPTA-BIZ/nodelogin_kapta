@@ -29,6 +29,7 @@ var mongo = require('mongodb');
 var assert = require('assert');
 const API_Test = require('../models/API_Test');
 var Assignments = require('../models/Assignments');
+var Codes = require('../models/Codes');
 
 
 mongoose.Promise = global.Promise;
@@ -633,7 +634,62 @@ module.exports = (app, passport) => {
         }
     })
 
+    /*---------------- Generar codigos -------------*/
+    app.post('/generate_new_code', isLoggedIn, (req, res) => {
+        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+        generate_code(0, req.body.GenerateCodes);
+
+        function generate_code(i, number) {
+            if (i < number) {
+                var new_code = '';
+                for (var j = 0; j < 4; j++) {
+                    new_code += chars[Math.floor(Math.random() * chars.length)];
+                }
+                check_code(i, number, new_code);
+            } else {
+                Assignments.findOneAndUpdate({ '_id': req.body.assignment_id, 'users.email': req.user.local.email }, {
+                    $inc: { 'users.$.codes_created': number }
+                }, { new: true }, (err, assignment) => {
+                    if (err) { throw err; }
+                    res.redirect('/test_view/'+req.body.assignment_id)
+
+                })
+            }
+        }
+
+        function check_code(i, number, new_code) {
+            Codes.findOne({ 'code': new_code }, null, (err, result) => {
+                if (err) { throw err }
+                if (result) {
+                    generate_code(i, number);
+                } else {
+                    request.post({
+                        headers: { 'Content-type': 'application/json; charset=utf-8' },
+                        url: require('../../classmarker/addCode')(req.body.access_list_id),
+                        body: JSON.stringify([new_code])
+                    }, (err, res, body) => {
+                        if (err) { throw err }
+                        var cleanBody = JSON.parse(body);
+                        if (cleanBody.status != 'ok' || cleanBody.access_lists.access_list.num_codes_added == 0) {
+                            generate_code(i, number);
+                        } else {
+                            var new_code_schema = new Codes();
+                            new_code_schema.code = new_code;
+                            new_code_schema.used = 0;
+                            new_code_schema.assignment_id = req.body.assignment_id;
+                            new_code_schema.user_email = req.user.local.email;
+                            new_code_schema.save(function (err) {
+                                if (err) { throw err }
+                                generate_code(i + 1, number);
+                            })
+                        }
+                    });
+                }
+            });
+        }
+
+    });
 
     /*-------------- REGISTRAR LINK --------------*/
     //Se accede por GET al id del instructor y se lo pasa a la vista 
@@ -717,7 +773,7 @@ module.exports = (app, passport) => {
     })
 
     /*-------------------- Vista de pruebas asignadas---------------------*/
-    app.get('/tests_list/:id', isLoggedIn, (req, res) => {
+    app.get('/tests_list', isLoggedIn, (req, res) => {
         if (req.user.sa == 2) {
             Assignments.find({ 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
                 if (err) { throw err; }
@@ -727,7 +783,15 @@ module.exports = (app, passport) => {
                 });
             });
         } else if (req.user.sa == 0) {
-            var assignedTests = [];
+            Assignments.find({ 'users.email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
+                if (err) { throw err; }
+                res.render('tests_list', {
+                    user: req.user,
+                    items: resultArray
+                });
+            });
+
+            /*var assignedTests = [];
             req.user.assignments.forEach(function (item) {
                 assignedTests.push(item.assignment_id);
             });
@@ -737,7 +801,7 @@ module.exports = (app, passport) => {
                     user: req.user,
                     items: resultArray
                 })
-            });
+            });*/
         }
     });
 
@@ -745,8 +809,26 @@ module.exports = (app, passport) => {
 
     /*-------------------VISTA DE PRUEBAS-------------------------------------------*/
     app.get('/test_view/:assig_id', isLoggedIn, (req, res) => {
-        res.render('test_view', {
-            user: req.user
+        Assignments.findById(req.params.assig_id, null, (err, assignment) => {
+            if (err) { throw err; }
+            if (req.user.sa == 0) {
+                var user_temp;
+                assignment.users.forEach(function (consultant) {
+                    if (consultant.email == req.user.local.email) {
+                        user_temp = consultant;
+                    }
+                });
+                assignment.users = user_temp;
+
+            }
+            Codes.find({ $and: [{ 'assignment_id': req.params.assig_id }, { 'user_email': req.user.local.email }, { 'used': '0' }] }, null,{sort:{'code':1}}, (err, codesArray) => {
+                if (err) { throw err; }
+                res.render('test_view', {
+                    user: req.user,
+                    assignment: assignment,
+                    codesArray: codesArray
+                });
+            })
         });
     });
 
