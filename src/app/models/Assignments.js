@@ -16,7 +16,7 @@ var Assignments = mongoose.Schema({
         email: String,
         codes_max: String,
         codes_created: Number,
-        codes_used: String,
+        codes_used: Number,
         created_by: String
     }]
 });
