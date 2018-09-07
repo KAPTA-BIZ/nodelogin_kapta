@@ -960,8 +960,10 @@ module.exports = (app, passport) => {
                             }
                         });
                     });
+                    var user_temp=req.user;
+                    user_temp.sa=0;
                     res.render('test_view', {
-                        user: req.user,
+                        user: user_temp,
                         assignment: assignment,
                         codesArray: codesNotUsed,
                         resultsArray: linkresults,
