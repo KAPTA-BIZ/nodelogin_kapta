@@ -9,8 +9,8 @@ var Assignments = mongoose.Schema({
     access_list_id: String,
     admin_email: String,
     codes_max: String,
-    codes_created: String,
-    codes_used: String,
+    codes_created: Number,
+    codes_used: Number,
     codes_availables: Number,
     users: [{
         email: String,

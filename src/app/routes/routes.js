@@ -666,13 +666,26 @@ module.exports = (app, passport) => {
                 console.log(new_code)
                 check_code(i, number, new_code);
             } else {
-                Assignments.findOneAndUpdate({ '_id': req.body.assignment_id, 'users.email': req.user.local.email }, {
-                    $inc: { 'users.$.codes_created': number }
-                }, { new: true }, (err, assignment) => {
-                    if (err) { throw err; }
-                    res.redirect('/test_view/' + req.body.assignment_id)
+                console.log("tipo de usuario: ")
+                console.log(req.body.user_type)
+                if (req.body.user_type == 2) {
+                    Assignments.findByIdAndUpdate(req.body.assignment_id, {
+                        $inc: { 'codes_created': number, 'codes_availables': -number }
+                    }, (err) => {
+                        if (err) {throw err}
+                        if (req.user.sa == 2) { res.redirect('/test_view/' + req.body.assignment_id) }
+                    });
+                } else {
+                    Assignments.findOneAndUpdate({ '_id': req.body.assignment_id, 'users.email': req.body.user_email }, {
+                        $inc: { 'users.$.codes_created': number }
+                    }, { new: true }, (err, assignment) => {
+                        if (err) { throw err; }
+                        console.log(req.user.sa)
+                        if (req.user.sa == 0) { res.redirect('/test_view/' + req.body.assignment_id) }
+                        else if (req.user.sa == 2) { res.redirect('/test_view/' + req.body.assignment_id + '/' + req.body.user_email) }
 
-                })
+                    })
+                }
             }
         }
 
@@ -693,13 +706,14 @@ module.exports = (app, passport) => {
                         if (err) { throw err }
                         var cleanBody = JSON.parse(body);
                         if (cleanBody.status != 'ok' || cleanBody.access_lists.access_list.num_codes_added == 0) {
+                            console.log(cleanBody)
                             generate_code(i, number);
                         } else {
                             var new_code_schema = new Codes();
                             new_code_schema.code = new_code;
                             new_code_schema.used = 0;
                             new_code_schema.assignment_id = req.body.assignment_id;
-                            new_code_schema.user_email = req.user.local.email;
+                            new_code_schema.user_email = req.body.user_email;
                             new_code_schema.save(function (err) {
                                 if (err) { throw err }
                                 console.log("Guardado")
@@ -834,63 +848,127 @@ module.exports = (app, passport) => {
     app.get('/test_view/:assig_id', isLoggedIn, (req, res) => {
         Assignments.findById(req.params.assig_id, null, (err, assignment) => {
             if (err) { throw err; }
+            var user_temp;
             if (req.user.sa == 0) {
-                var user_temp;
                 assignment.users.forEach(function (consultant) {
                     if (consultant.email == req.user.local.email) {
                         user_temp = consultant;
                     }
                 });
-                assignment.users = user_temp;
-
-                Codes.find({ $and: [{ 'assignment_id': req.params.assig_id }, { 'user_email': req.user.local.email }] }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
-                    if (err) { throw err; }
-                    var codesUsed = [];
-                    var codesNotUsed = [];
-                    codesArray.forEach((code) => {
-                        if (code.used == 0) {
-                            codesNotUsed.push(code);
-                        } else {
-                            codesUsed.push(code.code)
-                        }
-                    });
-                    LinkResults.find({ 'access_code_used': { $in: codesUsed } }, null, { sort: { 'access_code_used': 1 } }, (err, linkresults) => {
-                        if (err) { throw err; }
-                        var categories = [];
-                        var index;
-                        console.log(linkresults)
-                        linkresults.forEach(linkresult => {
-                            linkresult.category_results.forEach(category => {
-                                index = categories.findIndex(x => x.name == category.name)
-                                if (index == -1) {
-                                    categories.push({
-                                        name: category.name,
-                                        percentage_sum: category.percentage,
-                                        points_available_sum: category.points_available,
-                                        points_scored: category.points_scored,
-                                        answers: 1
-                                    })
-                                } else {
-                                    categories[index].percentage_sum += category.percentage;
-                                    categories[index].points_available_sum += category.points_available;
-                                    categories[index].points_scored += category.points_scored;
-                                    categories[index].answers += 1;
-                                }
-                            });
-                        });
-                        res.render('test_view', {
-                            user: req.user,
-                            assignment: assignment,
-                            codesArray: codesNotUsed,
-                            resultsArray: linkresults,
-                            categoriesArray: categories
-                        });
-                    });
-                })
-
-
+            } else if (req.user.sa == 2) {
+                user_temp = {
+                    email: assignment.admin_email,
+                    codes_max: assignment.codes_availables+assignment.codes_created+assignment.codes_used,
+                    codes_created: assignment.codes_created,
+                    codes_used: assignment.codes_used,
+                }
             }
+            assignment.users = user_temp;
+            
+            Codes.find({ $and: [{ 'assignment_id': req.params.assig_id }, { 'user_email': req.user.local.email }] }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
+                if (err) { throw err; }
+                var codesUsed = [];
+                var codesNotUsed = [];
+                codesArray.forEach((code) => {
+                    if (code.used == 0) {
+                        codesNotUsed.push(code);
+                    } else {
+                        codesUsed.push(code.code)
+                    }
+                });
+                LinkResults.find({ 'access_code_used': { $in: codesUsed } }, null, { sort: { 'access_code_used': 1 } }, (err, linkresults) => {
+                    if (err) { throw err; }
+                    var categories = [];
+                    var index;
+                    console.log(linkresults)
+                    linkresults.forEach(linkresult => {
+                        linkresult.category_results.forEach(category => {
+                            index = categories.findIndex(x => x.name == category.name)
+                            if (index == -1) {
+                                categories.push({
+                                    name: category.name,
+                                    percentage_sum: category.percentage,
+                                    points_available_sum: category.points_available,
+                                    points_scored: category.points_scored,
+                                    answers: 1
+                                })
+                            } else {
+                                categories[index].percentage_sum += category.percentage;
+                                categories[index].points_available_sum += category.points_available;
+                                categories[index].points_scored += category.points_scored;
+                                categories[index].answers += 1;
+                            }
+                        });
+                    });
+                    console.log(assignment);
+                    res.render('test_view', {
+                        user: req.user,
+                        assignment: assignment,
+                        codesArray: codesNotUsed,
+                        resultsArray: linkresults,
+                        categoriesArray: categories
+                    });
+                });
+            })
 
+
+        });
+    });
+
+    app.get('/test_view/:assig_id/:user_email', isLoggedIn, (req, res) => {
+        Assignments.findById(req.params.assig_id, null, (err, assignment) => {
+            if (err) { throw err }
+            var user_temp;
+            assignment.users.forEach(function (consultant) {
+                if (consultant.email == req.params.user_email) {
+                    user_temp = consultant;
+                }
+            });
+            assignment.user = user_temp;
+            Codes.find({ $and: [{ 'assignment_id': req.params.assig_id }, { 'user_email': req.params.user_email }] }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
+                if (err) { throw err; }
+                var codesUsed = [];
+                var codesNotUsed = [];
+                codesArray.forEach((code) => {
+                    if (code.used == 0) {
+                        codesNotUsed.push(code);
+                    } else {
+                        codesUsed.push(code.code)
+                    }
+                });
+                LinkResults.find({ 'access_code_used': { $in: codesUsed } }, null, { sort: { 'access_code_used': 1 } }, (err, linkresults) => {
+                    if (err) { throw err; }
+                    var categories = [];
+                    var index;
+                    console.log(linkresults)
+                    linkresults.forEach(linkresult => {
+                        linkresult.category_results.forEach(category => {
+                            index = categories.findIndex(x => x.name == category.name)
+                            if (index == -1) {
+                                categories.push({
+                                    name: category.name,
+                                    percentage_sum: category.percentage,
+                                    points_available_sum: category.points_available,
+                                    points_scored: category.points_scored,
+                                    answers: 1
+                                })
+                            } else {
+                                categories[index].percentage_sum += category.percentage;
+                                categories[index].points_available_sum += category.points_available;
+                                categories[index].points_scored += category.points_scored;
+                                categories[index].answers += 1;
+                            }
+                        });
+                    });
+                    res.render('test_view', {
+                        user: req.user,
+                        assignment: assignment,
+                        codesArray: codesNotUsed,
+                        resultsArray: linkresults,
+                        categoriesArray: categories
+                    });
+                });
+            })
         });
     });
 

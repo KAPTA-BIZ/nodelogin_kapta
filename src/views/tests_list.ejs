@@ -53,9 +53,9 @@
                                                                     <%=item.codes_used%>
                                                                 </td>
                                                                 <td>
-                                                                    <%=item.codes_availables%>
+                                                                    <%=item.codes_availables+item.codes_used+item.codes_created%>
                                                                 </td>
-                                                                <td><a href="#">ver prueba</a></td>
+                                                                <td><a href="/test_view/<%=item._id%>">ver prueba</a></td>
                                                             </tr>
                                                             <% item.users.forEach(function(item_user) { %>
                                                                 <tr>
@@ -68,7 +68,7 @@
                                                                     <td>
                                                                         <%=item_user.codes_max%>
                                                                     </td>
-                                                                    <td><a href="#">ver prueba</a></td>
+                                                                    <td><a href="/test_view/<%=item._id%>/<%=item_user.email%>">ver prueba</a></td>
                                                                 </tr>
                                                                 <% }); %>
                                                         </tbody>

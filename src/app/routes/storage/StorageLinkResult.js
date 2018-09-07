@@ -1,6 +1,7 @@
 var LinkResults = require('../../models/LinkResults');
 var Codes = require('../../models/Codes');
 var Assignments = require('../../models/Assignments');
+var UserSchema = require('../../models/user.js');
 
 function storeLinkResult(result) {
     /////////// pendiente verificar que el resultado ya este registrado
@@ -10,9 +11,21 @@ function storeLinkResult(result) {
             if(code.used==0){
                 code.used=1;
                 code.save(err=>{if(err){throw err}})
-                Assignments.findOneAndUpdate({'_id':code.assignment_id,'users.email':code.user_email},{$inc: { 'users.$.codes_used': 1 , 'users.$.codes_created':-1}},(err, doc)=>{
+
+                UserSchema.findOne({'local.email':code.user_email},'sa',(err, sa)=>{
+                    console.log(sa.sa)
+                    if (sa.sa==2){
+                        console.log("updated admin")
+                        Assignments.findByIdAndUpdate(code.assignment_id,{$inc:{'codes_used':1,'codes_created':-1}},(err,doc)=>{
+                            //pendiente verificar
+                        })
+                    }else{
+                        console.log("updated consult")
+                        Assignments.findOneAndUpdate({'_id':code.assignment_id,'users.email':code.user_email},{$inc: { 'users.$.codes_used': 1 , 'users.$.codes_created':-1}},(err, doc)=>{
+                        //pendiente por verificar
+                        });
+                    }
                 });
-                
                 var linkResult = new LinkResults({
                     percentage: result.result.percentage,
                     points_scored: result.result.points_scored,
