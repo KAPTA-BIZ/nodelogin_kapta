@@ -5,20 +5,24 @@
     <meta charset="utf-8">
     <title>Login</title>
     <script type="text/javascript">
-        var Tests = <%- JSON.stringify(Tests) %>;
+        var Tests = <%- JSON.stringify(data.tests) %>;
         function populate() {
             var s1 = document.getElementById("testlist");
             var s2 = document.getElementById("linklist");
-            var test_name_input = document.getElementById("test_name");
-            var test_id_input = document.getElementById("test_id");
+            var test_name = document.getElementById("test_name");
+            var MaxCodes=document.getElementById("MaxCodes");
             s2.innerHTML = "";
             if (s1.value > -1) {
+                test_name.value=Tests[s1.value].test_name;
                 var option = document.createElement("option");
-                option.value = "-1";
-                option.innerHTML = "...";
+                <% if(data.user.sa==2){%>
+                    option.value = "-1";
+                    option.innerHTML = "...";
+                <%} %>
+                <% if(data.user.sa==0){%>
+                    MaxCodes.setAttribute("max",Tests[s1.value].codes_availables);
+                <%} %>
                 s2.options.add(option);
-                test_name_input.value = Tests[s1.value].test_name;
-                test_id_input.value = Tests[s1.value].test_id;
                 for (link in Tests[s1.value].links) {
                     var option = document.createElement("option");
                     option.value = link;
@@ -27,28 +31,6 @@
                 }
             }
         }
-        function set_link() {
-            var s1 = document.getElementById("testlist");
-            var s2 = document.getElementById("linklist");
-            var link_name_input = document.getElementById("link_name")
-            var link_id_input = document.getElementById("link_id")
-            var link_url_id_input = document.getElementById("link_url_id")
-            var access_list_id_input = document.getElementById("access_list_id")
-
-            if (s2.value < 0) {
-                link_name_input.value = "";
-                link_id_input.value = "";
-                link_url_id_input.value = "";
-                access_list_id_input.value = "";
-            } else {
-                link_name_input.value = Tests[s1.value].links[s2.value].link_name;
-                link_id_input.value = Tests[s1.value].links[s2.value].link_id;
-                link_url_id_input.value = Tests[s1.value].links[s2.value].link_url_id;
-                access_list_id_input.value = Tests[s1.value].links[s2.value].access_list_id;
-            }
-
-        }
-
     </script>
     <% include partials/head %>
 </head>
@@ -74,20 +56,25 @@
                         </div>
 
                         <!-- Message -->
-                        <% if(typeof message !== 'undefined' && message==1){ %>
+                        <% if(typeof data.message !== 'undefined' && data.message==1){ %>
                             <div class="alert alert-danger" role="alert">
                                 <strong lang="es">Error!! Debe seleccionar un link</strong>
                                 <strong lang="en">Error!!! You must select a link</strong>
                             </div>
-                            <%}else if(typeof message !== 'undefined' && message==2){ %>
+                            <%}else if(typeof data.message !== 'undefined' && data.message==2){ %>
                                 <div class="alert alert-success" role="alert">
                                     <strong lang="es">Las pruebas fueron actualizadas</strong>
                                     <strong lang="en">the tests were updated</strong>
                                 </div>
-                                <%}%>
+                                <%}else if(typeof data.message !== 'undefined' && data.message==3){ %>
+                                    <div class="alert alert-danger" role="alert">
+                                        <strong lang="es">Error!! Debe seleccionar una prueba</strong>
+                                        <strong lang="en">Error!!You must select a test</strong>
+                                    </div>
+                                    <%}%>
 
                                     <!-- form -->
-                                    <form action="/setnewtest" method="post">
+                                    <form action="/setnewtest/<%= data.user._id%>" method="post">
                                         <div class="form-group">
                                             <label for="testlist">
                                                 <span lang="es">Seleccione prueba</span>
@@ -95,40 +82,34 @@
                                             </label>
                                             <select name="testlist" id="testlist" class="form-control" required onchange="populate()">
                                                 <option selecte value="-1">...</option>
-                                                <% Tests.forEach(function(Test,index) { %>
+                                                <% data.tests.forEach(function(Test,index) { %>
                                                     <option value="<%=index%>">
                                                         <%=Test.test_name %>
                                                     </option>
                                                     <% }); %>
                                             </select>
-                                            <input name="test_name" id="test_name" style="display:none" />
-                                            <input name="test_id" id="test_id" style="display:none" />
-                                            <input name="admin_email" id="admin_email" style="display:none" value="<%=admin.email%>" />
+                                            <input name="test_name" id="test_name" class="form-control" style="display: none"  value="-1" required/>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" <% if(data.user.sa==0){%>style="display:none" <%} %>>
                                             <label for="linklist">
                                                 <span lang="es">Seleccione link</span>
                                                 <span lang="en">Choose link</span>
                                             </label>
-                                            <select name="linklist" id="linklist" class="form-control" required onchange="set_link()">
+                                            <select name="linklist" id="linklist" class="form-control" <% if(data.user.sa==2){%>required<%} %>>
                                                 <option selected></option>
                                             </select>
-                                            <input name="link_name" id="link_name" style="display:none" />
-                                            <input name="link_id" id="link_id" style="display:none" />
-                                            <input name="link_url_id" id="link_url_id" style="display:none" />
-                                            <input name="access_list_id" id="access_list_id" style="display:none" />
                                         </div>
                                         <div class="form-group">
                                             <label for="MaxCodes">
                                                 <span lang="es">Indique el número máximo de códigos</span>
                                                 <span lang="en">Specify the maximum number of codes</span>
                                             </label>
-                                            <input type="number" name="MaxCodes" id="MaxCodes" class="form-control" required/>
+                                            <input type="number" name="MaxCodes" id="MaxCodes" class="form-control" min="1" <% if(data.user.sa==0){%>max="0"<%} %> required/>
 
                                         </div>
 
-                                        <a lang="es" href="/setnewtest_updated/<%=admin.id%>" class="btn btn-dark btn-lg">Actualizar</a>
-                                        <a lang="en" href="/setnewtest_updated/<%=admin.id%>" class="btn btn-dark btn-lg">Update</a>
+                                        <a lang="es" href="/setnewtest_updated/<%=data.user._id%>" class="btn btn-dark btn-lg" <% if(data.user.sa==0){%>style="display:none" <%} %>>Actualizar</a>
+                                        <a lang="en" href="/setnewtest_updated/<%=data.user._id%>" class="btn btn-dark btn-lg" <% if(data.user.sa==0){%>style="display:none" <%} %>>Update</a>
 
                                         <input type="submit" class="btn btn-dark btn-lg" value="Registrar">
                                     </form>

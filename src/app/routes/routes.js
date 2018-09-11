@@ -17,7 +17,6 @@ var aSchema = require('../models/accessSchema.js');
 var LSchema = require('../models/link.js');
 var GroupSchema = require('../models/group.js');
 var Categories = require('../models/categories.js');
-var get_all_available = require('../../classmarker/all');
 var get_links = require('../../classmarker/links');
 var get_groups = require('../../classmarker/groups');
 var storageLinkTest = require('./storage/StorageLinkTest');
@@ -442,10 +441,10 @@ module.exports = (app, passport) => {
     });
 
     /*-------------- Assign new test (consult users)--------------*/
-    app.get('/setnewtest_cons/:cons_id', isLoggedIn, (req, res) => {
-        UserSchema.findById(req.params.cons_id, null, (err, consulant) => {
+    app.get('/setnewtest_cons/:id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.id, null, (err, consulant) => {
             if (err) { throw err }
-            Assignments.find({ $and: [{ 'admin_email': req.user.local.email }, { 'users.email': { $ne: consulant.local.email } }] }, null, { sort: { 'test_name': 1 } }, (err, tests) => {
+            Assignments.find({ $and: [{ 'admin_email': consulant.admin_email }, { 'users.email': { $ne: consulant.local.email } }] }, null, { sort: { 'test_name': 1 } }, (err, tests) => {
                 if (err) { throw err }
                 res.render('set_new_test_cons', {
                     consultant: consulant,
@@ -462,6 +461,7 @@ module.exports = (app, passport) => {
             Assignments.findByIdAndUpdate(req.body.testlist, {
                 $push: {
                     'users': {
+                        id: req.body.consultant_id,
                         email: req.body.consultant_email,
                         codes_max: req.body.maxcodes,
                         codes_created: 0,
@@ -473,7 +473,7 @@ module.exports = (app, passport) => {
                 if (err) { throw err }
                 UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
                     if (err) { throw err; }
-                    res.render('list', { items: resultArray, user: req.user });
+                    res.render('users_list', { user: req.user, items: resultArray, user: req.user });
                 });
             });
         }
@@ -482,30 +482,54 @@ module.exports = (app, passport) => {
 
     /*-------------- Assign new test (admin users)--------------*/
     app.get('/setnewtest/:id', isLoggedIn, (req, res) => {
-        UserSchema.findById(req.params.id, 'local.email', (err, admin) => {
+        setNewTest(req.params.id, req.user, res);
+    });
+
+    function setNewTest(user_id, req_user, res, message) {
+        UserSchema.findById(user_id, null, (err, user) => {
             if (err) { throw err }
-            Assignments.find({ 'admin_email': admin.local.email }, 'test_id', (err, results) => {
-                if (err) { throw err }
-                var exceptions = [];
-                if (results.length > 0) {
-                    results.forEach(function (item) {
-                        exceptions.push(item.test_id);
+            if (user.admin_email == req_user.local.email || req_user.sa == 1) {
+                var data = {};
+                data.user = user;
+                data.message = message;
+                if (user.sa == 2) {//->usuario admin
+                    Assignments.find({ 'admin_email': user.local.email }, 'test_id', (err, results) => {
+                        if (err) { throw err }
+                        var exceptions = [];
+                        if (results.length > 0) {
+                            results.forEach(function (item) {
+                                exceptions.push(item.test_id);
+                            });
+                        }
+                        API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
+                            if (err) { throw err }
+                            data.tests = tests;
+                            console.log(data);
+                            res.render('set_new_test', {
+                                user: req_user,
+                                data: data
+                            });
+                        });
+                    });
+                } else if (user.sa == 0) {//->usuario consultor..
+                    Assignments.find({ $and: [{ 'admin_email': user.admin_email }, { 'users.email': { $ne: user.local.email } }] }, null, { sort: { 'test_name': 1 } }, (err, tests) => {
+                        if (err) { throw err }
+                        data.tests = tests;
+                        console.log(data);
+                        res.render('set_new_test', {
+                            user: req_user,
+                            data: data
+                        });
                     });
                 }
-                API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
-                    if (err) { throw err }
-                    res.render('set_new_test', {
-                        admin: { id: req.params.id, email: admin.local.email },
-                        Tests: tests,
-                    });
-                });
-            });
+            }
         });
-    })
+    }
 
     app.get('/setnewtest_updated/:id', isLoggedIn, (req, res) => {
         var testsArray = new Array;
-        request(get_all_available, (error, response, body) => {
+        var uri = require('../../classmarker/all')();
+        request(uri, (error, response, body) => {
             if (!error && response.statusCode === 200) {
                 var cleanBody = JSON.parse(body);
                 var LinksNumber = cleanBody['links'].length;
@@ -552,7 +576,7 @@ module.exports = (app, passport) => {
                 }
 
                 API_Test.remove({}, (err) => {
-                    if (!err) { }
+                    if (err) { throw err }
                     updateTests(0, testsArray.length);
                 })
             } else {
@@ -572,160 +596,144 @@ module.exports = (app, passport) => {
                 });
 
                 newAPI_Test.save((err) => {
-                    if (err) console.log(err);
-                    //--->se debe manejar este error al guardar datos
+                    if (err) { throw err };//--->se debe manejar este error al guardar datos
                     updateTests(i + 1, imax)
                 })
 
             } else {
-                UserSchema.findById(req.params.id, 'local.email', (err, admin) => {
-                    if (err) { throw err }
-                    Assignments.find({ 'admin_email': admin.local.email }, 'test_id', (err, results) => {
-                        if (err) { throw err }
-                        var exceptions = [];
-                        if (results.length > 0) {
-                            results.forEach(function (item) {
-                                exceptions.push(item.test_id);
-                            });
-                        }
-                        API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
-                            if (err) { throw err }
-                            res.render('set_new_test', {
-                                admin: { id: req.params.id, email: admin.local.email },
-                                Tests: tests,
-                                message: 2
-                            });
-                        });
-                    });
-                });
+                setNewTest(req.params.id, req.user, res, 2)
             }
         }
-    })
+    });
 
-    app.post('/setnewtest', isLoggedIn, (req, res) => {
+    app.post('/setnewtest/:id', isLoggedIn, (req, res) => {
+        console.log(req.body)
         if (req.body.linklist == -1) {
-            UserSchema.findOne({ 'local.email': req.body.admin_email }, '_id', (err, admin) => {
-                if (err) { throw err }
-                Assignments.find({ 'admin_email': req.body.admin_email }, 'test_id', (err, results) => {
-                    if (err) { throw err }
-                    var exceptions = [];
-                    if (results.length > 0) {
-                        results.forEach(function (item) {
-                            exceptions.push(item.test_id);
-                        });
-                    }
-                    API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
-                        if (err) { throw err }
-                        res.render('set_new_test', {
-                            admin: { id: admin._id, email: req.body.admin_email },
-                            Tests: tests,
-                            message: 1
+            setNewTest(req.params.id, req.user, res, 1);
+        } else if (req.body.testlist == -1) {
+            setNewTest(req.params.id, req.user, res, 3);
+        } else {
+            UserSchema.findById(req.params.id, null, (err, user) => {
+                if (user.sa == 2) {//-> usuario admin
+                    API_Test.findOne({ 'test_name': req.body.test_name }, null, (err, test) => {
+                        console.log(test.links[req.body.linklist]);
+                        var newAssignment = new Assignments();
+                        newAssignment.test_id = test.test_id;
+                        newAssignment.test_name = test.test_name;
+                        newAssignment.link_name = test.links[req.body.linklist].link_name;
+                        newAssignment.link_id = test.links[req.body.linklist].link_id;
+                        newAssignment.link_url_id = test.links[req.body.linklist].link_url_id;
+                        newAssignment.access_list_id = test.links[req.body.linklist].access_list_id;
+                        newAssignment.admin_email = user.local.email;
+                        newAssignment.codes_max = req.body.MaxCodes;
+                        newAssignment.codes_created = 0;
+                        newAssignment.codes_used = 0;
+                        newAssignment.codes_availables = req.body.MaxCodes;
+                        newAssignment.save(function (err) {
+                            if (err) { throw err }
+                            res.redirect('/users_list');
                         });
                     });
-                });
-            });
-        } else {
-            var newAssignment = new Assignments();
-            newAssignment.test_id = req.body.test_id;
-            newAssignment.test_name = req.body.test_name;
-            newAssignment.link_name = req.body.link_name;
-            newAssignment.link_id = req.body.link_id;
-            newAssignment.link_url_id = req.body.link_url_id;
-            newAssignment.access_list_id = req.body.access_list_id;
-            newAssignment.admin_email = req.body.admin_email;
-            newAssignment.codes_max = req.body.MaxCodes;
-            newAssignment.codes_created = 0;
-            newAssignment.codes_used = 0;
-            newAssignment.codes_availables = req.body.MaxCodes;
-            newAssignment.save(function (err) {
-                if (err) { console.log(err); }
-
-                UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
-                    err ? console.log(err) : res.render('list', {
-                        items: resultArray,
-                        user: req.user,
-                    })
-                })
+                } else if (user.sa == 0) {//->usuario consultor...
+                    Assignments.findOneAndUpdate({ 'test_name': req.body.test_name, 'admin_email': user.admin_email }, {
+                        $push: {
+                            'users': {
+                                id: user._id,
+                                email: user.local.email,
+                                codes_max: req.body.MaxCodes,
+                                codes_created: 0,
+                                codes_used: 0,
+                                created_by: req.user.local.email
+                            }
+                        }, $inc: {
+                            'codes_availables': -req.body.MaxCodes
+                        }
+                    }, err => {
+                        if (err) { throw err }
+                        res.redirect('/users_list');
+                    });
+                }
             });
         }
-    })
+    });
 
     /*---------------- Generar codigos -------------*/
-    app.post('/generate_new_code', isLoggedIn, (req, res) => {
-        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    app.post('/generate_new_code/:assignment_id/:user_id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.user_id, null, (err, test_user) => {
+            if (err) { throw err }
+            if (req.user.local.email == test_user.local.email || req.user.local.email == test_user.admin_email || req.user.sa == 1) {
+                Assignments.findById(req.params.assignment_id, null, (err, assignment) => {
+                    console.log(assignment)
+                    generate_code(0, req.body.GenerateCodes);
 
-        generate_code(0, req.body.GenerateCodes);
-
-        function generate_code(i, number) {
-            if (i < number) {
-                var new_code = '';
-                for (var j = 0; j < 4; j++) {
-                    new_code += chars[Math.floor(Math.random() * chars.length)];
-                }
-                console.log("nuevo codigo")
-                console.log(new_code)
-                check_code(i, number, new_code);
-            } else {
-                console.log("tipo de usuario: ")
-                console.log(req.body.user_type)
-                if (req.body.user_type == 2) {
-                    Assignments.findByIdAndUpdate(req.body.assignment_id, {
-                        $inc: { 'codes_created': number, 'codes_availables': -number }
-                    }, (err) => {
-                        if (err) {throw err}
-                        if (req.user.sa == 2) { res.redirect('/test_view/' + req.body.assignment_id) }
-                    });
-                } else {
-                    Assignments.findOneAndUpdate({ '_id': req.body.assignment_id, 'users.email': req.body.user_email }, {
-                        $inc: { 'users.$.codes_created': number }
-                    }, { new: true }, (err, assignment) => {
-                        if (err) { throw err; }
-                        console.log(req.user.sa)
-                        if (req.user.sa == 0) { res.redirect('/test_view/' + req.body.assignment_id) }
-                        else if (req.user.sa == 2) { res.redirect('/test_view/' + req.body.assignment_id + '/' + req.body.user_email) }
-
-                    })
-                }
-            }
-        }
-
-        function check_code(i, number, new_code) {
-            Codes.findOne({ 'code': new_code }, null, (err, result) => {
-                if (err) { throw err }
-                if (result) {
-                    console.log("ya existe")
-                    console.log("------------")
-                    generate_code(i, number);
-                } else {
-                    console.log("guardando....")
-                    request.post({
-                        headers: { 'Content-type': 'application/json; charset=utf-8' },
-                        url: require('../../classmarker/addCode')(req.body.access_list_id),
-                        body: JSON.stringify([new_code])
-                    }, (err, res, body) => {
-                        if (err) { throw err }
-                        var cleanBody = JSON.parse(body);
-                        if (cleanBody.status != 'ok' || cleanBody.access_lists.access_list.num_codes_added == 0) {
-                            console.log(cleanBody)
-                            generate_code(i, number);
+                    function generate_code(i, number) {
+                        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        if (i < number) {
+                            var new_code = '';
+                            for (var j = 0; j < 4; j++) {
+                                new_code += chars[Math.floor(Math.random() * chars.length)];
+                            }
+                            console.log("nuevo codigo")
+                            console.log(new_code)
+                            check_code(i, number, new_code);
                         } else {
-                            var new_code_schema = new Codes();
-                            new_code_schema.code = new_code;
-                            new_code_schema.used = 0;
-                            new_code_schema.assignment_id = req.body.assignment_id;
-                            new_code_schema.user_email = req.body.user_email;
-                            new_code_schema.save(function (err) {
+                            console.log("tipo de usuario: ")
+                            console.log(test_user.sa)
+                            if (test_user.sa == 2) {//-> usuario admin
+                                assignment.codes_created += Number(number);
+                                assignment.codes_availables -= Number(number);
+                            } else if (test_user.sa == 0) {//-> usuario consultor
+                                var index = assignment.users.findIndex(doc=>doc.id==test_user._id)
+                                assignment.users[index].codes_created+=Number(number);
+                            }
+                            assignment.save(err => {
                                 if (err) { throw err }
-                                console.log("Guardado")
-                                console.log("------------")
-                                generate_code(i + 1, number);
-                            })
+                                res.redirect('/test_view/' + assignment._id + '/' + test_user._id)
+                            });
                         }
-                    });
-                }
-            });
-        }
+                    }
 
+                    function check_code(i, number, new_code) {
+                        Codes.findOne({ 'code': new_code }, null, (err, result) => {
+                            if (err) { throw err }
+                            if (result) {
+                                console.log("ya existe")
+                                console.log("------------")
+                                generate_code(i, number);
+                            } else {
+                                console.log("guardando....")
+                                request.post({
+                                    headers: { 'Content-type': 'application/json; charset=utf-8' },
+                                    url: require('../../classmarker/addCode')(assignment.access_list_id),
+                                    body: JSON.stringify([new_code])
+                                }, (err, res, body) => {
+                                    if (err) { throw err }
+                                    var cleanBody = JSON.parse(body);
+                                    if (cleanBody.status != 'ok' || cleanBody.access_lists.access_list.num_codes_added == 0) {
+                                        console.log(cleanBody)
+                                        generate_code(i, number);
+                                    } else {
+                                        var new_code_schema = new Codes();
+                                        new_code_schema.code = new_code;
+                                        new_code_schema.used = 0;
+                                        new_code_schema.assignment_id = assignment._id;
+                                        new_code_schema.user_email = test_user.local.email;
+                                        new_code_schema.save(function (err) {
+                                            if (err) { throw err }
+                                            console.log("Guardado")
+                                            console.log("------------")
+                                            generate_code(i + 1, number);
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.sendStatus(403)
+            }
+        });
     });
 
     /*-------------- REGISTRAR LINK --------------*/
@@ -797,7 +805,7 @@ module.exports = (app, passport) => {
     //busqueda total de usuarios (solo superadmin)
     app.get('/users_list', isLoggedIn, (req, res) => {
         UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
-            err ? console.log(err) : res.render('list', { items: resultArray, user: req.user })
+            err ? console.log(err) : res.render('users_list', { items: resultArray, user: req.user })
         });
     })
 
@@ -805,46 +813,183 @@ module.exports = (app, passport) => {
     app.get('/users_list/:id', isLoggedIn, (req, res) => {
         UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
             if (err) { throw err; }
-            res.render('list', { items: resultArray, user: req.user });
+            res.render('users_list', { items: resultArray, user: req.user });
         });
     })
 
-    /*-------------------- Vista de pruebas asignadas---------------------*/
-    app.get('/tests_list', isLoggedIn, (req, res) => {
-        if (req.user.sa == 2) {
-            Assignments.find({ 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
-                if (err) { throw err; }
-                res.render('tests_list', {
-                    user: req.user,
-                    items: resultArray
+    /*-------------------- Vista de pruebas de consultores--------------------*/
+    app.get('/tests_list_cons/:cons_id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.cons_id, null, (err, consultant) => {
+            if (req.user.local.email == consultant.local.email || req.user.local.email == consultant.admin_email || req.user.sa == 1) {
+                Assignments.find({ 'users.id': consultant._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                    if (err) { throw err }
+                    var data = {};
+                    data.consultant = {};
+                    data.consultant.email = consultant.local.email;
+                    data.consultant.id = consultant._id;
+                    data.assignments = [];
+                    assignments.forEach(assignment => {
+                        var index = assignment.users.findIndex(x => x.id == consultant._id);
+                        data.assignments.push({
+                            name: assignment.test_name,
+                            id: assignment._id,
+                            codes_used: assignment.users[index].codes_used,
+                            codes_max: assignment.users[index].codes_max
+                        });
+                    });
+                    res.render('tests_list_cons', {
+                        user: req.user,
+                        data: data
+                    });
                 });
-            });
-        } else if (req.user.sa == 0) {
-            Assignments.find({ 'users.email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
-                if (err) { throw err; }
-                res.render('tests_list', {
-                    user: req.user,
-                    items: resultArray
-                });
-            });
+            } else {
+                res.sendStatus(403)
+            }
+        });
+    });
 
-            /*var assignedTests = [];
-            req.user.assignments.forEach(function (item) {
-                assignedTests.push(item.assignment_id);
-            });
-            Assignments.find({ _id: { $in: assignedTests } }, null, { sort: { 'test_name': 1 } }, (err, resultArray) => {
-                if (err) { throw err; }
-                res.render('tests_list', {
-                    user: req.user,
-                    items: resultArray
-                })
-            });*/
-        }
+
+    /*-------------------- Vista de pruebas asignadas administradores---------------------*/
+    app.get('/tests_list_admin/:admin_id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.admin_id, null, (err, administrator) => {
+            if (err) { throw err }
+            if (req.user.local.email == administrator.local.email || req.user.sa == 1) {
+                var data = {};
+                data.administrator = {
+                    email: administrator.local.email
+                };
+                Assignments.find({ 'admin_email': administrator.local.email }, null, { sort: { 'test_name:': 1 } }, (err, assignments) => {
+                    if (err) { throw err }
+                    data.assignments = [];
+                    assignments.forEach(assignment => {
+                        var users = [];
+                        users.push({
+                            email: assignment.admin_email,
+                            codes_used: assignment.codes_used,
+                            codes_max: assignment.codes_availables + assignment.codes_created + assignment.codes_used,
+                            id: administrator._id
+                        });
+                        assignment.users.forEach(assignment_user => {
+                            users.push({
+                                email: assignment_user.email,
+                                codes_used: assignment_user.codes_used,
+                                codes_max: assignment_user.codes_max,
+                                id: assignment_user.id
+                            });
+                        });
+                        data.assignments.push({
+                            test_name: assignment.test_name,
+                            codes_max: assignment.codes_max,
+                            id: assignment._id,
+                            users: users
+                        });
+                    })
+                    console.log(data);
+                    res.render('tests_list_admin', {
+                        user: req.user,
+                        data: data
+                    });
+                });
+            }
+        });
     });
 
 
 
     /*-------------------VISTA DE PRUEBAS-------------------------------------------*/
+    app.get('/test_view/:assignment_id/:user_id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.user_id, null, (err, test_user) => {
+            if (err) { throw err }
+            if (req.user.local.email == test_user.local.email || req.user.local.email == test_user.admin_email || req.user.sa == 1) {
+                Codes.find({ 'assignment_id': req.params.assignment_id, 'user_email': test_user.local.email }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
+                    if (err) { throw err }
+                    var data = {};
+                    data.codes_created_array = [];
+                    data.user = test_user;
+                    data.codes_used_array = [];
+                    codesArray.forEach(code => {
+                        if (code.used == 0) {
+                            data.codes_created_array.push(code.code);
+                        } else {
+                            data.codes_used_array.push(code.code);
+                        }
+                    });
+                    LinkResults.find({ 'access_code_used': { $in: data.codes_used_array } }, null, { sort: { 'access_code_used': 1 } }, (err, linkresultsArray) => {
+                        if (err) { throw err }
+                        data.categories = [];
+                        data.results = [];
+                        var index;
+                        linkresultsArray.forEach(result => {
+                            data.results.push({
+                                access_code_used: result.access_code_used,
+                                passed: result.passed,
+                                percentage: result.percentage,
+                                points_scored: result.points_scored,
+                                points_available: result.points_available,
+                                duration: result.duration,
+                                time_finished: result.time_finished
+
+                            });
+                            result.category_results.forEach(category => {
+                                index = data.categories.findIndex(doc => doc.name == category.name);
+                                if (index == -1) {
+                                    data.categories.push({
+                                        name: category.name,
+                                        percentage_sum: category.percentage,
+                                        points_available_sum: category.points_available,
+                                        points_scored: category.points_scored,
+                                        answers: 1
+                                    });
+                                } else {
+                                    data.categories[index].percentage_sum += category.percentage;
+                                    data.categories[index].points_available_sum += category.points_available;
+                                    data.categories[index].points_scored += category.points_scored;
+                                    data.categories[index].answers += 1;
+                                }
+                            });
+                        });
+                        if (test_user.sa == 2) {//->usuario admin
+                            Assignments.findOne({ '_id': req.params.assignment_id, 'admin_email': test_user.local.email }, null, (err, assignment) => {
+                                if (err) { throw err }
+                                data.test_name = assignment.test_name;
+                                data.assignment_id = assignment._id
+                                data.codes_max = assignment.codes_created + assignment.codes_used + assignment.codes_availables;
+                                data.codes_created = assignment.codes_created;
+                                data.codes_used = assignment.codes_used;
+                                console.log(data)
+                                res.render('test_view', {
+                                    user: req.user,
+                                    data: data,
+                                });
+                            });
+                        } else if (test_user.sa == 0) {//->usuario consultor
+                            Assignments.findOne({ '_id': req.params.assignment_id, 'users.id': test_user._id }, null, (err, assignment) => {
+                                if (err) { throw err }
+                                data.test_name = assignment.test_name;
+                                data.assignment_id = assignment._id
+                                for (var assignment_user of assignment.users) {
+                                    if (assignment_user.id == test_user._id) {
+                                        data.codes_max = assignment_user.codes_max;
+                                        data.codes_created = assignment_user.codes_created;
+                                        data.codes_used = assignment_user.codes_used;
+                                        break;
+                                    }
+                                }
+                                console.log(data)
+                                res.render('test_view', {
+                                    user: req.user,
+                                    data: data,
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+
+
     app.get('/test_view/:assig_id', isLoggedIn, (req, res) => {
         Assignments.findById(req.params.assig_id, null, (err, assignment) => {
             if (err) { throw err; }
@@ -858,13 +1003,13 @@ module.exports = (app, passport) => {
             } else if (req.user.sa == 2) {
                 user_temp = {
                     email: assignment.admin_email,
-                    codes_max: assignment.codes_availables+assignment.codes_created+assignment.codes_used,
+                    codes_max: assignment.codes_availables + assignment.codes_created + assignment.codes_used,
                     codes_created: assignment.codes_created,
                     codes_used: assignment.codes_used,
                 }
             }
             assignment.users = user_temp;
-            
+
             Codes.find({ $and: [{ 'assignment_id': req.params.assig_id }, { 'user_email': req.user.local.email }] }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
                 if (err) { throw err; }
                 var codesUsed = [];
@@ -915,7 +1060,7 @@ module.exports = (app, passport) => {
         });
     });
 
-    app.get('/test_view/:assig_id/:user_email', isLoggedIn, (req, res) => {
+    app.get('/test_view2/:assig_id/:user_email', isLoggedIn, (req, res) => {
         Assignments.findById(req.params.assig_id, null, (err, assignment) => {
             if (err) { throw err }
             var user_temp;
@@ -960,8 +1105,8 @@ module.exports = (app, passport) => {
                             }
                         });
                     });
-                    var user_temp=req.user;
-                    user_temp.sa=0;
+                    var user_temp = req.user;
+                    user_temp.sa = 0;
                     res.render('test_view', {
                         user: user_temp,
                         assignment: assignment,

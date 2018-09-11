@@ -6,7 +6,7 @@
             </a>
         </div>
         <ul class="nav">
-            <% if (sa == 1){ %>
+            <% if (user.sa == 1){ %>
                 <li class="nav-item">
                     <a class="nav-link" href="/profile">
                         <i class="nc-icon nc-notes"></i>
@@ -30,7 +30,7 @@
                 </li>
                 <% } %>
 
-                    <% if (sa == 0){ %>
+                    <% if (user.sa == 0){ %>
 
                         <li class="nav-item">
                             <a class="nav-link" href="/profile">
@@ -40,7 +40,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="nav-link" href="/tests_list">
+                            <a class="nav-link" href="/tests_list_cons/<%=user._id%>">
                                 <i class="nc-icon nc-attach-87"></i>
                                 <p lang="en">Evaluations</p>
                                 <p lang="es">Evaluaciones</p>
@@ -56,7 +56,7 @@
 
                         <% } %>
 
-                        <% if (sa == 2){ %>
+                        <% if (user.sa == 2){ %>
 
                             <li class="nav-item">
                                 <a class="nav-link" href="/profile">
@@ -66,7 +66,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="nav-link" href="/tests_list">
+                                <a class="nav-link" href="/tests_list_admin/<%= user._id %>">
                                     <i class="nc-icon nc-attach-87"></i>
                                     <p lang="en">Evaluations</p>
                                     <p lang="es">Evaluaciones</p>

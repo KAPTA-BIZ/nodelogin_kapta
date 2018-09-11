@@ -13,6 +13,7 @@ var Assignments = mongoose.Schema({
     codes_used: Number,
     codes_availables: Number,
     users: [{
+        id: String,
         email: String,
         codes_max: String,
         codes_created: Number,

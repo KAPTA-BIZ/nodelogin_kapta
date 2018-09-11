@@ -17,11 +17,10 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header ">
-                                        <h4 lang="es">Lista de evaluaciones disponibles para su perfil.</h4>
+                                        <h4 lang="es">Lista de evaluaciones disponibles para <%= data.administrator.email%>.</h4>
                                     </div>
-                                    <% if(user.sa==2){%>
                                         <div class="list-group list-group-flush" id="accordion">
-                                            <% items.forEach(function(item,index) { %>
+                                            <% data.assignments.forEach(function(item,index) { %>
                                                 <a class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapse<%= index%>" aria-expanded="true"
                                                     aria-controls="collapse<%= index%>">
                                                     <div class="row">
@@ -45,18 +44,6 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <%=user.local.email%>
-                                                                </td>
-                                                                <td>
-                                                                    <%=item.codes_used%>
-                                                                </td>
-                                                                <td>
-                                                                    <%=item.codes_availables+item.codes_used+item.codes_created%>
-                                                                </td>
-                                                                <td><a href="/test_view/<%=item._id%>">ver prueba</a></td>
-                                                            </tr>
                                                             <% item.users.forEach(function(item_user) { %>
                                                                 <tr>
                                                                     <td>
@@ -68,45 +55,14 @@
                                                                     <td>
                                                                         <%=item_user.codes_max%>
                                                                     </td>
-                                                                    <td><a href="/test_view/<%=item._id%>/<%=item_user.email%>">ver prueba</a></td>
+                                                                    <td><a href="/test_view/<%=item.id%>/<%=item_user.id%>">ver prueba</a></td>
                                                                 </tr>
                                                                 <% }); %>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                                 <% }); %>
-                                        </div>
-                                        <%} else if(user.sa==0){%>
-                                            <table class="table table-hover table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col" width="50%">Prueba</th>
-                                                        <th scope="col" width="15%">Códigos Usados</th>
-                                                        <th scope="col" width="15%">Códigos Asignados</th>
-                                                        <th scope="col" width="20%"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% items.forEach(function(assignment){%>
-                                                        <tr>
-                                                            <td>
-                                                                <%=assignment.test_name%>
-                                                            </td>
-                                                            <% assignment.users.forEach(function(consl){
-                                                                    if(consl.email==user.local.email){%>
-                                                                <td>
-                                                                    <%=consl.codes_used%>
-                                                                </td>
-                                                                <td>
-                                                                    <%=consl.codes_max%>
-                                                                </td>
-                                                                <%}})%>
-                                                                    <td><a href="/test_view/<%=assignment._id%>">Ver prueba</a></td>
-                                                        </tr>
-                                                        <%})%>
-                                                </tbody>
-                                            </table>
-                                            <%}%>
+                                        </div> 
                                 </div>
                             </div>
                         </div>

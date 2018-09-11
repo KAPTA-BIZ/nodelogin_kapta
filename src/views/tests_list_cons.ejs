@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title lang="es">Evaluaciones</title>
+    <title lang="en">Evaluations</title>
+    <% include partials/head %>
+</head>
+
+<body>
+    <% include partials/left_column %>
+    <div class="main-panel">
+        <% include partials/navbar %>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card container-fluid">
+                            <div class="card-header ">
+                                <h4 lang="es">Lista de evaluaciones disponibles para <%=data.consultant.email%>.</h4>
+                            </div>
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="50%">Prueba</th>
+                                        <th scope="col" width="15%">Códigos Usados</th>
+                                        <th scope="col" width="15%">Códigos Asignados</th>
+                                        <th scope="col" width="20%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% data.assignments.forEach(function(assignment){%>
+                                    <tr>
+                                        <td>
+                                            <%=assignment.name%>
+                                        </td>
+                                        <td>
+                                            <%=assignment.codes_used%>
+                                        </td>
+                                        <td>
+                                            <%=assignment.codes_max%>
+                                        </td>
+                                        <td><a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>">Ver prueba</a></td>
+                                    </tr>
+                                    <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -20,17 +20,13 @@
                         <div class="modal-content">
                             <div class="modal-body">
                                 <h5>Se creara un nuevo codigo para la prueba "
-                                    <%= assignment.test_name%>"
+                                    <%= data.test_name%>"
                                 </h5>
-                                <form class="form" role="form" action="/generate_new_code" method="post">
+                                <form class="form" role="form" action="/generate_new_code/<%=data.assignment_id%>/<%=data.user._id%>" method="post">
                                     <div class="form-group">
                                         <label for="GenerateCodes"> Cuantos códigos desea generar?</label>
-                                        <input type="number" class="form-control" name="GenerateCodes" id="GenerateCodes" min="1" max="<%= assignment.users[0].codes_max - assignment.users[0].codes_used - assignment.users[0].codes_created %>"
+                                        <input type="number" class="form-control" name="GenerateCodes" id="GenerateCodes" min="1" max="<%= data.codes_max - data.codes_used - data.codes_created %>"
                                             required/>
-                                        <input name="access_list_id" id="access_list_id" style="display:none" value="<%=assignment.access_list_id%>" />
-                                        <input name="assignment_id" id="assignment_id" style="display:none" value="<%=assignment._id%>" />
-                                        <input name="user_email" id="user_email" style="display:none" value="<%=assignment.users[0].email%>"/>
-                                        <input name="user_type" id="user_type" style="display:none" value="<%=user.sa%>"/>
                                     </div>
                                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -46,7 +42,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h2 class="text-center">
-                                    <%= assignment.test_name%>
+                                    <%= data.test_name%>
                                 </h2>
                             </div>
                             <br><br><br><br>
@@ -55,7 +51,7 @@
                                 <div class="card text-center mx-auto" style="width: 18rem; height: 7.5rem">
                                     <div class="card-body">
                                         <h1 class="card-title">
-                                            <%= resultsArray.length %>
+                                            <%= data.codes_used %>
                                         </h1>
                                         <h5 class="card-subtitle mb-2 text-muted">Códigos Usados</h5>
                                         <br>
@@ -66,24 +62,24 @@
                                 <div class="card text-center mx-auto" style="width: 18rem; height: 7.5rem">
                                     <div class="card-body">
                                         <h1 class="card-title">                                            
-                                            <%= codesArray.length%>
+                                            <%= data.codes_created%>
                                         </h1>
                                         <h5 class="card-subtitle mb-2 text-muted">Códigos Disponibles</h5>
 
                                         <div class="dropdown">
-                                            <a href="#" class="card-link" data-toggle="dropdown" <% if (assignment.users[0].codes_created==0){%> hidden <%}%> ><h6>ver códigos</h6></a>
+                                            <a href="#" class="card-link" data-toggle="dropdown" <% if (data.codes_created==0){%> hidden <%}%> ><h6>ver códigos</h6></a>
 
                                             <div class="dropdown-menu">
                                                 <form>
                                                     <table class="table">
                                                         <tbody>
                                                             <% var col=1
-                                                            for(var i=0; i<codesArray.length; i++){
+                                                            for(var i=0; i<data.codes_created_array.length; i++){
                                                                 if (col==1){%>
                                                                 <tr>
                                                                     <%}%>
                                                                         <td>
-                                                                            <%= codesArray[i].code%>
+                                                                            <%= data.codes_created_array[i]%>
                                                                         </td>
                                                                         <% if (col==4){%>
                                                                 </tr>
@@ -101,7 +97,7 @@
                                 <div class="card text-center mx-auto" style="width: 18rem; height: 7.5rem">
                                     <div class="card-body">
                                         <h1 class="card-title">
-                                            <%= assignment.users[0].codes_max - resultsArray.length - codesArray.length%>
+                                            <%= data.codes_max - data.codes_created - data.codes_used%>
                                         </h1>
                                         <h5 class="card-subtitle mb-2 text-muted">Códigos Restantes</h5>
                                         <h6><a href="#" class="card-link" data-toggle="modal" data-target="#exampleModal">crear
@@ -126,13 +122,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% categoriesArray.forEach(category=>{%>
+                                                <% data.categories.forEach(category=>{%>
                                                     <tr>
                                                         <td><%=category.name%></td>
                                                         <td>
                                                                 <div class="progress ">
-                                                                    <div class="progress-bar bg-success background-color:#aaa" role="progressbar" style="width: <%=category.percentage_sum/category.answers%>%;" aria-valuenow="<%=category.percentage_sum/category.answers%>" aria-valuemin="0"
-                                                                        aria-valuemax="100"><%=category.percentage_sum/category.answers%>%</div>
+                                                                    <div class="progress-bar bg-success background-color:#aaa" role="progressbar" style="width: <%=(category.percentage_sum/category.answers).toFixed(2)%>%;" aria-valuenow="<%=(category.percentage_sum/category.answers).toFixed(2)%>" aria-valuemin="0"
+                                                                        aria-valuemax="100"><%=(category.percentage_sum/category.answers).toFixed(2)%>%</div>
                                                                 </div>
                                                             </td>
                                                             <td></td>
@@ -163,7 +159,7 @@
                                             </thead>
                                             <tbody>
 
-                                                <% resultsArray.forEach(function(item){%>
+                                                <% data.results.forEach(function(item){%>
                                                     <tr>
                                                             <td><%=item.access_code_used%></td>
                                                             <td>
