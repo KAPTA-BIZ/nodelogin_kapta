@@ -12,15 +12,13 @@ function storeLinkResult(result) {
                 code.used=1;
                 code.save(err=>{if(err){throw err}})
 
-                UserSchema.findOne({'local.email':code.user_email},'sa',(err, sa)=>{
-                    console.log(sa.sa)
-                    if (sa.sa==2){
-                        console.log("updated admin")
+                UserSchema.findOne({'local.email':code.user_email},'sa',(err, user)=>{
+                    console.log(user.sa)
+                    if (user.sa==2){
                         Assignments.findByIdAndUpdate(code.assignment_id,{$inc:{'codes_used':1,'codes_created':-1}},(err,doc)=>{
                             //pendiente verificar
                         })
                     }else{
-                        console.log("updated consult")
                         Assignments.findOneAndUpdate({'_id':code.assignment_id,'users.email':code.user_email},{$inc: { 'users.$.codes_used': 1 , 'users.$.codes_created':-1}},(err, doc)=>{
                         //pendiente por verificar
                         });
@@ -50,6 +48,7 @@ function storeLinkResult(result) {
             
                 linkResult.save(function (err, testAdded) {
                     if (err) { throw err }
+                    console.log ("new result added")
                     //pendiente verificar error
                 })
             }

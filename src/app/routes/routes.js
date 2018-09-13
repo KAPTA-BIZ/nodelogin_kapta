@@ -31,6 +31,7 @@ var Assignments = require('../models/Assignments');
 var Codes = require('../models/Codes');
 var LinkResults = require('../models/LinkResults');
 var storageLinkResult = require('./storage/StorageLinkResult')
+var fs=require('fs')
 
 mongoose.Promise = global.Promise;
 
@@ -58,19 +59,44 @@ module.exports = (app, passport) => {
 
     app.use(bodyParser.json())
 
-    app.post('/', (req, res) => {
-        var headerHmacSignature = req.get("X-Classmarker-Hmac-Sha256");
+    app.post('/aSdgsDdFSDa', (req, res) => {
+       var jsonData = req.body;
+        if(jsonData.payload_type){
+            res.sendStatus(200);
+            fs.writeFile("resultadosjson.txt", JSON.stringify(jsonData,null,4), function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+            if (jsonData.payload_type == 'single_user_test_results_link') {
+                storageLinkResult(jsonData)
+            }
+        }else{
+            res.sendStatus(400);
+        }
+        
+
+
+        /*al momento de re correr el cuerpo de la peticion, no se garantiz
+        mantener el orden del objeto, este cambio de orden no permite 
+        comparar la firma pues el mensaje se considera diferente*/
+
+        /*var headerHmacSignature = req.get("X-Classmarker-Hmac-Sha256");
         var jsonData = req.body;
+     
         var secret = 's2eODy9kDxWNJVV';
         var verified = verifyData(jsonData, headerHmacSignature, secret);
         if (verified) {
             //Guardar test Web Hook
             res.sendStatus(200);
+            //console.log(jsonData);
             if (jsonData.payload_type == 'single_user_test_results_link') {
                 storageLinkResult(jsonData);
+                
             }
         } else {
             res.sendStatus(500);
+            ///console.log(jsonData);
         }
 
         function verifyData(jsonData, headerHmacSignature, secret) {
@@ -85,7 +111,7 @@ module.exports = (app, passport) => {
             var jsonBytes = new Buffer(jsonString, 'ascii');
             hmac.update(jsonBytes);
             return forge.util.encode64(hmac.digest().bytes());
-        }
+        }*/
     });
 
     /*------------CONEXION WEBHOOK END------------*/
@@ -927,8 +953,8 @@ module.exports = (app, passport) => {
                                 points_scored: result.points_scored,
                                 points_available: result.points_available,
                                 duration: result.duration,
-                                time_finished: result.time_finished
-
+                                time_finished: result.time_finished,
+                                test_result_id: result._id
                             });
                             result.category_results.forEach(category => {
                                 index = data.categories.findIndex(doc => doc.name == category.name);
@@ -1118,6 +1144,32 @@ module.exports = (app, passport) => {
             })
         });
     });
+
+/*-------------------------VISTA DE RESULTADOS------------------------*/
+app.get('/test_result/:result_id',isLoggedIn,(req,res)=>{
+    LinkResults.findById(req.params.result_id,null,(err,linkResult)=>{
+        if (err){throw err}
+        Codes.findOne({'code':linkResult.access_code_used},null,(err,code)=>{
+            if (err){throw err}
+            UserSchema.findOne({'local.email':code.user_email},null,(err,user)=>{
+                if (err){throw err}
+                if (req.user.local.email==user.local.email || req.user.local.email== user.admin_email|| req.user.sa==1){
+                    var data={};
+                    res.render('test_result',{
+                        data: {},
+                        user: req.user
+                    });
+                }else{
+                    res.sendStatus(403);
+                }
+            });
+        });
+    });
+    
+});
+
+
+
 
 
     /*-------------------- VISTA PARTICIPANTES POR INSTRUCTOR ---------------------*/

@@ -133,3 +133,36 @@ form input[type=email]:focus:not([readonly]) {
     background-repeat: repeat;
   }
 }
+
+li.answer{
+  list-style-type: upper-alpha;
+  position: relative;
+  padding: 0 0 0 2em; 
+}
+
+li.correct:before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f058";
+  color:#009933;
+  position: absolute;
+  left: 0.6em;
+}
+
+li.wrong:before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f057";
+  color:#d80c0c;
+  position: absolute;
+  left: 0.6em;
+}
+
+li.missed:before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f35a";
+  color:#1120ec;
+  position: absolute;
+  left: 0.6em;
+}
