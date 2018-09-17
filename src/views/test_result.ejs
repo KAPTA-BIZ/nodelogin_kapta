@@ -20,7 +20,7 @@
 
                     <div class="col-md-12">
                         <h2 class="text-center">
-                            Asesor Comercial Interno BMW Group
+                            <%= data.test_name%>
                         </h2>
                     </div>
                     <br><br><br><br>
@@ -28,7 +28,8 @@
                         <div class="card text-center mx-auto">
                             <div class="card-body">
                                 <h4 class="card-title">
-                                    Codigo de acceso: <span>V6KW</span>
+                                    Código de acceso: <span>
+                                        <%= data.access_code_used%></span>
                                 </h4>
                             </div>
                         </div>
@@ -41,25 +42,52 @@
                         <div class="card mx-auto">
                             <div class="card-body">
                                 <h1 class="card-title text-center" style="color:green">
-                                    23.2%
+                                    <%= data.percentage%>
                                 </h1>
                                 <table style="width:100%">
                                     <tbody>
                                         <tr>
                                             <td>Puntos:</td>
-                                            <td>19 de 80</td>
+                                            <td>
+                                                <%= data.points_scored%> de
+                                                <%= data.points_available%>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Duración:</td>
-                                            <td>00:05:29</td>
+                                            <td>
+                                                <%= data.duration%>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Fecha de Inicio:</td>
-                                            <td>12/09/18 17:00</td>
+                                            <td>
+                                                <%date=new Date(data.time_started*1000)%>
+                                                <%=date.getDate()%>/
+                                                <%=date.getMonth()+1%>/
+                                                <%=date.getFullYear()%>
+                                                <% if(date.getHours()<10){%>0
+                                                <%}%>
+                                                <%=date.getHours()%>:
+                                                <% if(date.getMinutes()<10){%>0
+                                                <%}%>
+                                                <%=date.getMinutes()%>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Fecha de finalización:</td>
-                                            <td>12/09/18 17:06</td>
+                                            <td>
+                                                <%date=new Date(data.time_finished*1000)%>
+                                                <%=date.getDate()%>/
+                                                <%=date.getMonth()+1%>/
+                                                <%=date.getFullYear()%>
+                                                <% if(date.getHours()<10){%>0
+                                                <%}%>
+                                                <%=date.getHours()%>:
+                                                <% if(date.getMinutes()<10){%>0
+                                                <%}%>
+                                                <%=date.getMinutes()%>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -83,7 +111,28 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <% data.category_results.forEach(category=>{%>
+                                        <tr style="height: 25px;">
+                                            <td>
+                                                <%=category.name%>
+                                            </td>
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                                                        style="width: <%=category.percentage%>%;" aria-valuenow="<%=category.percentage%>"
+                                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-value"><b>
+                                                            <%=category.percentage%>%</b></div>
+                                                </div>
 
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <%=category.points_scored%>/
+                                                <%=category.points_available%>
+                                            </td>
+                                        </tr>
+                                        <%})%>
                                     </tbody>
                                 </table>
                             </div>
@@ -95,138 +144,282 @@
                             <div class="card-header">
                                 <h4 class="card-title">Respuestas</h4>
                                 <h5 class="card-subtitle mb-2 text-muted">
-                                        <i class="fas fa-check-circle" style="color:#009933"> </i> Respuesta correcta  
-                                        <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Respuesta incorrecta  
-                                        <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Opcion correcta omitida
+                                    <i class="fas fa-check-circle" style="color:#009933"> </i> Respuesta correcta
+                                    <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Respuesta incorrecta
+                                    <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Opcion
+                                    correcta omitida
                                 </h5>
                             </div>
 
                             <ul class="nav nav-tabs justify-content-end" id="myTab" role="tablist">
-                                    <li class="nav-item">
-                                      <a class="nav-link active" id="all_question-tab" data-toggle="tab" href="#all_question" role="tab" aria-controls="all_question" aria-selected="true">Todas</a>
-                                    </li>
-                                    <li class="nav-item">
-                                      <a class="nav-link" id="corrrect_question-tab" data-toggle="tab" href="#corrrect_question" role="tab" aria-controls="corrrect_question" aria-selected="false">19 Correctas</a>
-                                    </li>
-                                    <li class="nav-item">
-                                      <a class="nav-link" id="partial_question-tab" data-toggle="tab" href="#partial_question" role="tab" aria-controls="partial_question" aria-selected="false">11 Parcialmente correctas</a>
-                                    </li>
-                                    <li class="nav-item">
-                                      <a class="nav-link" id="wrong_question-tab" data-toggle="tab" href="#wrong_question" role="tab" aria-controls="wrong_question" aria-selected="false">50 Incorrectas</a>
-                                    </li>
-                                  </ul>
-
-                                  <div class="tab-content" id="myTabContent">
-                                        <div class="tab-pane fade show active" id="all_question" role="tabpanel" aria-labelledby="all_question-tab">
-                                                <div class="card">
-                                                        <div class="card-header">
-                                                          <h4 class="card-title">Pregunta 1 de 80</h4> 
-                                                          <h5 class="card-subtitle mb-2 text-muted">Garantía de los productos</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                          <h5 class="card-title">El periodo de garantía por defectos en la pintura es de:</h5>
-                                                          <p class="card-text">
-                                                                <ol>
-                                                                        <li class="answer">1 año </li>
-                                                                        <li class="correct answer">Dapibus ac facilisis in </li>
-                                                                        <li class="answer">Morbi leo risus  </li>
-                                                                        <li class="answer">Porta ac consectetur ac</li>
-                                                                      </ol>
-                                                          </p>
-                                                        </div>
-                                                        <div class="card-footer text-muted">
-                                                                Puntos: 1 de 1
-                                                              </div>
-                                                      </div>
-
-                                                      <div class="card">
-                                                            <div class="card-header">
-                                                              <h4 class="card-title">Pregunta 1 de 80</h4> 
-                                                              <h5 class="card-subtitle mb-2 text-muted">Garantía de los productos</h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                              <h5 class="card-title">Indique en el numero al que corresponde cada tipo de banderas exteriores de BMW:<br /><br /><br /><br /><img src="https://0cm.classmarker.com/3640672_794BTD9G.jpg"  style="max-width:95%;" alt="" border="0"/></h5>
-                                                              <p class="card-text">
-                                                                    <ol>
-                                                                            <li class="correct answer"> <ol><li>a</li><li>b</li></ol><i class="fas fa-check-circle" style="color:lawngreen"></i></li>
-                                                                            <li>Dapibus ac facilisis in <i class="fas fa-times-circle" style="color:crimson"></i></li>
-                                                                            <li>Morbi leo risus <i class="fas fa-arrow-alt-circle-left" style="color:darkblue"></i> </li>
-                                                                            <li>Porta ac consectetur ac</li>
-                                                                            <li>Vestibulum at eros</li>
-                                                                          </ol>
-                                                              </p>
-                                                            </div>
-                                                            <div class="card-footer text-muted">
-                                                                    Puntos: 1 de 1
-                                                                  </div>
-                                                          </div>
-
-                                                          <div class="card">
-                                                                <div class="card-header">
-                                                                  <h4 class="card-title">Pregunta 1 de 80</h4> 
-                                                                  <h5 class="card-subtitle mb-2 text-muted">Garantía de los productos</h5>
-                                                                </div>
-                                                                <div class="card-body">
-                                                                  <h5 class="card-title">El periodo de garantía por defectos en la pintura es de:</h5>
-                                                                  <p class="card-text">
-                                                                        <ol>
-                                                                                <li class="correct answer">Cras justo odioi  <i class="fas fa-check-circle" style="color:lawngreen"></i></li>
-                                                                                <li class="wrong answer ">Dapibus ac facilisis in <i class="fas fa-times-circle" style="color:crimson"></i></li>
-                                                                                <li class="missed answer">Morbi leo risus <i class="fas fa-arrow-alt-circle-left" style="color:darkblue"></i> </li>
-                                                                                <li class="answer">Porta ac consectetur ac</li>
-                                                                                <li class="answer">Vestibulum at eros</li>
-                                                                              </ol>
-                                                                  </p>
-                                                                </div>
-                                                                <div class="card-footer text-muted">
-                                                                        Puntos: 1 de 1
-                                                                      </div>
-                                                              </div>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="all_question-tab" data-toggle="tab" href="#all_question"
+                                        role="tab" aria-controls="all_question" aria-selected="true">Todas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="corrrect_question-tab" data-toggle="tab" href="#corrrect_question"
+                                        role="tab" aria-controls="corrrect_question" aria-selected="false">Correctas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="partial_question-tab" data-toggle="tab" href="#partial_question"
+                                        role="tab" aria-controls="partial_question" aria-selected="false">Parcialmente
+                                        correctas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="wrong_question-tab" data-toggle="tab" href="#wrong_question"
+                                        role="tab" aria-controls="wrong_question" aria-selected="false">Incorrectas</a>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content" id="myTabContent">
+                                <!--All Answers-->
+                                <div class="tab-pane fade show active" id="all_question" role="tabpanel"
+                                    aria-labelledby="all_question-tab">
+                                    <% data.questions.forEach((question,index)=>{%>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Pregunta
+                                                <%=index+1%> de
+                                                <%=data.questions.length%>
+                                            </h4>
+                                            <h5 class="card-subtitle mb-2 text-muted">
+                                                <%=question.category%>
+                                            </h5>
                                         </div>
-                                        <div class="tab-pane fade" id="corrrect_question" role="tabpanel" aria-labelledby="corrrect_question-tab">
-                                                <div class="card">
-                                                        <div class="card-header">
-                                                          <h4 class="card-title">Pregunta 1 de 80</h4> 
-                                                          <h5 class="card-subtitle mb-2 text-muted">Garantía de los productos</h5>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <%-question.question%>
+                                            </h5>
+                                            <p class="card-text">
+                                                <% if (question.question_type=="multiplechoice"){%>
+                                                <ol>
+                                                    <% question.options.forEach(option=>{%>
+                                                    <li class="<%=option.status%>">
+                                                        <div>
+                                                            <%-option.option%>
                                                         </div>
-                                                        <div class="card-body">
-                                                          <h5 class="card-title">El periodo de garantía por defectos en la pintura es de:</h5>
-                                                          <p class="card-text">
-                                                                <ol type="A">
-                                                                        <li>Cras justo odioi  <i class="fas fa-check-circle" style="color:lawngreen"></i></li>
-                                                                        <li>Dapibus ac facilisis in <i class="fas fa-times-circle" style="color:crimson"></i></li>
-                                                                        <li>Morbi leo risus <i class="fas fa-arrow-alt-circle-left" style="color:darkblue"></i> </li>
-                                                                        <li>Porta ac consectetur ac</li>
-                                                                        <li>Vestibulum at eros</li>
-                                                                      </ol>
-                                                          </p>
+                                                    </li>
+                                                    <%});%>
+                                                </ol>
+                                                <% }else if (question.question_type=="freetext"){%>
+                                                <ol>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta dada:</div>
+                                                    </li>
+                                                    <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.user_answer%>
                                                         </div>
-                                                        <div class="card-footer text-muted">
-                                                                Puntos: 1 de 1
-                                                              </div>
-                                                      </div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.options%>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                                <%}%>
 
+                                            </p>
                                         </div>
-                                        <div class="tab-pane fade" id="partial_question" role="tabpanel" aria-labelledby="partial_question-tab">...</div>
-                                        <div class="tab-pane fade" id="wrong_question" role="tabpanel" aria-labelledby="wrong_question-tab">...</div>
-                                  </div>
+                                        <div class="card-footer text-muted">
+                                            Puntos:
+                                            <%=question.points_scored%> de
+                                            <%=question.points_available%>
+                                        </div>
+                                    </div>
+                                    <%})%>
+                                </div>
+                                <!--Correct Answers-->
+                                <div class="tab-pane fade" id="corrrect_question" role="tabpanel" aria-labelledby="corrrect_question-tab">
+                                        <% data.questions.forEach((question,index)=>{
+                                            if(question.result=="correct"){%>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Pregunta
+                                                        <%=index+1%> de
+                                                        <%=data.questions.length%>
+                                                    </h4>
+                                                    <h5 class="card-subtitle mb-2 text-muted">
+                                                        <%=question.category%>
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <%-question.question%>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        <% if (question.question_type=="multiplechoice"){%>
+                                                        <ol>
+                                                            <% question.options.forEach(option=>{%>
+                                                            <li class="<%=option.status%>">
+                                                                <div>
+                                                                    <%-option.option%>
+                                                                </div>
+                                                            </li>
+                                                            <%});%>
+                                                        </ol>
+                                                        <% }else if (question.question_type=="freetext"){%>
+                                                        <ol>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div class="text-muted">Respuesta dada:</div>
+                                                            </li>
+                                                            <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                                <div>
+                                                                    <%-question.options.user_answer%>
+                                                                </div>
+                                                            </li>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                            </li>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div>
+                                                                    <%-question.options.options%>
+                                                                </div>
+                                                            </li>
+                                                        </ol>
+                                                        <%}%>
+        
+                                                    </p>
+                                                </div>
+                                                <div class="card-footer text-muted">
+                                                    Puntos:
+                                                    <%=question.points_scored%> de
+                                                    <%=question.points_available%>
+                                                </div>
+                                            </div>
+                                            <%}})%>
+                                </div>
+<!-- Partial Answers-->
+                                <div class="tab-pane fade" id="partial_question" role="tabpanel" aria-labelledby="partial_question-tab">
+                                        <% data.questions.forEach((question,index)=>{
+                                            if(question.result=="partial_correct"){%>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Pregunta
+                                                        <%=index+1%> de
+                                                        <%=data.questions.length%>
+                                                    </h4>
+                                                    <h5 class="card-subtitle mb-2 text-muted">
+                                                        <%=question.category%>
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <%-question.question%>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        <% if (question.question_type=="multiplechoice"){%>
+                                                        <ol>
+                                                            <% question.options.forEach(option=>{%>
+                                                            <li class="<%=option.status%>">
+                                                                <div>
+                                                                    <%-option.option%>
+                                                                </div>
+                                                            </li>
+                                                            <%});%>
+                                                        </ol>
+                                                        <% }else if (question.question_type=="freetext"){%>
+                                                        <ol>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div class="text-muted">Respuesta dada:</div>
+                                                            </li>
+                                                            <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                                <div>
+                                                                    <%-question.options.user_answer%>
+                                                                </div>
+                                                            </li>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                            </li>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div>
+                                                                    <%-question.options.options%>
+                                                                </div>
+                                                            </li>
+                                                        </ol>
+                                                        <%}%>
+        
+                                                    </p>
+                                                </div>
+                                                <div class="card-footer text-muted">
+                                                    Puntos:
+                                                    <%=question.points_scored%> de
+                                                    <%=question.points_available%>
+                                                </div>
+                                            </div>
+                                            <%}})%>
+                                </div>
+                                <!--Wrong Answers-->
+                                <div class="tab-pane fade" id="wrong_question" role="tabpanel" aria-labelledby="wrong_question-tab">
+                                        <% data.questions.forEach((question,index)=>{
+                                            if(question.result=="incorrect"){%>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Pregunta
+                                                        <%=index+1%> de
+                                                        <%=data.questions.length%>
+                                                    </h4>
+                                                    <h5 class="card-subtitle mb-2 text-muted">
+                                                        <%=question.category%>
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <%-question.question%>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        <% if (question.question_type=="multiplechoice"){%>
+                                                        <ol>
+                                                            <% question.options.forEach(option=>{%>
+                                                            <li class="<%=option.status%>">
+                                                                <div>
+                                                                    <%-option.option%>
+                                                                </div>
+                                                            </li>
+                                                            <%});%>
+                                                        </ol>
+                                                        <% }else if (question.question_type=="freetext"){%>
+                                                        <ol>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div class="text-muted">Respuesta dada:</div>
+                                                            </li>
+                                                            <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                                <div>
+                                                                    <%-question.options.user_answer%>
+                                                                </div>
+                                                            </li>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                            </li>
+                                                            <li class="answer" style="list-style-type: none">
+                                                                <div>
+                                                                    <%-question.options.options%>
+                                                                </div>
+                                                            </li>
+                                                        </ol>
+                                                        <%}%>
+        
+                                                    </p>
+                                                </div>
+                                                <div class="card-footer text-muted">
+                                                    Puntos:
+                                                    <%=question.points_scored%> de
+                                                    <%=question.points_available%>
+                                                </div>
+                                            </div>
+                                            <%}})%>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
-
-
-
     </div>
-    <!--------------------------------------test-->
-    <script>
-        $(document).ready(function () {
-            $('[data-toggle="popover"]').popover();
-        });
-    </script>
-    <!--------------------------------------test-->
 </body>
 
 </html>

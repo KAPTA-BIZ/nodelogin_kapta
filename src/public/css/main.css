@@ -134,10 +134,21 @@ form input[type=email]:focus:not([readonly]) {
   }
 }
 
+ol{
+  vertical-align: middle;
+}
+
 li.answer{
   list-style-type: upper-alpha;
   position: relative;
-  padding: 0 0 0 2em; 
+  padding: 0.5em 0 0 2em;
+  vertical-align: text-top;
+}
+
+li.answer div{
+  display:inline-block;
+  vertical-align:middle;
+  position: relative;
 }
 
 li.correct:before {
@@ -147,6 +158,8 @@ li.correct:before {
   color:#009933;
   position: absolute;
   left: 0.6em;
+  top:50%;
+  transform: translateY(-35%);
 }
 
 li.wrong:before {
@@ -156,6 +169,8 @@ li.wrong:before {
   color:#d80c0c;
   position: absolute;
   left: 0.6em;
+  top:50%;
+  transform: translateY(-35%);
 }
 
 li.missed:before {
@@ -165,4 +180,16 @@ li.missed:before {
   color:#1120ec;
   position: absolute;
   left: 0.6em;
+  top:50%;
+  transform: translateY(-35%);
+}
+
+.progress {
+  text-align:center;
+  margin:0px;
+}
+.progress-value {
+  position:absolute;
+  right:0;
+  left:40pt;
 }

@@ -25,6 +25,7 @@ function storeLinkResult(result) {
                     }
                 });
                 var linkResult = new LinkResults({
+                    test_name: result.test.test_name,
                     percentage: result.result.percentage,
                     points_scored: result.result.points_scored,
                     points_available: result.result.points_available,
@@ -35,8 +36,9 @@ function storeLinkResult(result) {
                     passed: result.result.passed,
                     access_code_used: result.result.access_code_used
                 });
-            
+                var categories={}
                 result.category_results.forEach(category => {
+                    categories[category.category_id]=category.name;
                     linkResult.category_results.push({
                         name: category.name,
                         percentage: category.percentage,
@@ -44,7 +46,22 @@ function storeLinkResult(result) {
                         points_scored: category.points_scored
                     });
                 });
-            
+
+                result.questions.forEach(question=>{
+                    console.log(question.options);
+                    linkResult.questions.push({
+                        question_type: question.question_type,
+                        category: categories[question.category_id],
+                        question: question.question,
+                        options: question.options,
+                        correct_option: question.correct_option,
+                        user_response: question.user_response,
+                        result: question.result,
+                        points_available: question.points_available,
+                        points_scored: question.points_scored
+                    });
+                });         
+                //console.log(linkResult) 
             
                 linkResult.save(function (err, testAdded) {
                     if (err) { throw err }

@@ -31,7 +31,7 @@ var Assignments = require('../models/Assignments');
 var Codes = require('../models/Codes');
 var LinkResults = require('../models/LinkResults');
 var storageLinkResult = require('./storage/StorageLinkResult')
-var fs=require('fs')
+var fs = require('fs')
 
 mongoose.Promise = global.Promise;
 
@@ -60,10 +60,10 @@ module.exports = (app, passport) => {
     app.use(bodyParser.json())
 
     app.post('/aSdgsDdFSDa', (req, res) => {
-       var jsonData = req.body;
-        if(jsonData.payload_type){
+        var jsonData = req.body;
+        if (jsonData.payload_type) {
             res.sendStatus(200);
-            fs.writeFile("resultadosjson.txt", JSON.stringify(jsonData,null,4), function(err) {
+            fs.writeFile("resultadosjson.txt", JSON.stringify(jsonData, null, 4), function (err) {
                 if (err) {
                     console.log(err);
                 }
@@ -71,10 +71,10 @@ module.exports = (app, passport) => {
             if (jsonData.payload_type == 'single_user_test_results_link') {
                 storageLinkResult(jsonData)
             }
-        }else{
+        } else {
             res.sendStatus(400);
         }
-        
+
 
 
         /*al momento de re correr el cuerpo de la peticion, no se garantiz
@@ -709,8 +709,8 @@ module.exports = (app, passport) => {
                                 assignment.codes_created += Number(number);
                                 assignment.codes_availables -= Number(number);
                             } else if (test_user.sa == 0) {//-> usuario consultor
-                                var index = assignment.users.findIndex(doc=>doc.id==test_user._id)
-                                assignment.users[index].codes_created+=Number(number);
+                                var index = assignment.users.findIndex(doc => doc.id == test_user._id)
+                                assignment.users[index].codes_created += Number(number);
                             }
                             assignment.save(err => {
                                 if (err) { throw err }
@@ -1145,28 +1145,122 @@ module.exports = (app, passport) => {
         });
     });
 
-/*-------------------------VISTA DE RESULTADOS------------------------*/
-app.get('/test_result/:result_id',isLoggedIn,(req,res)=>{
-    LinkResults.findById(req.params.result_id,null,(err,linkResult)=>{
-        if (err){throw err}
-        Codes.findOne({'code':linkResult.access_code_used},null,(err,code)=>{
-            if (err){throw err}
-            UserSchema.findOne({'local.email':code.user_email},null,(err,user)=>{
-                if (err){throw err}
-                if (req.user.local.email==user.local.email || req.user.local.email== user.admin_email|| req.user.sa==1){
-                    var data={};
-                    res.render('test_result',{
-                        data: {},
-                        user: req.user
-                    });
-                }else{
-                    res.sendStatus(403);
-                }
+    /*-------------------------VISTA DE RESULTADOS------------------------*/
+    app.get('/test_result/:result_id', isLoggedIn, (req, res) => {
+        LinkResults.findById(req.params.result_id, null, (err, linkResult) => {
+            if (err) { throw err }
+            Codes.findOne({ 'code': linkResult.access_code_used }, null, (err, code) => {
+                if (err) { throw err }
+                UserSchema.findOne({ 'local.email': code.user_email }, null, (err, user) => {
+                    if (err) { throw err }
+                    if (req.user.local.email == user.local.email || req.user.local.email == user.admin_email || req.user.sa == 1) {
+                        var data = {};
+                        data.test_name = linkResult.test_name;
+                        data.access_code_used = linkResult.access_code_used;
+                        data.percentage = linkResult.percentage;
+                        data.points_scored = linkResult.points_scored;
+                        data.points_available = linkResult.points_available;
+                        data.duration = linkResult.duration;
+                        data.time_started = linkResult.time_started;
+                        data.time_finished = linkResult.time_finished;
+                        data.category_results = linkResult.category_results.sort((a, b) => {
+                            return (a.name < b.name) ? -1 : 1;
+                            return 0;
+                        });
+                        var questions = linkResult.questions.sort((a, b) => {
+                            return (a.category < b.category) ? -1 : 1;
+                            return 0;
+                        });
+                        data.questions = [];
+                        /*formato de las respuestas */
+                        questions.forEach((question, index) => {
+                            var result=0;
+                            if (question.question_type == "multiplechoice") {
+                                var correct_option = question.correct_option.split(",");
+                                var user_response = question.user_response.split(",");
+                                var options = [];
+                                for (var key in question.options) {
+                                    if (question.options.hasOwnProperty(key)) {
+                                        if (user_response.indexOf(key) != -1) {
+                                            if (correct_option.indexOf(key) != -1) {
+                                                options.push({
+                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                    status: 'correct answer'
+                                                });
+                                                result++;
+                                            } else {
+                                                options.push({
+                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                    status: 'wrong answer'
+                                                });
+                                            }
+                                        } else {
+                                            if (correct_option.indexOf(key) != -1) {
+                                                options.push({
+                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                    status: 'missed answer'
+                                                });
+                                            } else {
+                                                options.push({
+                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                    status: 'answer'
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (question.question_type == "freetext") { //-> pendiente explorar mas opciones
+                                var options = {};
+                                options.user_answer = question.user_response;
+                                if (question.result == "incorrect") {
+                                    options.status = 'wrong answer';
+                                }else{
+                                    options.status = 'correct answer';
+                                    result++;
+                                }
+                                options.options = '';
+                                question.options.exact_match.forEach(option => {
+                                    options.options += option.content + ',';
+                                });
+                                options.options = options.options.substr(0, options.options.length - 1);
+                            }
+                            if(result>0 && question.result == "incorrect"){
+                                data.questions.push({
+                                    question: question.question,
+                                    options: options,
+                                    category: question.category,
+                                    points_scored: question.points_scored,
+                                    points_available: question.points_available,
+                                    question_type: question.question_type,
+                                    result: 'partial_correct'
+                                });
+                            }else{
+                                data.questions.push({
+                                    question: question.question,
+                                    options: options,
+                                    category: question.category,
+                                    points_scored: question.points_scored,
+                                    points_available: question.points_available,
+                                    question_type: question.question_type,
+                                    result: question.result
+                                });
+                            }
+                            
+                           
+                        });
+                        console.log(data);
+                        res.render('test_result', {
+                            data: data,
+                            user: req.user
+                        });
+                    } else {
+                        res.sendStatus(403);
+                    }
+                });
             });
         });
+
     });
-    
-});
 
 
 

@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var LinkResults = mongoose.Schema({
+    test_name: String,
     percentage: String,
     points_scored: String,
     points_available: String,
@@ -10,12 +11,22 @@ var LinkResults = mongoose.Schema({
     percentage_passmark: String,
     passed: String,
     access_code_used: String,
-    questions:[],
-    category_results:[{
+    questions: [{
+        question_type: String,
+        category: String,
+        question: String,
+        options:{},
+        correct_option: String,
+        user_response:String,
+        result: String,
+        points_available: String,
+        points_scored: String
+    }],
+    category_results: [{
         name: String,
-        percentage:Number,
-        points_available:Number,
-        points_scored:Number
+        percentage: Number,
+        points_available: Number,
+        points_scored: Number
     }]
 });
 
