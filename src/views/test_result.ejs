@@ -41,7 +41,7 @@
                     <div class="col-md-5 my-auto">
                         <div class="card mx-auto">
                             <div class="card-body">
-                                <h1 class="card-title text-center" style="color:green">
+                                <h1 class="card-title text-center" style="color: <%if (data.percentage>=50){%>green<%}else{%>red<%} %>">
                                     <%= data.percentage%>
                                 </h1>
                                 <table style="width:100%">
@@ -63,30 +63,14 @@
                                             <td>Fecha de Inicio:</td>
                                             <td>
                                                 <%date=new Date(data.time_started*1000)%>
-                                                <%=date.getDate()%>/
-                                                <%=date.getMonth()+1%>/
-                                                <%=date.getFullYear()%>
-                                                <% if(date.getHours()<10){%>0
-                                                <%}%>
-                                                <%=date.getHours()%>:
-                                                <% if(date.getMinutes()<10){%>0
-                                                <%}%>
-                                                <%=date.getMinutes()%>
+                                                <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Fecha de finalización:</td>
                                             <td>
                                                 <%date=new Date(data.time_finished*1000)%>
-                                                <%=date.getDate()%>/
-                                                <%=date.getMonth()+1%>/
-                                                <%=date.getFullYear()%>
-                                                <% if(date.getHours()<10){%>0
-                                                <%}%>
-                                                <%=date.getHours()%>:
-                                                <% if(date.getMinutes()<10){%>0
-                                                <%}%>
-                                                <%=date.getMinutes()%>
+                                                <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -118,8 +102,7 @@
                                             </td>
                                             <td>
                                                 <div class="progress">
-                                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-                                                        style="width: <%=category.percentage%>%;" aria-valuenow="<%=category.percentage%>"
+                                                    <div class="progress-bar progress-bar-striped <%if (category.percentage>=50){%>bg-success<% }else{%>bg-danger<%} %>" role="progressbar" style="width: <%=category.percentage%>%;" aria-valuenow="<%=category.percentage%>"
                                                         aria-valuemin="0" aria-valuemax="100"></div>
                                                     <div class="progress-value"><b>
                                                             <%=category.percentage%>%</b></div>
@@ -170,7 +153,7 @@
                                         role="tab" aria-controls="wrong_question" aria-selected="false">Incorrectas</a>
                                 </li>
                             </ul>
-                            
+
                             <div class="tab-content" id="myTabContent">
                                 <!--All Answers-->
                                 <div class="tab-pane fade show active" id="all_question" role="tabpanel"
@@ -234,183 +217,183 @@
                                 </div>
                                 <!--Correct Answers-->
                                 <div class="tab-pane fade" id="corrrect_question" role="tabpanel" aria-labelledby="corrrect_question-tab">
-                                        <% data.questions.forEach((question,index)=>{
+                                    <% data.questions.forEach((question,index)=>{
                                             if(question.result=="correct"){%>
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Pregunta
-                                                        <%=index+1%> de
-                                                        <%=data.questions.length%>
-                                                    </h4>
-                                                    <h5 class="card-subtitle mb-2 text-muted">
-                                                        <%=question.category%>
-                                                    </h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h5 class="card-title">
-                                                        <%-question.question%>
-                                                    </h5>
-                                                    <p class="card-text">
-                                                        <% if (question.question_type=="multiplechoice"){%>
-                                                        <ol>
-                                                            <% question.options.forEach(option=>{%>
-                                                            <li class="<%=option.status%>">
-                                                                <div>
-                                                                    <%-option.option%>
-                                                                </div>
-                                                            </li>
-                                                            <%});%>
-                                                        </ol>
-                                                        <% }else if (question.question_type=="freetext"){%>
-                                                        <ol>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div class="text-muted">Respuesta dada:</div>
-                                                            </li>
-                                                            <li class="<%=question.options.status%>" style="list-style-type: none">
-                                                                <div>
-                                                                    <%-question.options.user_answer%>
-                                                                </div>
-                                                            </li>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div class="text-muted">Respuesta(s) aceptada:</div>
-                                                            </li>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div>
-                                                                    <%-question.options.options%>
-                                                                </div>
-                                                            </li>
-                                                        </ol>
-                                                        <%}%>
-        
-                                                    </p>
-                                                </div>
-                                                <div class="card-footer text-muted">
-                                                    Puntos:
-                                                    <%=question.points_scored%> de
-                                                    <%=question.points_available%>
-                                                </div>
-                                            </div>
-                                            <%}})%>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Pregunta
+                                                <%=index+1%> de
+                                                <%=data.questions.length%>
+                                            </h4>
+                                            <h5 class="card-subtitle mb-2 text-muted">
+                                                <%=question.category%>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <%-question.question%>
+                                            </h5>
+                                            <p class="card-text">
+                                                <% if (question.question_type=="multiplechoice"){%>
+                                                <ol>
+                                                    <% question.options.forEach(option=>{%>
+                                                    <li class="<%=option.status%>">
+                                                        <div>
+                                                            <%-option.option%>
+                                                        </div>
+                                                    </li>
+                                                    <%});%>
+                                                </ol>
+                                                <% }else if (question.question_type=="freetext"){%>
+                                                <ol>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta dada:</div>
+                                                    </li>
+                                                    <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.user_answer%>
+                                                        </div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.options%>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                                <%}%>
+
+                                            </p>
+                                        </div>
+                                        <div class="card-footer text-muted">
+                                            Puntos:
+                                            <%=question.points_scored%> de
+                                            <%=question.points_available%>
+                                        </div>
+                                    </div>
+                                    <%}})%>
                                 </div>
-<!-- Partial Answers-->
+                                <!-- Partial Answers-->
                                 <div class="tab-pane fade" id="partial_question" role="tabpanel" aria-labelledby="partial_question-tab">
-                                        <% data.questions.forEach((question,index)=>{
+                                    <% data.questions.forEach((question,index)=>{
                                             if(question.result=="partial_correct"){%>
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Pregunta
-                                                        <%=index+1%> de
-                                                        <%=data.questions.length%>
-                                                    </h4>
-                                                    <h5 class="card-subtitle mb-2 text-muted">
-                                                        <%=question.category%>
-                                                    </h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h5 class="card-title">
-                                                        <%-question.question%>
-                                                    </h5>
-                                                    <p class="card-text">
-                                                        <% if (question.question_type=="multiplechoice"){%>
-                                                        <ol>
-                                                            <% question.options.forEach(option=>{%>
-                                                            <li class="<%=option.status%>">
-                                                                <div>
-                                                                    <%-option.option%>
-                                                                </div>
-                                                            </li>
-                                                            <%});%>
-                                                        </ol>
-                                                        <% }else if (question.question_type=="freetext"){%>
-                                                        <ol>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div class="text-muted">Respuesta dada:</div>
-                                                            </li>
-                                                            <li class="<%=question.options.status%>" style="list-style-type: none">
-                                                                <div>
-                                                                    <%-question.options.user_answer%>
-                                                                </div>
-                                                            </li>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div class="text-muted">Respuesta(s) aceptada:</div>
-                                                            </li>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div>
-                                                                    <%-question.options.options%>
-                                                                </div>
-                                                            </li>
-                                                        </ol>
-                                                        <%}%>
-        
-                                                    </p>
-                                                </div>
-                                                <div class="card-footer text-muted">
-                                                    Puntos:
-                                                    <%=question.points_scored%> de
-                                                    <%=question.points_available%>
-                                                </div>
-                                            </div>
-                                            <%}})%>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Pregunta
+                                                <%=index+1%> de
+                                                <%=data.questions.length%>
+                                            </h4>
+                                            <h5 class="card-subtitle mb-2 text-muted">
+                                                <%=question.category%>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <%-question.question%>
+                                            </h5>
+                                            <p class="card-text">
+                                                <% if (question.question_type=="multiplechoice"){%>
+                                                <ol>
+                                                    <% question.options.forEach(option=>{%>
+                                                    <li class="<%=option.status%>">
+                                                        <div>
+                                                            <%-option.option%>
+                                                        </div>
+                                                    </li>
+                                                    <%});%>
+                                                </ol>
+                                                <% }else if (question.question_type=="freetext"){%>
+                                                <ol>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta dada:</div>
+                                                    </li>
+                                                    <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.user_answer%>
+                                                        </div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.options%>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                                <%}%>
+
+                                            </p>
+                                        </div>
+                                        <div class="card-footer text-muted">
+                                            Puntos:
+                                            <%=question.points_scored%> de
+                                            <%=question.points_available%>
+                                        </div>
+                                    </div>
+                                    <%}})%>
                                 </div>
                                 <!--Wrong Answers-->
                                 <div class="tab-pane fade" id="wrong_question" role="tabpanel" aria-labelledby="wrong_question-tab">
-                                        <% data.questions.forEach((question,index)=>{
+                                    <% data.questions.forEach((question,index)=>{
                                             if(question.result=="incorrect"){%>
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Pregunta
-                                                        <%=index+1%> de
-                                                        <%=data.questions.length%>
-                                                    </h4>
-                                                    <h5 class="card-subtitle mb-2 text-muted">
-                                                        <%=question.category%>
-                                                    </h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h5 class="card-title">
-                                                        <%-question.question%>
-                                                    </h5>
-                                                    <p class="card-text">
-                                                        <% if (question.question_type=="multiplechoice"){%>
-                                                        <ol>
-                                                            <% question.options.forEach(option=>{%>
-                                                            <li class="<%=option.status%>">
-                                                                <div>
-                                                                    <%-option.option%>
-                                                                </div>
-                                                            </li>
-                                                            <%});%>
-                                                        </ol>
-                                                        <% }else if (question.question_type=="freetext"){%>
-                                                        <ol>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div class="text-muted">Respuesta dada:</div>
-                                                            </li>
-                                                            <li class="<%=question.options.status%>" style="list-style-type: none">
-                                                                <div>
-                                                                    <%-question.options.user_answer%>
-                                                                </div>
-                                                            </li>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div class="text-muted">Respuesta(s) aceptada:</div>
-                                                            </li>
-                                                            <li class="answer" style="list-style-type: none">
-                                                                <div>
-                                                                    <%-question.options.options%>
-                                                                </div>
-                                                            </li>
-                                                        </ol>
-                                                        <%}%>
-        
-                                                    </p>
-                                                </div>
-                                                <div class="card-footer text-muted">
-                                                    Puntos:
-                                                    <%=question.points_scored%> de
-                                                    <%=question.points_available%>
-                                                </div>
-                                            </div>
-                                            <%}})%>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Pregunta
+                                                <%=index+1%> de
+                                                <%=data.questions.length%>
+                                            </h4>
+                                            <h5 class="card-subtitle mb-2 text-muted">
+                                                <%=question.category%>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <%-question.question%>
+                                            </h5>
+                                            <p class="card-text">
+                                                <% if (question.question_type=="multiplechoice"){%>
+                                                <ol>
+                                                    <% question.options.forEach(option=>{%>
+                                                    <li class="<%=option.status%>">
+                                                        <div>
+                                                            <%-option.option%>
+                                                        </div>
+                                                    </li>
+                                                    <%});%>
+                                                </ol>
+                                                <% }else if (question.question_type=="freetext"){%>
+                                                <ol>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta dada:</div>
+                                                    </li>
+                                                    <li class="<%=question.options.status%>" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.user_answer%>
+                                                        </div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                    </li>
+                                                    <li class="answer" style="list-style-type: none">
+                                                        <div>
+                                                            <%-question.options.options%>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                                <%}%>
+
+                                            </p>
+                                        </div>
+                                        <div class="card-footer text-muted">
+                                            Puntos:
+                                            <%=question.points_scored%> de
+                                            <%=question.points_available%>
+                                        </div>
+                                    </div>
+                                    <%}})%>
                                 </div>
                             </div>
                         </div>

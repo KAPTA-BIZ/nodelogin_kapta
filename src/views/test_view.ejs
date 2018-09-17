@@ -122,14 +122,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% data.categories.forEach(category=>{%>
+                                                <% data.categories.forEach(category=>{
+                                                    var percen=(category.percentage_sum/category.answers).toFixed(2)%>
                                                     <tr style="height: 25px;">
                                                         <td><%=category.name%></td>
                                                         <td>
                                                                 <div class="progress" >
-                                                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: <%=(category.percentage_sum/category.answers).toFixed(2)%>%;" aria-valuenow="<%=(category.percentage_sum/category.answers).toFixed(2)%>" aria-valuemin="0"
+                                                                    <div class="progress-bar progress-bar-striped <%if (percen>=50){%>bg-success<% }else{%>bg-danger<%} %>" role="progressbar" style="width: <%=percen%>%;" aria-valuenow="<%=percen%>" aria-valuemin="0"
                                                                         aria-valuemax="100"></div> 
-                                                                        <div class="progress-value"><b><%=(category.percentage_sum/category.answers).toFixed(1)%>%</b></div>
+                                                                       <div class="progress-value"><b><%=percen%>%</b></div>
                                                                     </div>
                                                                 
                                                             </td>
@@ -166,7 +167,8 @@
                                                             <td><%=item.access_code_used%></td>
                                                             <td>
                                                                     <div class="progress"> 
-                                                                        <div class="progress-bar <%if (item.passed=='true'){%>bg-success<% }else{%>bg-danger<%}; %>" role="progressbar" style="width: <%=item.percentage%>%;" aria-valuenow="<%=item.percentage%>" aria-valuemin="0" aria-valuemax="100"><%=item.percentage%>%</div>
+                                                                        <div class="progress-bar progress-bar-striped <%if (item.percentage>=50){%>bg-success<% }else{%>bg-danger<%} %>" role="progressbar" style="width: <%=item.percentage%>%;" aria-valuenow="<%=item.percentage%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div class="progress-value"><b><%=item.percentage%>%</b></div>
                                                                     </div>
                                                                 </td>
                                                                 <td><%=item.points_scored%>/<%=item.points_available%></td>
@@ -186,7 +188,7 @@
                 </div>
 
 
-
+<% console.log(data)%>
         </div>
         <!--------------------------------------test-->
         <script>

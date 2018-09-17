@@ -185,11 +185,12 @@ li.missed:before {
 }
 
 .progress {
+  position: relative;
   text-align:center;
   margin:0px;
 }
-.progress-value {
-  position:absolute;
-  right:0;
-  left:40pt;
+.progress div.progress-value {
+  position: absolute;
+  right:50%;
+  transform: translateX(50%);
 }
