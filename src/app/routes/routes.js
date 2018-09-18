@@ -1175,7 +1175,7 @@ module.exports = (app, passport) => {
                         /*formato de las respuestas */
                         questions.forEach((question, index) => {
                             var result=0;
-                            if (question.question_type == "multiplechoice") {
+                            if (question.question_type == "multiplechoice" || question.question_type == "truefalse") {
                                 var correct_option = question.correct_option.split(",");
                                 var user_response = question.user_response.split(",");
                                 var options = [];
@@ -1209,7 +1209,7 @@ module.exports = (app, passport) => {
                                         }
                                     }
                                 }
-                            } else if (question.question_type == "freetext") { //-> pendiente explorar mas opciones
+                            } else if (question.question_type == "freetext") { //-> pendiente explorar opciones grammar y essay 
                                 var options = {};
                                 options.user_answer = question.user_response;
                                 if (question.result == "incorrect") {
@@ -1223,6 +1223,27 @@ module.exports = (app, passport) => {
                                     options.options += option.content + ',';
                                 });
                                 options.options = options.options.substr(0, options.options.length - 1);
+                            } else if(question.question_type=="matching"){
+                                var options=[];
+                                for(var key in question.options){
+                                    if (question.options.hasOwnProperty(key)){
+                                        if(question.options[key].clue){
+                                            var status='';
+                                            if(question.options[key].correct_option==question.options[key].user_response){
+                                                status='correct answer';
+                                                result++
+                                            }else{
+                                                status='wrong answer';
+                                            }
+                                            options.push({
+                                                clue: question.options[key].clue,
+                                                match:question.options[key].match,
+                                                user_response:question.options[question.options[key].user_response].match,
+                                                status: status
+                                            });
+                                        }
+                                    }
+                                }
                             }
                             if(result>0 && question.result == "incorrect"){
                                 data.questions.push({
@@ -1248,7 +1269,7 @@ module.exports = (app, passport) => {
                             
                            
                         });
-                        console.log(data);
+                        //console.log(data);
                         res.render('test_result', {
                             data: data,
                             user: req.user
