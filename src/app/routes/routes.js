@@ -884,10 +884,11 @@ module.exports = (app, passport) => {
                 data.administrator = {
                     email: administrator.local.email
                 };
-                Assignments.find({ 'admin_email': administrator.local.email }, null, { sort: { 'test_name:': 1 } }, (err, assignments) => {
+                Assignments.find({ 'admin_email': administrator.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                     if (err) { throw err }
                     data.assignments = [];
                     assignments.forEach(assignment => {
+                        console.log(assignment);
                         var users = [];
                         users.push({
                             email: assignment.admin_email,
@@ -910,7 +911,7 @@ module.exports = (app, passport) => {
                             users: users
                         });
                     })
-                    console.log(data);
+                    //console.log(data);
                     res.render('tests_list_admin', {
                         user: req.user,
                         data: data
@@ -974,6 +975,12 @@ module.exports = (app, passport) => {
                                 }
                             });
                         });
+                        console.log(data.categories)
+                        data.categories.sort((a,b)=>{
+                            if (a.name < b.name) {return -1;}
+                            if (a.name > b.name) {return 1;}
+                            return 0;
+                        });
                         if (test_user.sa == 2) {//->usuario admin
                             Assignments.findOne({ '_id': req.params.assignment_id, 'admin_email': test_user.local.email }, null, (err, assignment) => {
                                 if (err) { throw err }
@@ -982,7 +989,6 @@ module.exports = (app, passport) => {
                                 data.codes_max = assignment.codes_created + assignment.codes_used + assignment.codes_availables;
                                 data.codes_created = assignment.codes_created;
                                 data.codes_used = assignment.codes_used;
-                                console.log(data)
                                 res.render('test_view', {
                                     user: req.user,
                                     data: data,
@@ -1001,7 +1007,6 @@ module.exports = (app, passport) => {
                                         break;
                                     }
                                 }
-                                console.log(data)
                                 res.render('test_view', {
                                     user: req.user,
                                     data: data,
