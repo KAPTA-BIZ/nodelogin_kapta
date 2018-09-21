@@ -18,13 +18,17 @@
                         <div class="card container-fluid">
                             <div class="card-header ">
                                 <h4 lang="es">Lista de evaluaciones disponibles para <%=data.consultant.email%>.</h4>
+                                <h4 lang="en">Available evaluations for <%=data.consultant.email%>.</h4>
                             </div>
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
-                                        <th scope="col" width="50%">Prueba</th>
-                                        <th scope="col" width="15%">Códigos Usados</th>
-                                        <th scope="col" width="15%">Códigos Asignados</th>
+                                        <th scope="col" width="50%" lang="es">Prueba</th>
+                                        <th scope="col" width="50%" lang="en">Evaluation</th>
+                                        <th scope="col" width="15%" lang="es">Códigos Usados</th>
+                                        <th scope="col" width="15%" lang="en">Codes used</th>
+                                        <th scope="col" width="15%" lang="es">Códigos Asignados</th>
+                                        <th scope="col" width="15%" lang="en">Codes Assigned</th>
                                         <th scope="col" width="20%"></th>
                                     </tr>
                                 </thead>
@@ -40,7 +44,10 @@
                                         <td>
                                             <%=assignment.codes_max%>
                                         </td>
-                                        <td><a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>">Ver prueba</a></td>
+                                        <td>
+                                            <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="es">Ver prueba</a>
+                                            <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="en">see test</a>
+                                        </td>
                                     </tr>
                                     <%})%>
                                 </tbody>

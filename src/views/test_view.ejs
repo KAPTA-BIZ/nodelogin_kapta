@@ -19,18 +19,24 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <h5>Se creara un nuevo codigo para la prueba "
+                                <h5 lang="es">Se creara un nuevo codigo para la evaluación "
                                     <%= data.test_name%>"
                                 </h5>
+                                <h5 lang="en">A new code will be created for the evaluation "
+                                        <%= data.test_name%>"
+                                    </h5>
                                 <form class="form" role="form" action="/generate_new_code/<%=data.assignment_id%>/<%=data.user._id%>" method="post">
                                     <div class="form-group">
-                                        <label for="GenerateCodes"> Cuantos códigos desea generar?</label>
+                                        <label for="GenerateCodes" lang="es"> Cuántos códigos desea generar?</label>
+                                        <label for="GenerateCodes" lang="en"> How many codes do you want to generate?</label>
                                         <input type="number" class="form-control" name="GenerateCodes" id="GenerateCodes" min="1" max="<%= data.codes_max - data.codes_used - data.codes_created %>"
                                             required/>
                                     </div>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal" lang="es">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal" lang="en">Cancel</button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                                    <button type="submit" class="btn btn-primary" lang="es">Confirmar</button>
+                                    <button type="submit" class="btn btn-primary" lang="en">Validate</button>
                                 </form>
                             </div>
                         </div>
@@ -53,7 +59,8 @@
                                         <h1 class="card-title">
                                             <%= data.codes_used %>
                                         </h1>
-                                        <h5 class="card-subtitle mb-2 text-muted">Códigos Usados</h5>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="es">Códigos Usados</h5>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="en">Codes Used</h5>
                                         <br>
                                     </div>
                                 </div>
@@ -64,11 +71,11 @@
                                         <h1 class="card-title">                                            
                                             <%= data.codes_created%>
                                         </h1>
-                                        <h5 class="card-subtitle mb-2 text-muted">Códigos Disponibles</h5>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="es">Códigos Disponibles</h5>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="en">Available Codes</h5>
 
                                         <div class="dropdown">
-                                            <a href="#" class="card-link" data-toggle="dropdown" <% if (data.codes_created==0){%> hidden <%}%> ><h6>ver códigos</h6></a>
-
+                                            <a href="#" class="card-link" data-toggle="dropdown" <% if (data.codes_created==0){%> hidden <%}%> ><h6 lang="es">ver códigos</h6><h6 lang="en">codes</h6></a>
                                             <div class="dropdown-menu">
                                                 <form>
                                                     <table class="table">
@@ -99,9 +106,12 @@
                                         <h1 class="card-title">
                                             <%= data.codes_max - data.codes_created - data.codes_used%>
                                         </h1>
-                                        <h5 class="card-subtitle mb-2 text-muted">Códigos Restantes</h5>
-                                        <h6><a href="#" class="card-link" data-toggle="modal" data-target="#exampleModal">crear
-                                                nuevo código</a></h6>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="es">Códigos Restantes</h5>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="en">Codes left</h5>
+                                        <h6>
+                                            <a href="#" class="card-link" data-toggle="modal" data-target="#exampleModal" lang="es">crear nuevo código</a>
+                                            <a href="#" class="card-link" data-toggle="modal" data-target="#exampleModal" lang="en">new code</a>
+                                        </h6>
                                     </div>
                                 </div>
                             </div>
@@ -109,16 +119,20 @@
                             <div class="col-md-12">
                                 <div class="card strpied-tabled-with-hover container-fluid">
                                     <div class="card-header">
-                                        <h4 class="card-title">Categorias</h4>
+                                        <h4 class="card-title" lang="es">Categorias</h4>
+                                        <h4 class="card-title" lang="en">Categories</h4>
                                     </div>
                                     <div class="card-body table-full-width table-responsive">
                                         <table class="table table-hover table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 40%">Categoria</th>
-                                                    <th style="width: 30%">Promedio</th>
+                                                    <th style="width: 40%" lang="es">Categoria</th>
+                                                    <th style="width: 40%" lang="en">Category</th>
+                                                    <th style="width: 30%" lang="es">Promedio</th>
+                                                    <th style="width: 30%" lang="en">Average</th>
                                                     <th style="width: 10%">&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                                    <th style="width: 20%">Respuestas</th>
+                                                    <th style="width: 20%" lang="es">Respuestas</th>
+                                                    <th style="width: 20%" lang="en">Answers</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -147,17 +161,23 @@
                             <div class="col-md-12">
                                 <div class="card strpied-tabled-with-hover container-fluid">
                                     <div class="card-header">
-                                        <h4 class="card-title">Resultados</h4>
+                                        <h4 class="card-title" lang="es">Resultados</h4>
+                                        <h4 class="card-title" lang="en">Results</h4>
                                     </div>
                                     <div class="card-body table-full-width table-responsive">
                                         <table class="table table-hover table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 20%">Código</th>
-                                                    <th style="width: 16%">Porcentaje</th>
-                                                    <th style="width: 16%">Puntaje</th>
-                                                    <th style="width: 16%">Duración</th>
-                                                    <th style="width: 16%">Fecha</th>
+                                                    <th style="width: 20%" lang="es">Código</th>
+                                                    <th style="width: 20%" lang="en">Code</th>
+                                                    <th style="width: 16%" lang="es">Porcentaje</th>
+                                                    <th style="width: 16%" lang="en">Percentage</th>
+                                                    <th style="width: 16%" lang="es">Puntaje</th>
+                                                    <th style="width: 16%" lang="en">Score</th>
+                                                    <th style="width: 16%" lang="es">Duración</th>
+                                                    <th style="width: 16%" lang="en">Duration</th>
+                                                    <th style="width: 16%" lang="es">Fecha</th>
+                                                    <th style="width: 16%" lang="en">Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -174,7 +194,9 @@
                                                                 <td><%=item.points_scored%>/<%=item.points_available%></td>
                                                                 <td><%=item.duration%></td>
                                                                 <td><%date=new Date(item.time_finished*1000)%> <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> </td>
-                                                                <td><a href="/test_result/<%=item.test_result_id%>">Respuestas</a></td>
+                                                                <td><a href="/test_result/<%=item.test_result_id%>" lang="es">Respuestas</a>
+                                                                    <a href="/test_result/<%=item.test_result_id%>" lang="en">Answers</a>
+                                                                </td>
                                                     </tr>
                                                 <%})%>
                                             </tbody>

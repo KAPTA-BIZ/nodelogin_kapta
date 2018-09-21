@@ -27,10 +27,14 @@
                     <div class="col-md-5 my-auto">
                         <div class="card text-center mx-auto">
                             <div class="card-body">
-                                <h4 class="card-title">
-                                    Código de acceso: <span>
-                                        <%= data.access_code_used%></span>
+                                <h4 class="card-title" lang="es">
+                                    Código de acceso: 
+                                    <span><%= data.access_code_used%></span>
                                 </h4>
+                                <h4 class="card-title" lang="en">
+                                        Access code: 
+                                        <span><%= data.access_code_used%></span>
+                                    </h4>
                             </div>
                         </div>
                     </div>
@@ -46,28 +50,38 @@
                                 </h1>
                                 <table style="width:100%">
                                     <tbody>
-                                        <tr>
+                                        <tr lang="es">
                                             <td>Puntos:</td>
                                             <td>
                                                 <%= data.points_scored%> de
                                                 <%= data.points_available%>
                                             </td>
                                         </tr>
+                                        <tr lang="en">
+                                                <td>Points:</td>
+                                                <td>
+                                                    <%= data.points_scored%> out of
+                                                    <%= data.points_available%>
+                                                </td>
+                                            </tr>
                                         <tr>
-                                            <td>Duración:</td>
+                                            <td lang="es">Duración:</td>
+                                            <td lang="en">Duration:</td>
                                             <td>
                                                 <%= data.duration%>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Fecha de Inicio:</td>
+                                            <td lang="es">Fecha de Inicio:</td>
+                                            <td lang="en">Date started:</td>
                                             <td>
                                                 <%date=new Date(data.time_started*1000)%>
                                                 <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Fecha de finalización:</td>
+                                            <td lang="es">Fecha de finalización:</td>
+                                            <td lang="en">Date finished:</td>
                                             <td>
                                                 <%date=new Date(data.time_finished*1000)%>
                                                 <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
@@ -82,16 +96,20 @@
                     <div class="col-md-12">
                         <div class="card strpied-tabled-with-hover container-fluid">
                             <div class="card-header">
-                                <h4 class="card-title">Categorias</h4>
+                                <h4 class="card-title" lang="es">Categorias</h4>
+                                <h4 class="card-title" lang="en">Categories</h4>
                             </div>
                             <div class="card-body table-full-width table-responsive">
                                 <table class="table table-hover table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="width: 40%">Categoria</th>
-                                            <th style="width: 30%">Promedio</th>
+                                            <th style="width: 40%" lang="es">Categoria</th>
+                                            <th style="width: 40%" lang="en">Category</th>
+                                            <th style="width: 30%" lang="es">Promedio</th>
+                                            <th style="width: 30%" lang="en">Average</th>
                                             <th style="width: 10%">&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                            <th style="width: 20%">Respuestas</th>
+                                            <th style="width: 20%" lang="es">Respuestas</th>
+                                            <th style="width: 20%" lang="en">Answers</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -125,34 +143,57 @@
                     <div class="col-md-12">
                         <div class="card container-fluid">
                             <div class="card-header">
-                                <h4 class="card-title">Respuestas</h4>
-                                <h5 class="card-subtitle mb-2 text-muted">
+                                <h4 class="card-title" lang="es">Respuestas</h4>
+                                <h4 class="card-title" lang="en">Answers</h4>
+                                <h5 class="card-subtitle mb-2 text-muted" lang="es">
                                     <i class="fas fa-check-circle" style="color:#009933"> </i> Respuesta correcta
                                     <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Respuesta incorrecta
                                     <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Opcion
                                     correcta omitida
                                 </h5>
+                                <h5 class="card-subtitle mb-2 text-muted" lang="en">
+                                        <i class="fas fa-check-circle" style="color:#009933"> </i> Correct answer
+                                        <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Incorrect answer
+                                        <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Missed correct option
+                                    </h5>
                             </div>
 
-                            <ul class="nav nav-tabs justify-content-end" id="myTab" role="tablist">
+                            <ul class="nav nav-tabs justify-content-end" id="myTab" role="tablist" lang="es">
                                 <li class="nav-item">
                                     <a class="nav-link active" id="all_question-tab" data-toggle="tab" href="#all_question"
-                                        role="tab" aria-controls="all_question" aria-selected="true">Todas</a>
+                                        role="tab" aria-controls="all_question" aria-selected="true" >Todas</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="corrrect_question-tab" data-toggle="tab" href="#corrrect_question"
-                                        role="tab" aria-controls="corrrect_question" aria-selected="false">Correctas</a>
+                                        role="tab" aria-controls="corrrect_question" aria-selected="false" >Correctas</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="partial_question-tab" data-toggle="tab" href="#partial_question"
-                                        role="tab" aria-controls="partial_question" aria-selected="false">Parcialmente
-                                        correctas</a>
+                                        role="tab" aria-controls="partial_question" aria-selected="false" >Parcialmente correctas</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="wrong_question-tab" data-toggle="tab" href="#wrong_question"
-                                        role="tab" aria-controls="wrong_question" aria-selected="false">Incorrectas</a>
+                                        role="tab" aria-controls="wrong_question" aria-selected="false" >Incorrectas</a>
                                 </li>
                             </ul>
+                            <ul class="nav nav-tabs justify-content-end" id="myTab" role="tablist" lang="en">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="all_question-tab" data-toggle="tab" href="#all_question"
+                                            role="tab" aria-controls="all_question" aria-selected="true" >All</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="corrrect_question-tab" data-toggle="tab" href="#corrrect_question"
+                                            role="tab" aria-controls="corrrect_question" aria-selected="false" >Correct</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="partial_question-tab" data-toggle="tab" href="#partial_question"
+                                            role="tab" aria-controls="partial_question" aria-selected="false" >Partially correct</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="wrong_question-tab" data-toggle="tab" href="#wrong_question"
+                                            role="tab" aria-controls="wrong_question" aria-selected="false" >Incorrect</a>
+                                    </li>
+                                </ul>
 
                             <div class="tab-content" id="myTabContent">
                                 <!--All Answers-->
@@ -161,10 +202,14 @@
                                     <% data.questions.forEach((question,index)=>{%>
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Pregunta
+                                            <h4 class="card-title" lang="es">Pregunta
                                                 <%=index+1%> de
                                                 <%=data.questions.length%>
                                             </h4>
+                                            <h4 class="card-title" lang="en">Question
+                                                    <%=index+1%> of
+                                                    <%=data.questions.length%>
+                                                </h4>
                                             <h5 class="card-subtitle mb-2 text-muted">
                                                 <%=question.category%>
                                             </h5>
@@ -187,7 +232,8 @@
                                                 <% }else if (question.question_type=="freetext"){%>
                                                 <ol>
                                                     <li class="answer" style="list-style-type: none">
-                                                        <div class="text-muted">Respuesta dada:</div>
+                                                        <div class="text-muted" lang="es">Respuesta dada:</div>
+                                                        <div class="text-muted" lang="en">Answer given:</div>
                                                     </li>
                                                     <li class="<%=question.options.status%>" style="list-style-type: none">
                                                         <div>
@@ -195,7 +241,8 @@
                                                         </div>
                                                     </li>
                                                     <li class="answer" style="list-style-type: none">
-                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                        <div class="text-muted" lang="es">Respuesta(s) aceptada:</div>
+                                                        <div class="text-muted" lang="en">Accepted answer(s):</div>
                                                     </li>
                                                     <li class="answer" style="list-style-type: none">
                                                         <div>
@@ -209,8 +256,10 @@
                                                             <thead>
                                                                     <tr>
                                                                         <th style="width: 36%"></th>
-                                                                        <th style="width: 32%">Opción correcta</th>
-                                                                        <th style="width: 32%">Opción seleccionada</th>
+                                                                        <th style="width: 32%" lang="es">Opción correcta</th>
+                                                                        <th style="width: 32%" lang="en">Correct answer</th>
+                                                                        <th style="width: 32%" lang="es">Opción seleccionada</th>
+                                                                        <th style="width: 32%" lang="en">Selected answer</th>
                                                                     </tr>
                                                              </thead>
                                                           <tbody>
@@ -227,9 +276,14 @@
                                                     <%}%>
                                             </p>
                                         </div>
-                                        <div class="card-footer text-muted">
+                                        <div class="card-footer text-muted" lang="es">
                                             Puntos:
                                             <%=question.points_scored%> de
+                                            <%=question.points_available%>
+                                        </div>
+                                        <div class="card-footer text-muted" lang="en">
+                                            Points:
+                                            <%=question.points_scored%> out of
                                             <%=question.points_available%>
                                         </div>
                                     </div>
@@ -241,10 +295,14 @@
                                             if(question.result=="correct"){%>
                                                 <div class="card">
                                                         <div class="card-header">
-                                                            <h4 class="card-title">Pregunta
+                                                            <h4 class="card-title" lang="es">Pregunta
                                                                 <%=index+1%> de
                                                                 <%=data.questions.length%>
                                                             </h4>
+                                                            <h4 class="card-title" lang="en">Question
+                                                                    <%=index+1%> of
+                                                                    <%=data.questions.length%>
+                                                                </h4>
                                                             <h5 class="card-subtitle mb-2 text-muted">
                                                                 <%=question.category%>
                                                             </h5>
@@ -267,7 +325,8 @@
                                                                 <% }else if (question.question_type=="freetext"){%>
                                                                 <ol>
                                                                     <li class="answer" style="list-style-type: none">
-                                                                        <div class="text-muted">Respuesta dada:</div>
+                                                                        <div class="text-muted" lang="es">Respuesta dada:</div>
+                                                                        <div class="text-muted" lang="en">Answer given:</div>
                                                                     </li>
                                                                     <li class="<%=question.options.status%>" style="list-style-type: none">
                                                                         <div>
@@ -275,7 +334,8 @@
                                                                         </div>
                                                                     </li>
                                                                     <li class="answer" style="list-style-type: none">
-                                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                                        <div class="text-muted" lang="es">Respuesta(s) aceptada:</div>
+                                                                        <div class="text-muted" lang="en">Accepted answer(s):</div>
                                                                     </li>
                                                                     <li class="answer" style="list-style-type: none">
                                                                         <div>
@@ -289,8 +349,10 @@
                                                                             <thead>
                                                                                     <tr>
                                                                                         <th style="width: 36%"></th>
-                                                                                        <th style="width: 32%">Opción correcta</th>
-                                                                                        <th style="width: 32%">Opción seleccionada</th>
+                                                                                        <th style="width: 32%" lang="es">Opción correcta</th>
+                                                                                        <th style="width: 32%" lang="en">Correct answer</th>
+                                                                                        <th style="width: 32%" lang="es">Opción seleccionada</th>
+                                                                                        <th style="width: 32%" lang="en">Selected answer</th>
                                                                                     </tr>
                                                                              </thead>
                                                                           <tbody>
@@ -307,9 +369,14 @@
                                                                     <%}%>
                                                             </p>
                                                         </div>
-                                                        <div class="card-footer text-muted">
+                                                        <div class="card-footer text-muted" lang="es">
                                                             Puntos:
                                                             <%=question.points_scored%> de
+                                                            <%=question.points_available%>
+                                                        </div>
+                                                        <div class="card-footer text-muted" lang="en">
+                                                            Points:
+                                                            <%=question.points_scored%> out of
                                                             <%=question.points_available%>
                                                         </div>
                                                     </div>
@@ -321,10 +388,14 @@
                                             if(question.result=="partial_correct"){%>
                                                 <div class="card">
                                                         <div class="card-header">
-                                                            <h4 class="card-title">Pregunta
+                                                            <h4 class="card-title" lang="es">Pregunta
                                                                 <%=index+1%> de
                                                                 <%=data.questions.length%>
                                                             </h4>
+                                                            <h4 class="card-title" lang="en">Question
+                                                                    <%=index+1%> of
+                                                                    <%=data.questions.length%>
+                                                                </h4>
                                                             <h5 class="card-subtitle mb-2 text-muted">
                                                                 <%=question.category%>
                                                             </h5>
@@ -347,7 +418,8 @@
                                                                 <% }else if (question.question_type=="freetext"){%>
                                                                 <ol>
                                                                     <li class="answer" style="list-style-type: none">
-                                                                        <div class="text-muted">Respuesta dada:</div>
+                                                                        <div class="text-muted" lang="es">Respuesta dada:</div>
+                                                                        <div class="text-muted" lang="en">Answer given:</div>
                                                                     </li>
                                                                     <li class="<%=question.options.status%>" style="list-style-type: none">
                                                                         <div>
@@ -355,7 +427,8 @@
                                                                         </div>
                                                                     </li>
                                                                     <li class="answer" style="list-style-type: none">
-                                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                                        <div class="text-muted" lang="es">Respuesta(s) aceptada:</div>
+                                                                        <div class="text-muted" lang="en">Accepted answer(s):</div>
                                                                     </li>
                                                                     <li class="answer" style="list-style-type: none">
                                                                         <div>
@@ -369,8 +442,10 @@
                                                                             <thead>
                                                                                     <tr>
                                                                                         <th style="width: 36%"></th>
-                                                                                        <th style="width: 32%">Opción correcta</th>
-                                                                                        <th style="width: 32%">Opción seleccionada</th>
+                                                                                        <th style="width: 32%" lang="es">Opción correcta</th>
+                                                                                        <th style="width: 32%" lang="en">Correct answer</th>
+                                                                                        <th style="width: 32%" lang="es">Opción seleccionada</th>
+                                                                                        <th style="width: 32%" lang="en">Selected answer</th>
                                                                                     </tr>
                                                                              </thead>
                                                                           <tbody>
@@ -387,9 +462,14 @@
                                                                     <%}%>
                                                             </p>
                                                         </div>
-                                                        <div class="card-footer text-muted">
+                                                        <div class="card-footer text-muted" lang="es">
                                                             Puntos:
                                                             <%=question.points_scored%> de
+                                                            <%=question.points_available%>
+                                                        </div>
+                                                        <div class="card-footer text-muted" lang="en">
+                                                            Points:
+                                                            <%=question.points_scored%> out of
                                                             <%=question.points_available%>
                                                         </div>
                                                     </div>
@@ -401,10 +481,14 @@
                                             if(question.result=="incorrect"){%>
                                                 <div class="card">
                                                         <div class="card-header">
-                                                            <h4 class="card-title">Pregunta
+                                                            <h4 class="card-title" lang="es">Pregunta
                                                                 <%=index+1%> de
                                                                 <%=data.questions.length%>
                                                             </h4>
+                                                            <h4 class="card-title" lang="en">Question
+                                                                    <%=index+1%> of
+                                                                    <%=data.questions.length%>
+                                                                </h4>
                                                             <h5 class="card-subtitle mb-2 text-muted">
                                                                 <%=question.category%>
                                                             </h5>
@@ -427,7 +511,8 @@
                                                                 <% }else if (question.question_type=="freetext"){%>
                                                                 <ol>
                                                                     <li class="answer" style="list-style-type: none">
-                                                                        <div class="text-muted">Respuesta dada:</div>
+                                                                        <div class="text-muted" lang="es">Respuesta dada:</div>
+                                                                        <div class="text-muted" lang="en">Answer given:</div>
                                                                     </li>
                                                                     <li class="<%=question.options.status%>" style="list-style-type: none">
                                                                         <div>
@@ -435,7 +520,8 @@
                                                                         </div>
                                                                     </li>
                                                                     <li class="answer" style="list-style-type: none">
-                                                                        <div class="text-muted">Respuesta(s) aceptada:</div>
+                                                                        <div class="text-muted" lang="es">Respuesta(s) aceptada:</div>
+                                                                        <div class="text-muted" lang="en">Accepted answer(s):</div>
                                                                     </li>
                                                                     <li class="answer" style="list-style-type: none">
                                                                         <div>
@@ -449,8 +535,10 @@
                                                                             <thead>
                                                                                     <tr>
                                                                                         <th style="width: 36%"></th>
-                                                                                        <th style="width: 32%">Opción correcta</th>
-                                                                                        <th style="width: 32%">Opción seleccionada</th>
+                                                                                        <th style="width: 32%" lang="es">Opción correcta</th>
+                                                                                        <th style="width: 32%" lang="en">Correct answer</th>
+                                                                                        <th style="width: 32%" lang="es">Opción seleccionada</th>
+                                                                                        <th style="width: 32%" lang="en">Selected answer</th>
                                                                                     </tr>
                                                                              </thead>
                                                                           <tbody>
@@ -467,9 +555,14 @@
                                                                     <%}%>
                                                             </p>
                                                         </div>
-                                                        <div class="card-footer text-muted">
+                                                        <div class="card-footer text-muted" lang="es">
                                                             Puntos:
                                                             <%=question.points_scored%> de
+                                                            <%=question.points_available%>
+                                                        </div>
+                                                        <div class="card-footer text-muted" lang="en">
+                                                            Points:
+                                                            <%=question.points_scored%> out of
                                                             <%=question.points_available%>
                                                         </div>
                                                     </div>
