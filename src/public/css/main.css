@@ -194,3 +194,7 @@ li.missed:before {
   right:50%;
   transform: translateX(50%);
 }
+
+.card-columns {
+    column-count: 4;
+}

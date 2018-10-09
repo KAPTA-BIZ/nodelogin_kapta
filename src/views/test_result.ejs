@@ -99,43 +99,12 @@
                                 <h4 class="card-title" lang="es">Categorias</h4>
                                 <h4 class="card-title" lang="en">Categories</h4>
                             </div>
-                            <div class="card-body table-full-width table-responsive">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 40%" lang="es">Categoria</th>
-                                            <th style="width: 40%" lang="en">Category</th>
-                                            <th style="width: 30%" lang="es">Promedio</th>
-                                            <th style="width: 30%" lang="en">Average</th>
-                                            <th style="width: 10%">&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                            <th style="width: 20%" lang="es">Respuestas</th>
-                                            <th style="width: 20%" lang="en">Answers</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% data.category_results.forEach(category=>{%>
-                                        <tr style="height: 25px;">
-                                            <td>
-                                                <%=category.name%>
-                                            </td>
-                                            <td>
-                                                <div class="progress">
-                                                    <div class="progress-bar progress-bar-striped <%if (category.percentage>=50){%>bg-success<% }else{%>bg-danger<%} %>" role="progressbar" style="width: <%=category.percentage%>%;" aria-valuenow="<%=category.percentage%>"
-                                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div class="progress-value"><b>
-                                                            <%=category.percentage%>%</b></div>
-                                                </div>
-
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                <%=category.points_scored%>/
-                                                <%=category.points_available%>
-                                            </td>
-                                        </tr>
-                                        <%})%>
-                                    </tbody>
-                                </table>
+                            <div class="card-body">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                    <canvas id="myChart" height="<%= 47*(data.category_results.data.length-1)+110%>"></canvas> <!--440=55*8-->
+                                </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -576,6 +545,47 @@
             </div>
         </div>
     </div>
+    <% console.log(data.category_results.data)%>
+    <script>
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+          type: 'horizontalBar',
+          data: {
+            labels: [<%- data.category_results.labels %>],
+            datasets: [{
+              label: '<%= data.access_code_used%>',
+              data: [<%- data.category_results.data %>],
+              backgroundColor: "grey"
+            }, {
+              label: 'Promedio',
+              data: [<%- data.category_results.average %>],
+              backgroundColor: "green"
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              xAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  max: 100,
+                  callback: function (value, index, values) {
+                    return value + ' %';
+                  }
+                }
+              }],
+              yAxes: [{
+                categoryPercentage: 0.9,
+                barPercentage: 0.9
+              }]
+            },
+            animation: {
+              animateScale: true
+            }
+          }
+        });
+      </script>
 </body>
 
 </html>

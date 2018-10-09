@@ -9,6 +9,98 @@
 </head>
 
 <body>
+  <% include partials/left_column %>
+  <div class="main-panel">
+    <% include partials/navbar %>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card container-fluid">
+              <div class="card-header">
+                <h4 class="card-title" lang="es">Asesor Comercial Interno BMW Group</h4>
+                <h4 class="card-title" lang="en">Asesor Comercial Interno BMW Group</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <a class="card w-25 m-3 h-25" href="/profile">
+                    <div class="card-body">
+                      <h1 class="card-title text-center" style="color:green">83.33%</h1>
+                      <h5 class="card-subtitle mb-2 text-muted text-center" lang="es">15 Resultados</h5>
+                      <h4 class="card-subtitle mb-2 text-center" style="color:black" lang="es">Promedio</h4>
+                    </div>
+                  </a>
+                  <a class="card w-25 m-3">
+                    <div class="card-body">
+                      <canvas id="myChart" width="800" height="800"></canvas>
+                      <h4 class="card-subtitle mb-2 text-center" style="color:black" lang="es">Códigos</h4>
+                    </div>
+                  </a>
+                  <a class="card w-25 m-3">
+                    <div class="card-body">
+                      <table class="table table-striped table-hover container-fluid">
+                        <thead>
+                          <tr>
+                            <th scope="col" style="width:10%"></th>
+                            <th scope="col" style="width:40%">Código</th>
+                            <th scope="col" style="width:50%">Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr onclick="window.location='/profile';">
+                            <th scope="row">1</th>
+                            <td>MCOG</td>
+                            <td>17/9/2018</td>
+                          </tr>
+                          <tr onclick="window.location='/profile';">
+                            <th scope="row">2</th>
+                            <td>MCOG</td>
+                            <td>17/9/2018</td>
+                          </tr>
+                          <tr onclick="window.location='/profile';">
+                            <th scope="row">3</th>
+                            <td>MCOG</td>
+                            <td>17/9/2018</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <h4 class="card-subtitle mb-2 text-center" style="color:black" lang="es">Últimos resultados</h4>
+                    </div>
+                  </a>
+                  <a class="card w-25 m-3">
+                    <div class="card-body">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td> 1BX7 </td>
+                            <td> 2F0J </td>
+                            <td> 5QYY </td>
+                            <td> 8NVO </td>
+                          </tr>
+                          <tr>
+                            <td> 9BIL </td>
+                            <td> H2TJ </td>
+                            <td> IFPU </td>
+                            <td> KN6S </td>
+                          </tr>
+                          <tr>
+                            <td> S7VS </td>
+                            <td> S8IF </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <h4 class="card-subtitle mb-2 text-center" style="color:black" lang="es">Códigos disponibles</h4>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--
   <div class="wrapper">
     <div class="main-panel">
       <% include partials/navbar %>
@@ -115,7 +207,7 @@
     </div>
 
 
-    <!-- prueba -->
+    prueba
 
     <% if(user.sa==1){
             participantes==0
@@ -209,6 +301,32 @@
       <% include partials/left_column %>
 
         </div>
+      -->
+
+  <script>
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ["Usados", "Disponibles", "Restantes"],
+        datasets: [{
+          label: '# of Votes',
+          data: [80, 10, 30],
+          backgroundColor: [
+            'rgba(51, 88, 153, 1)',
+            'rgba(179, 190, 233, 1)',
+            'rgba(121, 145, 206, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        animation: {
+          animateScale: true
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

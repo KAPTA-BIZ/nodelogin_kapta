@@ -30,8 +30,10 @@ const API_Test = require('../models/API_Test');
 var Assignments = require('../models/Assignments');
 var Codes = require('../models/Codes');
 var LinkResults = require('../models/LinkResults');
-var storageLinkResult = require('./storage/StorageLinkResult')
-var fs = require('fs')
+var SummaryResults = require('../models/SummaryResults');
+var storageLinkResult = require('./storage/StorageLinkResult');
+var UpdateSummary = require('./storage/UpdateSummary');
+var fs = require('fs');
 
 mongoose.Promise = global.Promise;
 
@@ -197,7 +199,7 @@ module.exports = (app, passport) => {
     /*------------------- VIEW PERFIL ------------------*/
     app.get('/profile', isLoggedIn, (req, res) => {
         switch (req.user.sa) {
-            case '1':
+            case '1'://superadmin
                 API_Test.find({}, null, { sort: { test_name: 1 } }, (err, results) => {
                     if (err) {
                         console.log(err);
@@ -211,14 +213,14 @@ module.exports = (app, passport) => {
                 })
                 break;
 
-            case '2':
+            case '2'://consultor
                 res.render('profile',
                     {
                         user: req.user
                     });
                 break;
 
-            case '0':
+            case '0'://admin
                 res.render('profile', {
                     user: req.user,
                     participantes: ''
@@ -1156,132 +1158,151 @@ module.exports = (app, passport) => {
             if (err) { throw err }
             Codes.findOne({ 'code': linkResult.access_code_used }, null, (err, code) => {
                 if (err) { throw err }
+                UpdateSummary(code.assignment_id,code.user_email);//pendiente---> se debe quitar de aca y agregar a la llegada de resultados
                 UserSchema.findOne({ 'local.email': code.user_email }, null, (err, user) => {
                     if (err) { throw err }
-                    if (req.user.local.email == user.local.email || req.user.local.email == user.admin_email || req.user.sa == 1) {
-                        var data = {};
-                        data.test_name = linkResult.test_name;
-                        data.access_code_used = linkResult.access_code_used;
-                        data.percentage = linkResult.percentage;
-                        data.points_scored = linkResult.points_scored;
-                        data.points_available = linkResult.points_available;
-                        data.duration = linkResult.duration;
-                        data.time_started = linkResult.time_started;
-                        data.time_finished = linkResult.time_finished;
-                        data.category_results = linkResult.category_results.sort((a, b) => {
-                            return (a.name < b.name) ? -1 : 1;
-                            return 0;
-                        });
-                        var questions = linkResult.questions.sort((a, b) => {
-                            return (a.category < b.category) ? -1 : 1;
-                            return 0;
-                        });
-                        data.questions = [];
-                        /*formato de las respuestas */
-                        questions.forEach((question, index) => {
-                            var result=0;
-                            if (question.question_type == "multiplechoice" || question.question_type == "truefalse") {
-                                var correct_option = question.correct_option.split(",");
-                                var user_response = question.user_response.split(",");
-                                var options = [];
-                                for (var key in question.options) {
-                                    if (question.options.hasOwnProperty(key)) {
-                                        if (user_response.indexOf(key) != -1) {
-                                            if (correct_option.indexOf(key) != -1) {
-                                                options.push({
-                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                    status: 'correct answer'
-                                                });
-                                                result++;
-                                            } else {
-                                                options.push({
-                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                    status: 'wrong answer'
-                                                });
-                                            }
-                                        } else {
-                                            if (correct_option.indexOf(key) != -1) {
-                                                options.push({
-                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                    status: 'missed answer'
-                                                });
-                                            } else {
-                                                options.push({
-                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                    status: 'answer'
-                                                });
-                                            }
-                                        }
-                                    }
-                                }
-                            } else if (question.question_type == "freetext") { //-> pendiente explorar opciones grammar y essay 
-                                var options = {};
-                                options.user_answer = question.user_response;
-                                if (question.result == "incorrect") {
-                                    options.status = 'wrong answer';
-                                }else{
-                                    options.status = 'correct answer';
-                                    result++;
-                                }
-                                options.options = '';
-                                question.options.exact_match.forEach(option => {
-                                    options.options += option.content + ',';
-                                });
-                                options.options = options.options.substr(0, options.options.length - 1);
-                            } else if(question.question_type=="matching"){
-                                var options=[];
-                                for(var key in question.options){
-                                    if (question.options.hasOwnProperty(key)){
-                                        if(question.options[key].clue){
-                                            var status='';
-                                            if(question.options[key].correct_option==question.options[key].user_response){
-                                                status='correct answer';
-                                                result++
-                                            }else{
-                                                status='wrong answer';
-                                            }
-                                            options.push({
-                                                clue: question.options[key].clue,
-                                                match:question.options[key].match,
-                                                user_response:question.options[question.options[key].user_response].match,
-                                                status: status
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                            if(result>0 && question.result == "incorrect"){
-                                data.questions.push({
-                                    question: question.question,
-                                    options: options,
-                                    category: question.category,
-                                    points_scored: question.points_scored,
-                                    points_available: question.points_available,
-                                    question_type: question.question_type,
-                                    result: 'partial_correct'
-                                });
+                    SummaryResults.findOne({'assignment_id':code.assignment_id,'user_email':code.user_email},null,(err,summary)=>{
+                        if (err) { throw err }
+                        if (req.user.local.email == user.local.email || req.user.local.email == user.admin_email || req.user.sa == 1) {
+                            var data = {};
+                            data.test_name = linkResult.test_name;
+                            data.access_code_used = linkResult.access_code_used;
+                            data.percentage = linkResult.percentage;
+                            data.points_scored = linkResult.points_scored;
+                            data.points_available = linkResult.points_available;
+                            data.duration = linkResult.duration;
+                            data.time_started = linkResult.time_started;
+                            data.time_finished = linkResult.time_finished;
+                            data.category_results = linkResult.category_results.sort((a, b) => {
+                                return (a.name < b.name) ? -1 : 1;
+                                return 0;
+                            });
+                            summary.categories.sort((a,b)=>{
+                                return (a.name < b.name) ? -1 : 1;
+                                return 0;
+                            });
+                            data.category_results.labels=[];
+                            data.category_results.data=[];
+                            data.category_results.average=[];
+                            data.category_results.forEach((result,index)=>{
+                            data.category_results.labels.push(JSON.stringify(result.name));
+                            data.category_results.data.push(result.percentage);
+                            if (summary.categories[index].name==result.name){
+                                data.category_results.average.push(summary.categories[index].average);
                             }else{
-                                data.questions.push({
-                                    question: question.question,
-                                    options: options,
-                                    category: question.category,
-                                    points_scored: question.points_scored,
-                                    points_available: question.points_available,
-                                    question_type: question.question_type,
-                                    result: question.result
-                                });
+                                data.category_results.average.push(0);
                             }
-                            
-                           
-                        });
-                        //console.log(data);
-                        res.render('test_result', {
-                            data: data,
-                            user: req.user
-                        });
-                    } else {
-                        res.sendStatus(403);
-                    }
+                            });
+                            var questions = linkResult.questions.sort((a, b) => {
+                                return (a.category < b.category) ? -1 : 1;
+                                return 0; 
+                            });
+                            data.questions = [];
+                            //---formato de las respuestas ---/
+                            questions.forEach((question, index) => {
+                                var result=0;
+                                if (question.question_type == "multiplechoice" || question.question_type == "truefalse") {
+                                    var correct_option = question.correct_option.split(",");
+                                    var user_response = question.user_response.split(",");
+                                    var options = [];
+                                    for (var key in question.options) {
+                                        if (question.options.hasOwnProperty(key)) {
+                                            if (user_response.indexOf(key) != -1) {
+                                                if (correct_option.indexOf(key) != -1) {
+                                                    options.push({
+                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                        status: 'correct answer'
+                                                    });
+                                                    result++;
+                                                } else {
+                                                    options.push({
+                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                        status: 'wrong answer'
+                                                    });
+                                                }
+                                            } else {
+                                                if (correct_option.indexOf(key) != -1) {
+                                                    options.push({
+                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                        status: 'missed answer'
+                                                    });
+                                                } else {
+                                                    options.push({
+                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                        status: 'answer'
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else if (question.question_type == "freetext") { //-> pendiente explorar opciones grammar y essay 
+                                    var options = {};
+                                    options.user_answer = question.user_response;
+                                    if (question.result == "incorrect") {
+                                        options.status = 'wrong answer';
+                                    }else{
+                                        options.status = 'correct answer';
+                                        result++;
+                                    }
+                                    options.options = '';
+                                    question.options.exact_match.forEach(option => {
+                                        options.options += option.content + ',';
+                                    });
+                                    options.options = options.options.substr(0, options.options.length - 1);
+                                } else if(question.question_type=="matching"){
+                                    var options=[];
+                                    for(var key in question.options){
+                                        if (question.options.hasOwnProperty(key)){
+                                            if(question.options[key].clue){
+                                                var status='';
+                                                if(question.options[key].correct_option==question.options[key].user_response){
+                                                    status='correct answer';
+                                                    result++
+                                                }else{
+                                                    status='wrong answer';
+                                                }
+                                                options.push({
+                                                    clue: question.options[key].clue,
+                                                    match:question.options[key].match,
+                                                    user_response:question.options[question.options[key].user_response].match,
+                                                    status: status
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                                if(result>0 && question.result == "incorrect"){
+                                    data.questions.push({
+                                        question: question.question,
+                                        options: options,
+                                        category: question.category,
+                                        points_scored: question.points_scored,
+                                        points_available: question.points_available,
+                                        question_type: question.question_type,
+                                        result: 'partial_correct'
+                                    });
+                                }else{
+                                    data.questions.push({
+                                        question: question.question,
+                                        options: options,
+                                        category: question.category,
+                                        points_scored: question.points_scored,
+                                        points_available: question.points_available,
+                                        question_type: question.question_type,
+                                        result: question.result
+                                    });
+                                }
+                                
+                               
+                            });
+                            res.render('test_result', {
+                                data: data,
+                                user: req.user
+                            });
+                        } else {
+                            res.sendStatus(403);
+                        }
+                    });
                 });
             });
         });
