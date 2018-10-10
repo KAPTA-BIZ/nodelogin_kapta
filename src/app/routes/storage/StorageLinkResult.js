@@ -2,6 +2,7 @@ var LinkResults = require('../../models/LinkResults');
 var Codes = require('../../models/Codes');
 var Assignments = require('../../models/Assignments');
 var UserSchema = require('../../models/user.js');
+var UpdateSummary = require('./UpdateSummary');
 
 function storeLinkResult(result) {
     /////////// pendiente verificar que el resultado ya este registrado
@@ -64,6 +65,7 @@ function storeLinkResult(result) {
                 linkResult.save(function (err, testAdded) {
                     if (err) { throw err }
                     console.log ("new result added")
+                    UpdateSummary(code.assignment_id, code.user_email);
                     //pendiente verificar error
                 })
             }

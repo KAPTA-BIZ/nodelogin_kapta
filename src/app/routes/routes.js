@@ -10,7 +10,6 @@ var Codes = require('../models/Codes');
 var LinkResults = require('../models/LinkResults');
 var SummaryResults = require('../models/SummaryResults');
 var storageLinkResult = require('./storage/StorageLinkResult');
-var UpdateSummary = require('./storage/UpdateSummary');
 
 mongoose.Promise = global.Promise;
 
@@ -160,7 +159,6 @@ module.exports = (app, passport) => {
                         API_Test.find({ 'test_id': { $nin: exceptions } }, null, { sort: { test_name: 1 } }, (err, tests) => {
                             if (err) { throw err }
                             data.tests = tests;
-                            console.log(data);
                             res.render('set_new_test', {
                                 user: req_user,
                                 data: data
@@ -171,7 +169,6 @@ module.exports = (app, passport) => {
                     Assignments.find({ $and: [{ 'admin_email': user.admin_email }, { 'users.email': { $ne: user.local.email } }] }, null, { sort: { 'test_name': 1 } }, (err, tests) => {
                         if (err) { throw err }
                         data.tests = tests;
-                        console.log(data);
                         res.render('set_new_test', {
                             user: req_user,
                             data: data
@@ -228,9 +225,7 @@ module.exports = (app, passport) => {
                             }
                         }
                     }
-
                 }
-
                 API_Test.remove({}, (err) => {
                     if (err) { throw err }
                     updateTests(0, testsArray.length);
@@ -239,23 +234,19 @@ module.exports = (app, passport) => {
                 //->pendiente se debe manejar este error (no se pudo actualizar)
                 console.log(error);
             }
-
         });
 
         function updateTests(i, imax) {
             if (i < imax) {
-
                 var newAPI_Test = new API_Test({
                     test_id: testsArray[i].test_id,
                     test_name: testsArray[i].test_name,
                     links: testsArray[i].links
                 });
-
                 newAPI_Test.save((err) => {
                     if (err) { throw err };//--->se debe manejar este error al guardar datos
                     updateTests(i + 1, imax)
                 })
-
             } else {
                 setNewTest(req.params.id, req.user, res, 2)
             }
@@ -582,7 +573,6 @@ module.exports = (app, passport) => {
             if (err) { throw err }
             Codes.findOne({ 'code': linkResult.access_code_used }, null, (err, code) => {
                 if (err) { throw err }
-                UpdateSummary(code.assignment_id, code.user_email);//pendiente---> se debe quitar de aca y agregar a la llegada de resultados
                 UserSchema.findOne({ 'local.email': code.user_email }, null, (err, user) => {
                     if (err) { throw err }
                     SummaryResults.findOne({ 'assignment_id': code.assignment_id, 'user_email': code.user_email }, null, (err, summary) => {

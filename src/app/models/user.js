@@ -20,20 +20,3 @@ userSchema.methods.validatePassword = function (password) {
 }
 
 module.exports = mongoose.model('User', userSchema);
-
-
-
-
-/*
-var UserSchema = mongoose.Schema({
-    name: String,
-    email: {
-        type: String,
-        unique: true
-    },
-    password: String,
-});
-
-module.exports = mongoose.model('UserSchema', UserSchema)
-
-*/
