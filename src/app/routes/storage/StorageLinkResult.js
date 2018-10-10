@@ -60,9 +60,7 @@ function storeLinkResult(result) {
                         points_available: question.points_available,
                         points_scored: question.points_scored
                     });
-                });         
-                //console.log(linkResult) 
-            
+                });            
                 linkResult.save(function (err, testAdded) {
                     if (err) { throw err }
                     console.log ("new result added")

@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-
 const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
@@ -9,7 +8,6 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const ReactEngine = require('express-react-engine');
 
 const { url } = require('./config/database');
 
@@ -18,8 +16,6 @@ mongoose.connect(url);
 require('./config/passport')(passport);
 
 //Json File
-
-
 app.set('port', process.env.PORT || 3001);
 app.set('views', path.join(__dirname + '/views'));
 app.set('view engine','ejs');

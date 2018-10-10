@@ -45,7 +45,7 @@
                     <div class="col-md-5 my-auto">
                         <div class="card mx-auto">
                             <div class="card-body">
-                                <h1 class="card-title text-center" style="color: <%if (data.percentage>=50){%>green<%}else{%>red<%} %>">
+                                <h1 class="card-title text-center" style="color: rgb(23,162,181)">
                                     <%= data.percentage%>%
                                 </h1>
                                 <table style="width:100%">
@@ -117,7 +117,7 @@
                                 <h5 class="card-subtitle mb-2 text-muted" lang="es">
                                     <i class="fas fa-check-circle" style="color:#009933"> </i> Respuesta correcta
                                     <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Respuesta incorrecta
-                                    <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Opcion
+                                    <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Opción
                                     correcta omitida
                                 </h5>
                                 <h5 class="card-subtitle mb-2 text-muted" lang="en">
@@ -555,11 +555,11 @@
             datasets: [{
               label: '<%= data.access_code_used%>',
               data: [<%- data.category_results.data %>],
-              backgroundColor: "grey"
+              backgroundColor: 'rgba(51, 88, 153, 1)',
             }, {
               label: 'Promedio',
               data: [<%- data.category_results.average %>],
-              backgroundColor: "green"
+              backgroundColor: 'rgba(121, 145, 206, 1)'
             }]
           },
           options: {

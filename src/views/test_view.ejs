@@ -139,7 +139,7 @@
                                                         <td><%=category.name%></td>
                                                         <td>
                                                                 <div class="progress" >
-                                                                    <div class="progress-bar progress-bar-striped <%if (percen>=50){%>bg-success<% }else{%>bg-danger<%} %>" role="progressbar" style="width: <%=percen%>%;" aria-valuenow="<%=percen%>" aria-valuemin="0"
+                                                                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: <%=percen%>%;" aria-valuenow="<%=percen%>" aria-valuemin="0"
                                                                         aria-valuemax="100"></div> 
                                                                        <div class="progress-value"><b><%=percen%>%</b></div>
                                                                     </div>
@@ -184,7 +184,7 @@
                                                             <td><%=item.access_code_used%></td>
                                                             <td>
                                                                     <div class="progress"> 
-                                                                        <div class="progress-bar progress-bar-striped <%if (item.percentage>=50){%>bg-success<% }else{%>bg-danger<%} %>" role="progressbar" style="width: <%=item.percentage%>%;" aria-valuenow="<%=item.percentage%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=item.percentage%>%; background-color:purple;" aria-valuenow="<%=item.percentage%>" aria-valuemin="0" aria-valuemax="100"></div>
                                                                         <div class="progress-value"><b><%=item.percentage%>%</b></div>
                                                                     </div>
                                                                 </td>
