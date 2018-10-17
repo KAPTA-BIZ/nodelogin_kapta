@@ -179,6 +179,14 @@ module.exports = (app, passport) => {
         });
     }
 
+    app.get('/temp',(req,res)=>{//pendiente
+        var uri = require('../../classmarker/temp')(270957,635860);
+        request(uri,(err,response,body)=>{
+            res.send(JSON.parse(body));
+        })
+        
+    })
+
     app.get('/setnewtest_updated/:id', isLoggedIn, (req, res) => {
         var testsArray = new Array;
         var uri = require('../../classmarker/all')();
@@ -730,5 +738,120 @@ module.exports = (app, passport) => {
             err ? console.log("Error retrieving") : console.log(result)
             res.render('categorias', { categorias: result, user: req.user })
         })
+    });
+
+    //------------------------Compare tool--------------------------------//
+    app.get('/compare',isLoggedIn,(req,res)=>{
+        Codes.find({'user_email':req.user.local.email,'used':1},null,{sort:{'assignment_id':1}},(err,codes)=>{
+            if(err) throw err;
+            var datasets=[];
+            var assignment_ids=[]
+            var index;
+            codes.forEach(code=>{
+                index=datasets.findIndex(doc=>doc.assignment_id==code.assignment_id);
+                if (index==-1){
+                    assignment_ids.push(code.assignment_id);
+                    datasets.push({
+                        assignment_id:code.assignment_id,
+                        codes: [code.code]
+                    });
+                }else{
+                    datasets[index].codes.push(code.code);
+                }
+            });
+            Assignments.find({_id:{$in:assignment_ids}},null,(err,assignments)=>{
+                if(err) throw err;
+               assignments.forEach(assignment=>{
+                   datasets[datasets.findIndex(doc=>doc.assignment_id==assignment._id)].test_name=assignment.test_name;
+                });
+                res.render('compare',{
+                    user:req.user,
+                    datasets:datasets
+                });
+            });
+        });
+    });
+
+    app.post('/compare',isLoggedIn,(req,res)=>{
+        var codes=[]
+        for(var property in req.body){
+            codes.push(property);
+        }
+        
+        LinkResults.find({'access_code_used':{$in:codes}},null,{sort:{'access_code_used':1}},(err,results)=>{
+            if(err) throw err;
+            var first=true;
+            var data={
+                labels:[],
+                percentages:[],
+                duration:[],
+                points_scored:[],
+                points_available:[],
+                categories:[],
+                common_categories:{
+                    labels:[],
+                    percentage:[]
+                }
+            };
+            results.forEach(result=>{
+                    data.percentages.push(result.percentage);
+                    data.labels.push(result.access_code_used);
+                    var time=result.duration.split(':');
+                    data.duration.push(Number(time[0])*60+Number(time[1]));
+                    data.points_scored.push(result.points_scored);
+                    data.points_available.push(result.points_available)
+                    var categories_labels=[];
+                    var categories_percentage=[];
+                    result.category_results.forEach(category=>{
+                        categories_labels.push(category.name);
+                        categories_percentage.push(category.percentage);
+                        if (first){
+                            data.common_categories.labels.push(category.name);
+                            data.common_categories.percentage.push([category.percentage])
+                        }
+                    });
+                   if(first){
+                        first=false;
+                    }else{
+                        for (index=0;index<data.common_categories.labels.length;index++){
+                            var label=data.common_categories.labels[index];
+                            var i=categories_labels.findIndex(category=>category==label);
+                            if(i>-1){
+                                data.common_categories.percentage[index].push(categories_percentage[i]);
+                            }else{
+                                data.common_categories.percentage.splice(index,1);
+                                data.common_categories.labels.splice(index,1);
+                                index-=1;
+                            }
+                        }
+                    }
+                    data.categories.push({
+                        labels: categories_labels,
+                        percentage: categories_percentage
+                    });
+            });
+            for (i=0;i<data.categories.length;i++){
+                for (j=0;j<data.common_categories.labels.length;j++){
+                    var k=data.categories[i].labels.findIndex(value=>value==data.common_categories.labels[j]);
+                    data.categories[i].labels.splice(k,1);
+                    data.categories[i].percentage.splice(k,1);
+                }
+                if(data.categories[i].labels.length==0){
+                    data.categories.splice(i,1);
+                    i--;
+                }
+            }
+            console.log(data.common_categories);
+            res.render('compare_results',{
+                user:req.user,
+                data:data,
+                dataset: [{
+                    label: 'test',
+                    data:'[100,50,10,12,85,45,14,23]',
+                    backgroundColor: 'rgba(51, 88, 153, 1)',
+                }]
+            });
+        });
+       
     });
 }

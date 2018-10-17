@@ -1898,9 +1898,8 @@ fieldset[disabled] .form-control {
 
 .form-check input[type="checkbox"],
 .form-check-radio input[type="radio"] {
-    opacity: 0;
+    opacity: 1;
     position: absolute;
-    visibility: hidden;
 }
 
 .form-check input[type="checkbox"]:checked+.form-check-sign::after {

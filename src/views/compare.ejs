@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title lang="es">Evaluaciones</title>
+    <title lang="en">Evaluations</title>
+    <% include partials/head %>
+</head>
+
+<body>
+    <% include partials/left_column %>
+    <div class="main-panel">
+        <% include partials/navbar %>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card container-fluid">
+                            <div class="card-header ">
+                                <h4 class="card-title" lang="es">Comparar resultados.</h4>
+                                <h4 class="card-title" lang="en">Compare results.</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Seleccione los resultados que desea comparar y luego presione en
+                                    el boton "Comparar"</p>
+                                <form action="/compare" method="POST" id="form">
+                                    <button type="submit" class="btn btn-primary float-right">Comparar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <% datasets.forEach(data=>{%>
+                    <div class="col-md-12">
+                        <div class="card container-fluid">
+                            <div class="card-header ">
+                                <h4 class="card-title" lang="es">Resultados para:
+                                    <%= data.test_name%>
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <% var column=0;
+                                data.codes.forEach(code=>{
+                                    console.log(code)
+                                if (column==0){%>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="<%=code%>" name="<%=code%>" id="<%=code%>" form="form">
+                                            <label style="font-size:14px; color: black" for="<%=code%>"><%=code%></label>
+                                        </div>
+                                    </div>
+                               <%}else if(column<3){%>
+                                    <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="<%=code%>" name="<%=code%>" id="<%=code%>" form="form">
+                                                <label style="font-size:14px; color: black" for="<%=code%>"><%=code%></label>
+                                            </div>
+                                        </div>
+                               <%}else{%>
+                                    <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="<%=code%>" name="<%=code%>" id="<%=code%>" form="form">
+                                                <label style="font-size:14px; color: black" for="<%=code%>"><%=code%></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <%column=-1
+                                }
+                                column++;
+                                });
+                                if(column!=0){%>
+                                </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                    <%})%>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title lang="es">Resultados</title>
+  <title lang="en">Results</title>
+  <% include partials/head %>
+</head>
+
+<body>
+
+  <% include partials/left_column %>
+
+  <div class="main-panel">
+    <% include partials/navbar %>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card-deck">
+              <div class="card strpied-tabled-with-hover container-fluid">
+                <div class="card-header">
+                  <h5 class="card-title">Promedio General</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="averageChart"></canvas>
+                </div>
+              </div>
+              <div class="card strpied-tabled-with-hover container-fluid">
+                <div class="card-header">
+                  <h5 class="card-title">Duración</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="duration"></canvas>
+                </div>
+              </div>
+              <div class="card strpied-tabled-with-hover container-fluid">
+                <div class="card-header">
+                  <h5 class="card-title">Puntos</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="score"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12"><br></div>
+          <div class="col-md-12">
+            <div class="card strpied-tabled-with-hover container-fluid">
+              <div class="card-header">
+                <h4 class="card-title" lang="es">Categorias comunes</h4>
+                <h4 class="card-title" lang="en"></h4>
+              </div>
+              <div class="card-body">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <canvas id="comon_categories" height="<%= (25*(data.common_categories.labels.length-1)*(data.labels.length)+140)%>"></canvas>
+                    <!--440=55*8-->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%var column=0;
+          data.categories.forEach((category,index)=>{
+          if (column==0){%>
+            <div class="col-md-12">
+              <div class="card-deck">
+                  <div class="card strpied-tabled-with-hover container-fluid">
+                      <div class="card-header">
+                        <h5 class="card-title">Categorias resultado <%= data.labels[index]%></h5>
+                      </div>
+                      <div class="card-body">
+                        <canvas id="category<%=index%>" height="<%= 25*(category.labels.length-1)+60%>"></canvas>  <!--pendeitne-->
+                      </div>
+                    </div>
+          <%column++;
+          }else{%>
+                  <div class="card strpied-tabled-with-hover container-fluid">
+                    <div class="card-header">
+                      <h5 class="card-title">Categorias resultado <%= data.labels[index]%></h5>
+                    </div>
+                    <div class="card-body">
+                      <canvas id="category<%=index%>" height="<%= 25*(category.labels.length-1)+60%>"></canvas>  <!--pendeitne-->
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-md-12"><br></div>
+          <%column=0;
+          }});
+          if(column==1){%>
+                <div class="card strpied-tabled-with-hover container-fluid" style="visibility: hidden;">
+                </div>
+              </div>
+            </div>
+          <%}%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var ctx = document.getElementById("averageChart");
+    var ctx2 = document.getElementById("duration");
+    var ctx3 = document.getElementById("score");
+    var ctx4 = document.getElementById("comon_categories");
+
+    var averageChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: <%- JSON.stringify(data.labels) %>,
+        datasets: [{
+          data: [<%- data.percentages %>],
+          backgroundColor: 'rgba(51, 88, 153, 1)',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              callback: function (value, index, values) {
+                return value + ' %';
+              }
+            }
+          }],
+          xAxes: [{
+            categoryPercentage: 0.9,
+            barPercentage: 0.9
+          }]
+        },
+        animation: {
+          animateScale: true
+        },
+        legend: {
+          display: false
+        }
+      }
+    });
+
+    var duration = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: <%- JSON.stringify(data.labels) %>,
+        datasets: [{
+          data: [<%- data.duration %>],
+          backgroundColor: 'rgba(51, 88, 153, 1)',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            }
+          }],
+          xAxes: [{
+            categoryPercentage: 0.9,
+            barPercentage: 0.9
+          }]
+        },
+        animation: {
+          animateScale: true
+        },
+        legend: {
+          display: false
+        }
+      }
+    });
+
+    var score = new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: <%- JSON.stringify(data.labels) %>,
+        datasets: [{
+          label: 'Correctos',
+          data: [<%- data.points_scored %>],
+          backgroundColor: 'rgba(51, 88, 153, 1)',
+        }, {
+          label: 'Totales',
+          data: [<%- data.points_available %>],
+          backgroundColor: 'rgba(121, 145, 206, 1)',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }],
+          xAxes: [{
+            categoryPercentage: 0.9,
+            barPercentage: 0.9
+          }]
+        },
+        animation: {
+          animateScale: true
+        }
+      }
+    });
+
+    var color=['rgba(51,88,153)',
+    'rgba(121, 145, 206)',
+      'rgba(161,195,255)',
+      'rgba(85,147,255)',
+      'rgba(81,98,127)',
+      'rgba(68,117,204)',
+      'rgba(120,149,199)',
+      'rgba(77,111,169)',
+      'rgba(27,67,134)',
+      'rgba(14,48,106)',
+      'rgba(20,33,56)'
+      ];
+
+    console.log(<%- JSON.stringify(data)%>);
+    var labels=<%- JSON.stringify(data.common_categories.labels) %>;
+    var results=<%- JSON.stringify(data.labels) %>;
+    var percentages=<%- JSON.stringify(data.common_categories.percentage) %>;
+    var datasets=[];
+
+    results.forEach((result,index)=>{
+      var data=[];
+      percentages.forEach(percentage=>{
+        data.push(percentage[index]);
+      });
+      datasets.push({
+        label:result,
+        data: data,
+        backgroundColor:color[index]
+      });
+    });
+
+    console.log('hola')
+    console.log(datasets);
+
+
+    var comon_categories = new Chart(ctx4, {
+      type: 'horizontalBar',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend:{
+          labels:{
+          }
+        },
+        scales: {
+          xAxes: [{
+            ticks: {
+              beginAtZero: true,
+            },
+            gridLines:{
+              display: true,
+            }
+          }],
+          yAxes: [{
+            categoryPercentage: 0.9,
+            barPercentage: 0.9,
+            autoSkip:false,
+            gridLines:{
+              display:false,
+            }
+          }]
+        },
+        animation: {
+          animateScale: true
+        }
+      }
+    });
+
+   var categories = <%- JSON.stringify(data.categories)%>;
+
+    categories.forEach((element,index) => {
+      console.log(element)
+      var ctx_temp=document.getElementById("category"+index);
+      var myChar_temp = new Chart(ctx_temp, {
+          type: 'horizontalBar',
+          data: {
+            labels: element.labels,
+            datasets: [{
+              label: '6',
+              data: element.percentage,
+              backgroundColor: 'rgba(51, 88, 153, 1)',
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              xAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  max: 100,
+                  callback: function (value, index, values) {
+                    return value + ' %';
+                  }
+                }
+              }],
+              yAxes: [{
+                categoryPercentage: 0.9,
+                barPercentage: 0.9,
+              }]
+            },
+            animation: {
+              animateScale: true
+            }
+          }
+        });
+    });
+   
+    console.log();
+  </script>
+</body>
+
+</html>
