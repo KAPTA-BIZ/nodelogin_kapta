@@ -115,23 +115,139 @@ module.exports = (app, passport) => {
                             user: req.user
                         });
                 })
-                break;
-
-            case '2'://consultor
-                res.render('profile',
-                    {
-                        user: req.user
-                    });
-                break;
-
-            case '0'://admin
-                res.render('profile', {
-                    user: req.user,
-                    participantes: ''
-                })
-                break;
-
+            break;
+            case '0'://consultor//->pendiente agregar control en conteos
+                var data = {
+                    tests: []
+                };
+                Assignments.find({ 'users.id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                    if (err) throw err;
+                    get_data(0,assignments);
+                });
+            break;
+            case '2'://admin
+                var data = {
+                    tests: [],
+                    codes_datasets:[]
+                };
+                var color=['rgba(51,88,153)',
+    'rgba(121, 145, 206)',
+      'rgba(161,195,255)',
+      'rgba(85,147,255)',
+      'rgba(81,98,127)',
+      'rgba(68,117,204)',
+      'rgba(120,149,199)',
+      'rgba(77,111,169)',
+      'rgba(27,67,134)',
+      'rgba(14,48,106)',
+      'rgba(20,33,56)'
+      ];
+                Assignments.find({ 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                    if (err) throw err;
+                    UserSchema.find({'admin_email':req.user.local.email},null,{sort:{'local.email':1}},(err,admin_users)=>{
+                        if (err) throw err;
+                        get_data(0,assignments,admin_users);
+                    })
+                });
+            break;
             default:
+        }
+
+        function get_data(i, assignments,admin_users) {
+            assignment = assignments[i];
+            SummaryResults.findOne({ 'assignment_id': assignment._id, 'user_email': req.user.local.email }, null, (err, sumary) => {
+                if (err) throw err;
+                Codes.find({ 'assignment_id': assignment._id, 'user_email': req.user.local.email }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                    if (err) throw err
+                    var codes_array_used = [];
+                    var codes_array_unused = [];
+                    codes.forEach(code => {
+                        code.used == 0 ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
+                    });
+                    LinkResults.find({ 'access_code_used': { $in: codes_array_used } }, ['percentage', 'time_finished', 'access_code_used'], { sort: { 'time_finished': -1 }, limit: 3 }, (err, results) => {
+                        if (err) throw err;
+                        var results_temp = [];
+                        results.forEach(result => {
+                            var date=new Date(result.time_finished*1000);
+                            results_temp.push({
+                                id: result._id,
+                                code: result.access_code_used,
+                                date: date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear(),
+                                percentage: result.percentage
+                            });
+                        });
+                        var codes_temp;
+                        if (req.user.sa==2){
+                            codes_temp={
+                                used: assignment.codes_used,
+                                created: assignment.codes_created,
+                                availables: assignment.codes_availables,
+                                created_array: codes_array_unused
+                            }
+                            if (i==0){
+                                data.codes_datasets.push({
+                                    label: req.user.local.email,
+                                    data: [assignment.codes_max],
+                                    backgroundColor: color[0]
+                                });
+                            }else{
+                                data.codes_datasets[0].data.push(assignment.codes_max);
+                            }
+                            for (var l=0; l<admin_users.length; l++){
+                                user=admin_users[l];
+                                k=assignment.users.findIndex(doc=> doc.email==user.local.email)
+                                if(i==0){
+                                    data.codes_datasets.push({
+                                        label: user.local.email,
+                                        data: (k==-1)?[0]:[assignment.users[k].codes_max],
+                                        backgroundColor: color[l+1]
+                                    });
+                                }else{
+                                    data.codes_datasets[l+1].data.push((k==-1)?0:assignment.users[k].codes_max);
+                                }
+                                data.codes_datasets[0].data[i]-=(k==-1)?0:assignment.users[k].codes_max;
+                            }
+                        }else{
+                            for (var user of assignment.users) {
+                                if (user.email == req.user.local.email) {
+                                    if(!sumary){
+                                        sumary={
+                                            test_average:'-',
+                                            number_of_results:0
+                                        }
+                                    }
+                                    codes_temp= {
+                                        used: user.codes_used,
+                                        created: user.codes_created,
+                                        availables: user.codes_max - user.codes_used - user.codes_created,
+                                        created_array: codes_array_unused
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        data.tests.push({
+                            name: assignment.test_name,
+                            id: assignment._id,
+                            average: sumary.test_average,
+                            number_of_results: sumary.number_of_results,
+                            codes: codes_temp,
+                            results: results_temp
+                        });
+                        if (i + 1 == assignments.length) {
+                            console.log(data.codes_datasets);
+                            res.render('profile',
+                                {
+                                    user: req.user,
+                                    participantes: '',//---->pendiente ppor verificar
+                                    data:data
+                                });
+                        }else{
+                            (admin_users)?get_data(i+1,assignments,admin_users):get_data(i+1,assignments);
+                        }
+                    });
+                });
+            });
         }
     });
 
@@ -179,12 +295,12 @@ module.exports = (app, passport) => {
         });
     }
 
-    app.get('/temp',(req,res)=>{//pendiente
-        var uri = require('../../classmarker/temp')(270957,635860);
-        request(uri,(err,response,body)=>{
+    app.get('/temp', (req, res) => {//pendiente
+        var uri = require('../../classmarker/temp')(270957, 635860);
+        request(uri, (err, response, body) => {
             res.send(JSON.parse(body));
         })
-        
+
     })
 
     app.get('/setnewtest_updated/:id', isLoggedIn, (req, res) => {
@@ -741,117 +857,117 @@ module.exports = (app, passport) => {
     });
 
     //------------------------Compare tool--------------------------------//
-    app.get('/compare',isLoggedIn,(req,res)=>{
-        Codes.find({'user_email':req.user.local.email,'used':1},null,{sort:{'assignment_id':1}},(err,codes)=>{
-            if(err) throw err;
-            var datasets=[];
-            var assignment_ids=[]
+    app.get('/compare', isLoggedIn, (req, res) => {
+        Codes.find({ 'user_email': req.user.local.email, 'used': 1 }, null, { sort: { 'assignment_id': 1 } }, (err, codes) => {
+            if (err) throw err;
+            var datasets = [];
+            var assignment_ids = []
             var index;
-            codes.forEach(code=>{
-                index=datasets.findIndex(doc=>doc.assignment_id==code.assignment_id);
-                if (index==-1){
+            codes.forEach(code => {
+                index = datasets.findIndex(doc => doc.assignment_id == code.assignment_id);
+                if (index == -1) {
                     assignment_ids.push(code.assignment_id);
                     datasets.push({
-                        assignment_id:code.assignment_id,
+                        assignment_id: code.assignment_id,
                         codes: [code.code]
                     });
-                }else{
+                } else {
                     datasets[index].codes.push(code.code);
                 }
             });
-            Assignments.find({_id:{$in:assignment_ids}},null,(err,assignments)=>{
-                if(err) throw err;
-               assignments.forEach(assignment=>{
-                   datasets[datasets.findIndex(doc=>doc.assignment_id==assignment._id)].test_name=assignment.test_name;
+            Assignments.find({ _id: { $in: assignment_ids } }, null, (err, assignments) => {
+                if (err) throw err;
+                assignments.forEach(assignment => {
+                    datasets[datasets.findIndex(doc => doc.assignment_id == assignment._id)].test_name = assignment.test_name;
                 });
-                res.render('compare',{
-                    user:req.user,
-                    datasets:datasets
+                res.render('compare', {
+                    user: req.user,
+                    datasets: datasets
                 });
             });
         });
     });
 
-    app.post('/compare',isLoggedIn,(req,res)=>{
-        var codes=[]
-        for(var property in req.body){
+    app.post('/compare', isLoggedIn, (req, res) => {
+        var codes = []
+        for (var property in req.body) {
             codes.push(property);
         }
-        
-        LinkResults.find({'access_code_used':{$in:codes}},null,{sort:{'access_code_used':1}},(err,results)=>{
-            if(err) throw err;
-            var first=true;
-            var data={
-                labels:[],
-                percentages:[],
-                duration:[],
-                points_scored:[],
-                points_available:[],
-                categories:[],
-                common_categories:{
-                    labels:[],
-                    percentage:[]
+
+        LinkResults.find({ 'access_code_used': { $in: codes } }, null, { sort: { 'access_code_used': 1 } }, (err, results) => {
+            if (err) throw err;
+            var first = true;
+            var data = {
+                labels: [],
+                percentages: [],
+                duration: [],
+                points_scored: [],
+                points_available: [],
+                categories: [],
+                common_categories: {
+                    labels: [],
+                    percentage: []
                 }
             };
-            results.forEach(result=>{
-                    data.percentages.push(result.percentage);
-                    data.labels.push(result.access_code_used);
-                    var time=result.duration.split(':');
-                    data.duration.push(Number(time[0])*60+Number(time[1]));
-                    data.points_scored.push(result.points_scored);
-                    data.points_available.push(result.points_available)
-                    var categories_labels=[];
-                    var categories_percentage=[];
-                    result.category_results.forEach(category=>{
-                        categories_labels.push(category.name);
-                        categories_percentage.push(category.percentage);
-                        if (first){
-                            data.common_categories.labels.push(category.name);
-                            data.common_categories.percentage.push([category.percentage])
-                        }
-                    });
-                   if(first){
-                        first=false;
-                    }else{
-                        for (index=0;index<data.common_categories.labels.length;index++){
-                            var label=data.common_categories.labels[index];
-                            var i=categories_labels.findIndex(category=>category==label);
-                            if(i>-1){
-                                data.common_categories.percentage[index].push(categories_percentage[i]);
-                            }else{
-                                data.common_categories.percentage.splice(index,1);
-                                data.common_categories.labels.splice(index,1);
-                                index-=1;
-                            }
+            results.forEach(result => {
+                data.percentages.push(result.percentage);
+                data.labels.push(result.access_code_used);
+                var time = result.duration.split(':');
+                data.duration.push(Number(time[0]) * 60 + Number(time[1]));
+                data.points_scored.push(result.points_scored);
+                data.points_available.push(result.points_available)
+                var categories_labels = [];
+                var categories_percentage = [];
+                result.category_results.forEach(category => {
+                    categories_labels.push(category.name);
+                    categories_percentage.push(category.percentage);
+                    if (first) {
+                        data.common_categories.labels.push(category.name);
+                        data.common_categories.percentage.push([category.percentage])
+                    }
+                });
+                if (first) {
+                    first = false;
+                } else {
+                    for (index = 0; index < data.common_categories.labels.length; index++) {
+                        var label = data.common_categories.labels[index];
+                        var i = categories_labels.findIndex(category => category == label);
+                        if (i > -1) {
+                            data.common_categories.percentage[index].push(categories_percentage[i]);
+                        } else {
+                            data.common_categories.percentage.splice(index, 1);
+                            data.common_categories.labels.splice(index, 1);
+                            index -= 1;
                         }
                     }
-                    data.categories.push({
-                        labels: categories_labels,
-                        percentage: categories_percentage
-                    });
-            });
-            for (i=0;i<data.categories.length;i++){
-                for (j=0;j<data.common_categories.labels.length;j++){
-                    var k=data.categories[i].labels.findIndex(value=>value==data.common_categories.labels[j]);
-                    data.categories[i].labels.splice(k,1);
-                    data.categories[i].percentage.splice(k,1);
                 }
-                if(data.categories[i].labels.length==0){
-                    data.categories.splice(i,1);
+                data.categories.push({
+                    labels: categories_labels,
+                    percentage: categories_percentage
+                });
+            });
+            for (i = 0; i < data.categories.length; i++) {
+                for (j = 0; j < data.common_categories.labels.length; j++) {
+                    var k = data.categories[i].labels.findIndex(value => value == data.common_categories.labels[j]);
+                    data.categories[i].labels.splice(k, 1);
+                    data.categories[i].percentage.splice(k, 1);
+                }
+                if (data.categories[i].labels.length == 0) {
+                    data.categories.splice(i, 1);
                     i--;
                 }
             }
             console.log(data.common_categories);
-            res.render('compare_results',{
-                user:req.user,
-                data:data,
+            res.render('compare_results', {
+                user: req.user,
+                data: data,
                 dataset: [{
                     label: 'test',
-                    data:'[100,50,10,12,85,45,14,23]',
+                    data: '[100,50,10,12,85,45,14,23]',
                     backgroundColor: 'rgba(51, 88, 153, 1)',
                 }]
             });
         });
-       
+
     });
 }
