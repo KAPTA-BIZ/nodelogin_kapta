@@ -17,9 +17,10 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header ">
-                                        <h4 lang="es">Lista de evaluaciones disponibles para <%= data.administrator.email%>.</h4>
-                                        <h4 lang="en">Available evaluations for <%= data.administrator.email%>.</h4>
+                                        <h4 lang="es">Lista de pruebas disponibles para <%= data.administrator.email%>.</h4>
+                                        <h4 lang="en">Available tests for <%= data.administrator.email%>.</h4>
                                     </div>
+                                    <div class="card-body">
                                         <div class="list-group list-group-flush" id="accordion">
                                             <% data.assignments.forEach(function(item,index) { %>
                                                 <a class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapse<%= index%>" aria-expanded="true"
@@ -36,41 +37,44 @@
                                                 </a>
                                                 <div id="collapse<%= index%>" class="collapse container-fluid <%if (index==0){%>show<% }; %>" aria-labelledby="headingOne"
                                                     data-parent="#accordion">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col" width="50%" lang="es">usuario</th>
-                                                                <th scope="col" width="50%" lang="en">user</th>
-                                                                <th scope="col" width="15%" lang="es">Códigos Usados</th>
-                                                                <th scope="col" width="15%" lang="en">Codes Used</th>
-                                                                <th scope="col" width="15%" lang="es">Códigos Asignados</th>
-                                                                <th scope="col" width="15%" lang="en">Codes assigned</th>
-                                                                <th scope="col" width="20%"></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <% item.users.forEach(function(item_user) { %>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover table-striped">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>
-                                                                        <%=item_user.email%>
-                                                                    </td>
-                                                                    <td>
-                                                                        <%=item_user.codes_used%>
-                                                                    </td>
-                                                                    <td>
-                                                                        <%=item_user.codes_max%>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="es">ver prueba</a>
-                                                                        <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="en">see test</a>
-                                                                    </td>
+                                                                    <th scope="col" width="40%" lang="es">usuario</th>
+                                                                    <th scope="col" width="40%" lang="en">user</th>
+                                                                    <th scope="col" width="20%" lang="es" class="text-center">Códigos Usados</th>
+                                                                    <th scope="col" width="20%" lang="en" class="text-center">Codes Used</th>
+                                                                    <th scope="col" width="20%" lang="es" class="text-center">Códigos Asignados</th>
+                                                                    <th scope="col" width="20%" lang="en" class="text-center">Codes assigned</th>
+                                                                    <th scope="col" width="20%"></th>
                                                                 </tr>
-                                                                <% }); %>
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% item.users.forEach(function(item_user) { %>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <%=item_user.email%>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <%=item_user.codes_used%>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <%=item_user.codes_max%>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="es">ver prueba</a>
+                                                                            <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="en">see test</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% }); %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                                 <% }); %>
                                         </div> 
+                                    </div>
                                 </div>
                             </div>
                         </div>

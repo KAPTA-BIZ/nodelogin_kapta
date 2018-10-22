@@ -8,9 +8,7 @@
 </head>
 
 <body>
-
   <% include partials/left_column %>
-
   <div class="main-panel">
     <% include partials/navbar %>
     <div class="content">
@@ -18,45 +16,48 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card-deck">
-              <div class="card strpied-tabled-with-hover container-fluid">
+              <div class="card container-fluid">
                 <div class="card-header">
                   <h5 class="card-title">Promedio General</h5>
                 </div>
                 <div class="card-body">
-                  <canvas id="averageChart"></canvas>
+                  <div class="chart-container responsive" style="position: relative;">
+                    <canvas id="averageChart"></canvas>
+                  </div>
                 </div>
               </div>
-              <div class="card strpied-tabled-with-hover container-fluid">
+              <div class="card container-fluid">
                 <div class="card-header">
                   <h5 class="card-title">Duración</h5>
                 </div>
                 <div class="card-body">
-                  <canvas id="duration"></canvas>
+                  <div class="chart-container responsive" style="position: relative;">
+                    <canvas id="duration"></canvas>
+                  </div>
                 </div>
               </div>
-              <div class="card strpied-tabled-with-hover container-fluid">
-                <div class="card-header">
-                  <h5 class="card-title">Puntos</h5>
+              <div class="card container-fluid">
+                  <div class="card-header">
+                    <h5 class="card-title">Puntos</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart-container responsive" style="position: relative;">
+                      <canvas id="score"></canvas>
+                    </div>
+                  </div>
                 </div>
-                <div class="card-body">
-                  <canvas id="score"></canvas>
-                </div>
-              </div>
             </div>
           </div>
           <div class="col-md-12"><br></div>
           <div class="col-md-12">
-            <div class="card strpied-tabled-with-hover container-fluid">
+            <div class="card container-fluid">
               <div class="card-header">
-                <h4 class="card-title" lang="es">Categorias comunes</h4>
+                <h4 class="card-title" lang="es">Categorías comunes</h4>
                 <h4 class="card-title" lang="en"></h4>
               </div>
               <div class="card-body">
-                <div class="card text-center">
-                  <div class="card-body">
-                    <canvas id="comon_categories" height="<%= (25*(data.common_categories.labels.length-1)*(data.labels.length)+140)%>"></canvas>
-                    <!--440=55*8-->
-                  </div>
+                <div class="chart-container responsive" style="position: relative; height: 35vh;">
+                    <canvas id="comon_categories"></canvas>
                 </div>
               </div>
             </div>
@@ -67,22 +68,26 @@
           if (column==0){%>
             <div class="col-md-12">
               <div class="card-deck">
-                  <div class="card strpied-tabled-with-hover container-fluid">
+                  <div class="card container-fluid">
                       <div class="card-header">
-                        <h5 class="card-title">Categorias resultado <%= data.labels[index]%></h5>
+                        <h5 class="card-title">Categorías del resultado <%= data.labels[index]%></h5>
                       </div>
                       <div class="card-body">
-                        <canvas id="category<%=index%>" height="<%= 25*(category.labels.length-1)+60%>"></canvas>  <!--pendeitne-->
+                        <div class="chart-container responsive" style="position: relative; height: 25vh;">
+                          <canvas id="category<%=index%>"></canvas>
+                        </div>
                       </div>
                     </div>
           <%column++;
           }else{%>
-                  <div class="card strpied-tabled-with-hover container-fluid">
+                  <div class="card container-fluid">
                     <div class="card-header">
-                      <h5 class="card-title">Categorias resultado <%= data.labels[index]%></h5>
+                      <h5 class="card-title">Categorías del resultado <%= data.labels[index]%></h5>
                     </div>
                     <div class="card-body">
-                      <canvas id="category<%=index%>" height="<%= 25*(category.labels.length-1)+60%>"></canvas>  <!--pendeitne-->
+                      <div class="chart-container responsive" style="position: relative; height: 25vh;">
+                        <canvas id="category<%=index%>"></canvas>
+                      </div>
                     </div>
                   </div>
               </div>
@@ -91,7 +96,7 @@
           <%column=0;
           }});
           if(column==1){%>
-                <div class="card strpied-tabled-with-hover container-fluid" style="visibility: hidden;">
+                <div class="card container-fluid" style="visibility: hidden;">
                 </div>
               </div>
             </div>
@@ -112,7 +117,8 @@
         labels: <%- JSON.stringify(data.labels) %>,
         datasets: [{
           data: [<%- data.percentages %>],
-          backgroundColor: 'rgba(51, 88, 153, 1)',
+          backgroundColor: 'rgba(  6, 58, 81,1)',
+          hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
         }]
       },
       options: {
@@ -122,6 +128,7 @@
           yAxes: [{
             ticks: {
               beginAtZero: true,
+              max: 100,
               callback: function (value, index, values) {
                 return value + ' %';
               }
@@ -129,7 +136,15 @@
           }],
           xAxes: [{
             categoryPercentage: 0.9,
-            barPercentage: 0.9
+            barPercentage: 0.9,
+            maxBarThickness:70,
+            ticks: {
+                  autoSkip: false,
+            },
+            gridLines:{
+              display:true,
+              offsetGridLines: true
+            }
           }]
         },
         animation: {
@@ -147,7 +162,8 @@
         labels: <%- JSON.stringify(data.labels) %>,
         datasets: [{
           data: [<%- data.duration %>],
-          backgroundColor: 'rgba(51, 88, 153, 1)',
+          backgroundColor: 'rgba(  6, 58, 81,1)',
+          hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
         }]
       },
       options: {
@@ -157,11 +173,22 @@
           yAxes: [{
             ticks: {
               beginAtZero: true,
+              callback: function (value, index, values) {
+                return value + '\'';
+              }
             }
           }],
           xAxes: [{
             categoryPercentage: 0.9,
-            barPercentage: 0.9
+            barPercentage: 0.9,
+            maxBarThickness:70,
+            ticks: {
+                  autoSkip: false,
+            },
+            gridLines:{
+              display:true,
+              offsetGridLines: true
+            }
           }]
         },
         animation: {
@@ -180,11 +207,13 @@
         datasets: [{
           label: 'Correctos',
           data: [<%- data.points_scored %>],
-          backgroundColor: 'rgba(51, 88, 153, 1)',
+          backgroundColor: 'rgba(  6, 58, 81,1)',
+          hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
         }, {
           label: 'Totales',
           data: [<%- data.points_available %>],
-          backgroundColor: 'rgba(121, 145, 206, 1)',
+          backgroundColor: 'rgba( 42, 98,123,1)',
+          hoverBackgroundColor: 'rgba( 42, 98,123,0.5)'
         }]
       },
       options: {
@@ -198,26 +227,42 @@
           }],
           xAxes: [{
             categoryPercentage: 0.9,
-            barPercentage: 0.9
+            barPercentage: 0.9,
+            maxBarThickness:70,
+            ticks: {
+                  autoSkip: false,
+            },
+            gridLines:{
+              display:true,
+              offsetGridLines: true
+            }
           }]
         },
         animation: {
           animateScale: true
+        },
+        legend: {
+          display: true,
+          position: 'left',
+          labels:{
+            usePointStyle: true
+          }
         }
       }
     });
 
-    var color=['rgba(51,88,153)',
-    'rgba(121, 145, 206)',
-      'rgba(161,195,255)',
-      'rgba(85,147,255)',
-      'rgba(81,98,127)',
-      'rgba(68,117,204)',
-      'rgba(120,149,199)',
-      'rgba(77,111,169)',
-      'rgba(27,67,134)',
-      'rgba(14,48,106)',
-      'rgba(20,33,56)'
+    var color=['rgba(  6, 58, 81,1)',
+              'rgba( 42, 98,123,1)',
+              'rgba( 22, 78,103,1)',
+              'rgba(  2, 40, 57,1)',
+              'rgba(  0, 23, 32,1)'
+      ];
+
+    var colorHover=['rgba(  6, 58, 81,0.5)',
+              'rgba( 42, 98,123,0.5)',
+              'rgba( 22, 78,103,0.5)',
+              'rgba(  2, 40, 57,0.5)',
+              'rgba(  0, 23, 32,0.5)'
       ];
 
     console.log(<%- JSON.stringify(data)%>);
@@ -234,13 +279,10 @@
       datasets.push({
         label:result,
         data: data,
-        backgroundColor:color[index]
+        backgroundColor:color[index],
+        hoverBackgroundColor: colorHover[index]
       });
     });
-
-    console.log('hola')
-    console.log(datasets);
-
 
     var comon_categories = new Chart(ctx4, {
       type: 'horizontalBar',
@@ -251,30 +293,35 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        legend:{
-          labels:{
-          }
-        },
         scales: {
           xAxes: [{
             ticks: {
               beginAtZero: true,
-            },
-            gridLines:{
-              display: true,
+              max:100,
+              callback: function(value, index, values) {
+                      return value+' %';
+                  }
             }
           }],
           yAxes: [{
             categoryPercentage: 0.9,
             barPercentage: 0.9,
-            autoSkip:false,
+            maxBarThickness:50,
+            ticks:{
+              autoSkip: false
+            },
             gridLines:{
-              display:false,
+              display:true,
+              offsetGridLines: true
             }
           }]
         },
         animation: {
           animateScale: true
+        },
+        legend: {
+          display: true,
+          position: 'bottom'
         }
       }
     });
@@ -289,9 +336,9 @@
           data: {
             labels: element.labels,
             datasets: [{
-              label: '6',
               data: element.percentage,
-              backgroundColor: 'rgba(51, 88, 153, 1)',
+              backgroundColor: 'rgba(  6, 58, 81,1)',
+              hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
             }]
           },
           options: {
@@ -301,25 +348,34 @@
               xAxes: [{
                 ticks: {
                   beginAtZero: true,
-                  max: 100,
-                  callback: function (value, index, values) {
-                    return value + ' %';
-                  }
+                  max:100,
+                  callback: function(value, index, values) {
+                          return value+' %';
+                      }
                 }
               }],
               yAxes: [{
                 categoryPercentage: 0.9,
                 barPercentage: 0.9,
+                maxBarThickness:25,
+                ticks:{
+                  autoSkip: false
+                },
+                gridLines:{
+                  display:true,
+                  offsetGridLines: true
+                }
               }]
             },
             animation: {
               animateScale: true
+            },
+            legend: {
+              display: false
             }
           }
         });
     });
-   
-    console.log();
   </script>
 </body>
 

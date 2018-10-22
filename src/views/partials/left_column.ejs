@@ -21,13 +21,6 @@
                         <p lang="es">Usuarios</p>
                     </a>
                 </li>
-                <li>
-                    <a class="nav-link" href="/categories">
-                        <i class="nc-icon nc-chart-pie-35"></i>
-                        <p lang="en">Categories</p>
-                        <p lang="es">Categorías</p>
-                    </a>
-                </li>
                 <% } %>
 
                     <% if (user.sa == 0){ %>
@@ -42,15 +35,15 @@
                         <li>
                             <a class="nav-link" href="/tests_list_cons/<%=user._id%>">
                                 <i class="nc-icon nc-attach-87"></i>
-                                <p lang="en">Evaluations</p>
-                                <p lang="es">Evaluaciones</p>
+                                <p lang="en">Tests</p>
+                                <p lang="es">Pruebas</p>
                             </a>
                         </li>
                         <li>
-                            <a class="nav-link" href="/list_part">
-                                <i class="nc-icon nc-badge"></i>
-                                <p lang="en">My participants</p>
-                                <p lang="es">Mis participantes</p>
+                            <a class="nav-link" href="/compare">
+                                <i class="nc-icon nc-ruler-pencil"></i>
+                                <p lang="en">Compare results</p>
+                                <p lang="es">Comparar resultados</p>
                             </a>
                         </li>
 
@@ -68,8 +61,8 @@
                             <li>
                                 <a class="nav-link" href="/tests_list_admin/<%= user._id %>">
                                     <i class="nc-icon nc-attach-87"></i>
-                                    <p lang="en">Evaluations</p>
-                                    <p lang="es">Evaluaciones</p>
+                                    <p lang="en">Tests</p>
+                                    <p lang="es">Pruebas</p>
                                 </a>
                             </li>
                             <li>
@@ -84,13 +77,6 @@
                                     <i class="nc-icon nc-ruler-pencil"></i>
                                     <p lang="en">Compare results</p>
                                     <p lang="es">Comparar resultados</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="/list_part">
-                                    <i class="nc-icon nc-badge"></i>
-                                    <p lang="en">My participants</p>
-                                    <p lang="es">Mis participantes</p>
                                 </a>
                             </li>
     

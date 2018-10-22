@@ -16,12 +16,8 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <h5 lang="es">Se creara un nuevo codigo para la evaluación "
-                                    <%= data.test_name%>"
-                                </h5>
-                                <h5 lang="en">A new code will be created for the evaluation "
-                                        <%= data.test_name%>"
-                                    </h5>
+                                <h5 lang="es">Se creara un nuevo código para la prueba "<%= data.test_name%>"</h5>
+                                <h5 lang="en">A new code will be created for the test "<%= data.test_name%>"</h5>
                                 <form class="form" role="form" action="/generate_new_code/<%=data.assignment_id%>/<%=data.user._id%>" method="post">
                                     <div class="form-group">
                                         <label for="GenerateCodes" lang="es"> Cuántos códigos desea generar?</label>
@@ -29,11 +25,11 @@
                                         <input type="number" class="form-control" name="GenerateCodes" id="GenerateCodes" min="1" max="<%= data.codes_max - data.codes_used - data.codes_created %>"
                                             required/>
                                     </div>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" lang="es">Cancelar</button>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" lang="en">Cancel</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" lang="es">Cancelar</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" lang="en">Cancel</button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <button type="submit" class="btn btn-primary" lang="es">Confirmar</button>
-                                    <button type="submit" class="btn btn-primary" lang="en">Validate</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" lang="es">Confirmar</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" lang="en">Validate</button>
                                 </form>
                             </div>
                         </div>
@@ -51,11 +47,9 @@
                             <br><br><br><br>
 
                             <div class="col-md-4 my-auto">
-                                <div class="card text-center mx-auto" style="width: 18rem; height: 7.5rem">
+                                <div class="card container-fluid text-center mx-auto" style="width: 18rem; height: 7.5rem">
                                     <div class="card-body">
-                                        <h1 class="card-title">
-                                            <%= data.codes_used %>
-                                        </h1>
+                                        <h1 class="card-title"><%= data.codes_used %></h1>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="es">Códigos Usados</h5>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="en">Codes Used</h5>
                                         <br>
@@ -63,11 +57,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4 my-auto">
-                                <div class="card text-center mx-auto" style="width: 18rem; height: 7.5rem">
+                                <div class="card container-fluid text-center mx-auto" style="width: 18rem; height: 7.5rem">
                                     <div class="card-body">
-                                        <h1 class="card-title">                                            
-                                            <%= data.codes_created%>
-                                        </h1>
+                                        <h1 class="card-title"><%= data.codes_created%></h1>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="es">Códigos Disponibles</h5>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="en">Available Codes</h5>
 
@@ -98,11 +90,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4 my-auto">
-                                <div class="card text-center mx-auto" style="width: 18rem; height: 7.5rem">
+                                <div class="card container-fluid text-center mx-auto" style="width: 18rem; height: 7.5rem">
                                     <div class="card-body">
-                                        <h1 class="card-title">
-                                            <%= data.codes_max - data.codes_created - data.codes_used%>
-                                        </h1>
+                                        <h1 class="card-title"><%= data.codes_max - data.codes_created - data.codes_used%></h1>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="es">Códigos Restantes</h5>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="en">Codes left</h5>
                                         <h6>
@@ -114,90 +104,92 @@
                             </div>
 
                             <div class="col-md-12">
-                                <div class="card strpied-tabled-with-hover container-fluid">
+                                <div class="card container-fluid">
                                     <div class="card-header">
                                         <h4 class="card-title" lang="es">Categorias</h4>
                                         <h4 class="card-title" lang="en">Categories</h4>
                                     </div>
-                                    <div class="card-body table-full-width table-responsive">
-                                        <table class="table table-hover table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width: 40%" lang="es">Categoria</th>
-                                                    <th style="width: 40%" lang="en">Category</th>
-                                                    <th style="width: 30%" lang="es">Promedio</th>
-                                                    <th style="width: 30%" lang="en">Average</th>
-                                                    <th style="width: 10%">&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                                    <th style="width: 20%" lang="es">Respuestas</th>
-                                                    <th style="width: 20%" lang="en">Answers</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% data.categories.forEach(category=>{
-                                                    var percen=(category.percentage_sum/category.answers).toFixed(2)%>
-                                                    <tr style="height: 25px;">
-                                                        <td><%=category.name%></td>
-                                                        <td>
-                                                                <div class="progress" >
-                                                                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: <%=percen%>%;" aria-valuenow="<%=percen%>" aria-valuemin="0"
-                                                                        aria-valuemax="100"></div> 
-                                                                       <div class="progress-value"><b><%=percen%>%</b></div>
-                                                                    </div>
-                                                                
-                                                            </td>
-                                                            <td></td>
-                                                            <td><%=category.points_scored%>/<%=category.points_available_sum%></td>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 40%" lang="es">Categoría</th>
+                                                        <th style="width: 40%" lang="en">Category</th>
+                                                        <th style="width: 30%" lang="es" class="text-center">Promedio</th>
+                                                        <th style="width: 30%" lang="en" class="text-center">Average</th>
+                                                        <th style="width: 10%">&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                                        <th style="width: 20%" lang="es" class="text-center">Respuestas</th>
+                                                        <th style="width: 20%" lang="en" class="text-center">Answers</th>
                                                     </tr>
-                                                <%})%>
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    <% data.categories.forEach(category=>{
+                                                        var percen=(category.percentage_sum/category.answers).toFixed(2)%>
+                                                        <tr>
+                                                            <td><%=category.name%></td>
+                                                            <td class="text-center">
+                                                                    <div class="progress" >
+                                                                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=percen%>%; background-color: #2A627B;" aria-valuenow="<%=percen%>" aria-valuemin="0"
+                                                                            aria-valuemax="100"></div> 
+                                                                           <div class="progress-value"><b><%=percen%>%</b></div>
+                                                                        </div>
+                                                                </td>
+                                                                <td></td>
+                                                                <td class="text-center"><%=category.points_scored%>/<%=category.points_available_sum%></td>
+                                                        </tr>
+                                                    <%})%>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <div class="card strpied-tabled-with-hover container-fluid">
+                                <div class="card container-fluid">
                                     <div class="card-header">
                                         <h4 class="card-title" lang="es">Resultados</h4>
                                         <h4 class="card-title" lang="en">Results</h4>
                                     </div>
-                                    <div class="card-body table-full-width table-responsive">
-                                        <table class="table table-hover table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width: 20%" lang="es">Código</th>
-                                                    <th style="width: 20%" lang="en">Code</th>
-                                                    <th style="width: 16%" lang="es">Porcentaje</th>
-                                                    <th style="width: 16%" lang="en">Percentage</th>
-                                                    <th style="width: 16%" lang="es">Puntaje</th>
-                                                    <th style="width: 16%" lang="en">Score</th>
-                                                    <th style="width: 16%" lang="es">Duración</th>
-                                                    <th style="width: 16%" lang="en">Duration</th>
-                                                    <th style="width: 16%" lang="es">Fecha</th>
-                                                    <th style="width: 16%" lang="en">Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                                <% data.results.forEach(function(item){%>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped">
+                                                <thead>
                                                     <tr>
-                                                            <td><%=item.access_code_used%></td>
-                                                            <td>
-                                                                    <div class="progress"> 
-                                                                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=item.percentage%>%; background-color:purple;" aria-valuenow="<%=item.percentage%>" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                        <div class="progress-value"><b><%=item.percentage%>%</b></div>
-                                                                    </div>
-                                                                </td>
-                                                                <td><%=item.points_scored%>/<%=item.points_available%></td>
-                                                                <td><%=item.duration%></td>
-                                                                <td><%date=new Date(item.time_finished*1000)%> <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> </td>
-                                                                <td><a href="/test_result/<%=item.test_result_id%>" lang="es">Respuestas</a>
-                                                                    <a href="/test_result/<%=item.test_result_id%>" lang="en">Answers</a>
-                                                                </td>
+                                                        <th style="width: 20%" lang="es">Código</th>
+                                                        <th style="width: 20%" lang="en">Code</th>
+                                                        <th style="width: 16%" lang="es" class="text-center">Porcentaje</th>
+                                                        <th style="width: 16%" lang="en" class="text-center">Percentage</th>
+                                                        <th style="width: 16%" lang="es" class="text-center">Puntaje</th>
+                                                        <th style="width: 16%" lang="en" class="text-center">Score</th>
+                                                        <th style="width: 16%" lang="es" class="text-center">Duración</th>
+                                                        <th style="width: 16%" lang="en" class="text-center">Duration</th>
+                                                        <th style="width: 16%" lang="es" class="text-center">Fecha</th>
+                                                        <th style="width: 16%" lang="en" class="text-center">Date</th>
                                                     </tr>
-                                                <%})%>
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>    
+                                                    <% data.results.forEach(function(item){%>
+                                                        <tr>
+                                                            <td><%=item.access_code_used%></td>
+                                                            <td class="text-center">
+                                                                <div class="progress"> 
+                                                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=item.percentage%>%; background-color: #2A627B;" aria-valuenow="<%=item.percentage%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                    <div class="progress-value"><b><%=item.percentage%>%</b></div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center"><%=item.points_scored%>/<%=item.points_available%></td>
+                                                            <td class="text-center"><%=item.duration%></td>
+                                                            <td class="text-center"><%date=new Date(item.time_finished*1000)%> <%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%> </td>
+                                                            <td class="text-center"><a href="/test_result/<%=item.test_result_id%>" lang="es">Respuestas</a>
+                                                                <a href="/test_result/<%=item.test_result_id%>" lang="en">Answers</a>
+                                                            </td>
+                                                        </tr>
+                                                    <%})%>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

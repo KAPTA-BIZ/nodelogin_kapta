@@ -104,59 +104,116 @@ module.exports = (app, passport) => {
     app.get('/profile', isLoggedIn, (req, res) => {
         switch (req.user.sa) {
             case '1'://superadmin
-                API_Test.find({}, null, { sort: { test_name: 1 } }, (err, results) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    res.render('profile',
-                        {
-                            Tests: results,
-                            participantes: "0", ///---->pendiente ppor verificar
-                            user: req.user
+                UserSchema.find({}, null, (err, users) => {
+                    if (err) throw err
+                    var admin_users = [], consult_users = [];
+                    users.forEach(user => {
+                        if (user.sa == 0) {
+                            consult_users.push(user.local.email);
+                        } else if (user.sa == 2) {
+                            admin_users.push(user.local.email);
+                        }
+                    });
+                    API_Test.find({}, null, (err, tests) => {
+                        if (err) throw err
+                        LinkResults.find({}, null, (err, results) => {
+                            if (err) throw err
+                            Assignments.find({}, null, { sort: { 'admin_email': 1, 'test_name': 1 } }, (err, assignments) => {
+                                if (err) throw err
+                                var admin_email = '';
+                                var index = -1;
+                                var credits = [];
+                                assignments.forEach(assignment => {
+                                    var assignment_credits = [assignment.codes_max, assignment.codes_created, assignment.codes_used];
+                                    assignment.users.forEach(user => {
+                                        assignment_credits[1] += user.codes_created;
+                                        assignment_credits[2] += user.codes_used;
+                                    })
+                                    if (admin_email != assignment.admin_email) {
+                                        index++;
+                                        admin_email = assignment.admin_email;
+                                        credits.push({
+                                            user: admin_email,
+                                            tests: [{
+                                                name: assignment.test_name,
+                                                credits: assignment_credits
+                                            }]
+                                        });
+                                    } else {
+                                        credits[index].tests.push({
+                                            name: assignment.test_name,
+                                            credits: assignment_credits
+                                        });
+                                    }
+                                });
+                                var data = {
+                                    users: {
+                                        admin: admin_users.length,
+                                        consult: consult_users.length
+                                    },
+                                    tests: tests.length,
+                                    assigned_tests: assignments.length,
+                                    results: results.length,
+                                    credits: credits
+                                }
+                                res.render('profile_superadmin', {
+                                    data: data,
+                                    participantes: "0", ///---->pendiente ppor verificar
+                                    user: req.user
+                                });
+                            });
                         });
-                })
-            break;
+                    });
+                });
+                break;
             case '0'://consultor//->pendiente agregar control en conteos
                 var data = {
-                    tests: []
+                    tests: [],
+                    codes_datasets: []
                 };
                 Assignments.find({ 'users.id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                     if (err) throw err;
-                    get_data(0,assignments);
+                    get_data(0, assignments);
                 });
-            break;
+                break;
             case '2'://admin
                 var data = {
                     tests: [],
-                    codes_datasets:[]
+                    codes_datasets: []
                 };
-                var color=['rgba(51,88,153)',
-    'rgba(121, 145, 206)',
-      'rgba(161,195,255)',
-      'rgba(85,147,255)',
-      'rgba(81,98,127)',
-      'rgba(68,117,204)',
-      'rgba(120,149,199)',
-      'rgba(77,111,169)',
-      'rgba(27,67,134)',
-      'rgba(14,48,106)',
-      'rgba(20,33,56)'
-      ];
+                var color = ['rgba(  6, 58, 81,1)',
+                'rgba( 42, 98,123,1)',
+                'rgba( 22, 78,103,1)',
+                'rgba(  2, 40, 57,1)',
+                'rgba(  0, 23, 32,1)',
+                ];
+                var colorHover = ['rgba(  6, 58, 81,0.5)',
+                'rgba( 42, 98,123,0.5)',
+                'rgba( 22, 78,103,0.5)',
+                'rgba(  2, 40, 57,0.5)',
+                'rgba(  0, 23, 32,0.5)',
+                ];
                 Assignments.find({ 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                     if (err) throw err;
-                    UserSchema.find({'admin_email':req.user.local.email},null,{sort:{'local.email':1}},(err,admin_users)=>{
+                    UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, admin_users) => {
                         if (err) throw err;
-                        get_data(0,assignments,admin_users);
+                        get_data(0, assignments, admin_users);
                     })
                 });
-            break;
+                break;
             default:
         }
 
-        function get_data(i, assignments,admin_users) {
+        function get_data(i, assignments, admin_users) {
             assignment = assignments[i];
             SummaryResults.findOne({ 'assignment_id': assignment._id, 'user_email': req.user.local.email }, null, (err, sumary) => {
                 if (err) throw err;
+                if (!sumary) {
+                    sumary = {
+                        test_average: '-',
+                        number_of_results: 0
+                    }
+                }
                 Codes.find({ 'assignment_id': assignment._id, 'user_email': req.user.local.email }, null, { sort: { 'code': 1 } }, (err, codes) => {
                     if (err) throw err
                     var codes_array_used = [];
@@ -168,55 +225,51 @@ module.exports = (app, passport) => {
                         if (err) throw err;
                         var results_temp = [];
                         results.forEach(result => {
-                            var date=new Date(result.time_finished*1000);
+                            var date = new Date(result.time_finished * 1000);
                             results_temp.push({
                                 id: result._id,
                                 code: result.access_code_used,
-                                date: date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear(),
+                                date: date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear(),
                                 percentage: result.percentage
                             });
                         });
                         var codes_temp;
-                        if (req.user.sa==2){
-                            codes_temp={
+                        if (req.user.sa == 2) {
+                            codes_temp = {
                                 used: assignment.codes_used,
                                 created: assignment.codes_created,
                                 availables: assignment.codes_availables,
                                 created_array: codes_array_unused
                             }
-                            if (i==0){
+                            if (i == 0) {
                                 data.codes_datasets.push({
                                     label: req.user.local.email,
                                     data: [assignment.codes_max],
-                                    backgroundColor: color[0]
+                                    backgroundColor: color[0],
+                                    hoverBackgroundColor: colorHover[0]
                                 });
-                            }else{
+                            } else {
                                 data.codes_datasets[0].data.push(assignment.codes_max);
                             }
-                            for (var l=0; l<admin_users.length; l++){
-                                user=admin_users[l];
-                                k=assignment.users.findIndex(doc=> doc.email==user.local.email)
-                                if(i==0){
+                            for (var l = 0; l < admin_users.length; l++) {
+                                user = admin_users[l];
+                                k = assignment.users.findIndex(doc => doc.email == user.local.email)
+                                if (i == 0) {
                                     data.codes_datasets.push({
                                         label: user.local.email,
-                                        data: (k==-1)?[0]:[assignment.users[k].codes_max],
-                                        backgroundColor: color[l+1]
+                                        data: (k == -1) ? [0] : [assignment.users[k].codes_max],
+                                        backgroundColor: color[l + 1],
+                                        hoverBackgroundColor: colorHover[l + 1]
                                     });
-                                }else{
-                                    data.codes_datasets[l+1].data.push((k==-1)?0:assignment.users[k].codes_max);
+                                } else {
+                                    data.codes_datasets[l + 1].data.push((k == -1) ? 0 : assignment.users[k].codes_max);
                                 }
-                                data.codes_datasets[0].data[i]-=(k==-1)?0:assignment.users[k].codes_max;
+                                data.codes_datasets[0].data[i] -= (k == -1) ? 0 : assignment.users[k].codes_max;
                             }
-                        }else{
+                        } else {
                             for (var user of assignment.users) {
                                 if (user.email == req.user.local.email) {
-                                    if(!sumary){
-                                        sumary={
-                                            test_average:'-',
-                                            number_of_results:0
-                                        }
-                                    }
-                                    codes_temp= {
+                                    codes_temp = {
                                         used: user.codes_used,
                                         created: user.codes_created,
                                         availables: user.codes_max - user.codes_used - user.codes_created,
@@ -236,14 +289,14 @@ module.exports = (app, passport) => {
                         });
                         if (i + 1 == assignments.length) {
                             console.log(data.codes_datasets);
-                            res.render('profile',
+                            res.render('profile_client',
                                 {
                                     user: req.user,
                                     participantes: '',//---->pendiente ppor verificar
-                                    data:data
+                                    data: data
                                 });
-                        }else{
-                            (admin_users)?get_data(i+1,assignments,admin_users):get_data(i+1,assignments);
+                        } else {
+                            (admin_users) ? get_data(i + 1, assignments, admin_users) : get_data(i + 1, assignments);
                         }
                     });
                 });
@@ -507,8 +560,12 @@ module.exports = (app, passport) => {
 
     //-----------------Lista de usuarios (superadmin)-------------//
     app.get('/users_list', isLoggedIn, (req, res) => {
+        if (req.user.sa!=1){
+            res.sendStatus(403);
+        }
         UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
-            err ? console.log(err) : res.render('users_list', { items: resultArray, user: req.user })
+            if (err) throw err;
+            res.render('users_list', { items: resultArray, user: req.user });
         });
     });
 

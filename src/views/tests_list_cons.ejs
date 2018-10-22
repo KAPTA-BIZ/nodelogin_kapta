@@ -17,41 +17,45 @@
                     <div class="col-md-12">
                         <div class="card container-fluid">
                             <div class="card-header ">
-                                <h4 lang="es">Lista de evaluaciones disponibles para <%=data.consultant.email%>.</h4>
-                                <h4 lang="en">Available evaluations for <%=data.consultant.email%>.</h4>
+                                <h4 lang="es">Lista de pruebas disponibles para <%=data.consultant.email%>.</h4>
+                                <h4 lang="en">Available tests for <%=data.consultant.email%>.</h4>
                             </div>
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" width="50%" lang="es">Prueba</th>
-                                        <th scope="col" width="50%" lang="en">Evaluation</th>
-                                        <th scope="col" width="15%" lang="es">Códigos Usados</th>
-                                        <th scope="col" width="15%" lang="en">Codes used</th>
-                                        <th scope="col" width="15%" lang="es">Códigos Asignados</th>
-                                        <th scope="col" width="15%" lang="en">Codes Assigned</th>
-                                        <th scope="col" width="20%"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% data.assignments.forEach(function(assignment){%>
-                                    <tr>
-                                        <td>
-                                            <%=assignment.name%>
-                                        </td>
-                                        <td>
-                                            <%=assignment.codes_used%>
-                                        </td>
-                                        <td>
-                                            <%=assignment.codes_max%>
-                                        </td>
-                                        <td>
-                                            <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="es">Ver prueba</a>
-                                            <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="en">see test</a>
-                                        </td>
-                                    </tr>
-                                    <%})%>
-                                </tbody>
-                            </table>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" width="40%" lang="es">Prueba</th>
+                                                <th scope="col" width="40%" lang="en">Test</th>
+                                                <th scope="col" width="20%" lang="es" class="text-center">Códigos Usados</th>
+                                                <th scope="col" width="20%" lang="en" class="text-center">Codes used</th>
+                                                <th scope="col" width="20%" lang="es" class="text-center">Códigos Asignados</th>
+                                                <th scope="col" width="20%" lang="en" class="text-center">Codes Assigned</th>
+                                                <th scope="col" width="20%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% data.assignments.forEach(function(assignment){%>
+                                            <tr>
+                                                <td>
+                                                    <%=assignment.name%>
+                                                </td>
+                                                <td class="text-center">
+                                                    <%=assignment.codes_used%>
+                                                </td>
+                                                <td class="text-center">
+                                                    <%=assignment.codes_max%>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="es">Ver prueba</a>
+                                                    <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="en">see test</a>
+                                                </td>
+                                            </tr>
+                                            <%})%>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

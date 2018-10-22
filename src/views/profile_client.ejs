@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title lang="en">Home</title>
+  <title lang="es">Inicio</title>
+  <% include partials/head %>
+</head>
+
+<body>
+  <% include partials/left_column %>
+  <div class="main-panel">
+    <% include partials/navbar %>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <%if (user.sa==2){%>
+            <div class="col-md-12">
+                <div class="card container-fluid">
+                    <div class="card-header">
+                      <h4 class="card-title">Distribución de créditos por prueba.</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container table-responsive" style="position: relative; height: 25vh;">
+                          <canvas id="codes"></canvas>
+                      </div>
+                    </div>
+                </div>
+            </div>
+          <%}%>
+          <%if(user.sa==0||user.sa==2){
+           data.tests.forEach((test,index)=>{%>
+          <div class="col-md-12">
+            <div class="card container-fluid">
+              <div class="card-header">
+                <h4 class="card-title">
+                  <%=test.name%>
+                </h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3 my-auto">
+                    <div class="card container-fluid mx-auto">
+                      <div class="card-header">
+                        <h4 class="card-title">Promedio</h4>
+                      </div>
+                      <div class="card-body text-center">
+                        <h2 class="card-title"><%=test.average%> %</h2>
+                        <h5 class="card-subtitle mb-2 text-muted" lang="es"><a href="/test_view/<%=test.id%>/<%=user._id%>"><%=test.number_of_results%> Resultados</a></h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 my-auto">
+                    <div class="card container-fluid mx-auto">
+                      <div class="card-header">
+                        <h4 class="card-title">Códigos</h4>
+                      </div>
+                      <div class="card-body text-center">
+                        <div class="chart-container responsive" style="position: relative; height: 22vh;">
+                            <canvas id="myChart<%=index%>"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 my-auto">
+                    <div class="card container-fluid mx-auto">
+                      <div class="card-header">
+                        <h4 class="card-title">Últimos resultados</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col" style="width:30%" class="text-center">Código</th>
+                                <th scope="col" style="width:30%" class="text-center">Fecha</th>
+                                <th scope="col" style="width:10%" class="text-center">Resultado</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% test.results.forEach(result=>{%>
+                              <tr>
+                                <td class="text-center"><a href="/test_result/<%=result.id%>">
+                                    <%=result.code%></a></td>
+                                <td class="text-center">
+                                  <%=result.date%>
+                                </td>
+                                <td class="text-center">
+                                  <%=result.percentage%>%</td>
+                              </tr>
+                              <%})%>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 my-auto">
+                    <a class="card container-fluid mx-auto">
+                      <div class="card-header">
+                        <h4 class="card-title">Códigos disponibles</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <tbody>
+                              <%var count=0
+                              for(var i=0; i<4;i++){
+                                if(count==test.codes.created_array.length){
+                                break}%>
+                                <tr>
+                                <%for(var j=0; j<4;j++){
+                                  if(count==test.codes.created_array.length){
+                                    break}
+                                    if(i==3 && j==3){%>
+                                      <td><a href="/test_view/<%=test.id%>/<%=user._id%>">más</a></td>
+                                      <%}else{%>
+                                  <td> <%=test.codes.created_array[count]%> </td>
+                                <%}count++;}%>
+                              </tr>
+                              <%}%>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%})}%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var data_used=<%= JSON.stringify(data.tests.map(obj=>obj.codes.used))%>;
+    var data_created=<%=JSON.stringify(data.tests.map(obj=>obj.codes.created))%>;
+    var data_availables=<%= JSON.stringify(data.tests.map(obj=>obj.codes.availables))%>;
+    var tests=<%- JSON.stringify(data.tests.map(obj=>obj.name))%>;
+    var codes_datasets=<%- JSON.stringify(data.codes_datasets)%>;
+    for (var i=0; i<data_used.length;i++){
+      var ctx = document.getElementById("myChart"+i);
+      var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ["Usados", "Disponibles", "Restantes"],
+          datasets: [{
+            data: [data_used[i], data_created[i], data_availables[i]],
+            backgroundColor: [
+            'rgba(  6, 58, 81,1)',
+            'rgba( 42, 98,123,1)',
+            'rgba( 22, 78,103,1)',
+            ],
+            hoverBackgroundColor: [
+            'rgba(  6, 58, 81,0.5)',
+            'rgba( 42, 98,123,0.5)',
+            'rgba( 22, 78,103,0.5)',
+            ],
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels:{
+              usePointStyle: true
+            }
+          },
+          animation: {
+            animateScale: true
+          }
+        }
+      });
+    }
+    
+  if (codes_datasets.length>0){
+  var ctx_distribution = document.getElementById("codes");
+  var chart_distribution = new Chart(ctx_distribution, {
+    type: 'horizontalBar',
+    data: {
+        labels: tests,
+        datasets: codes_datasets
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+              stacked:true,
+              ticks: {
+                  beginAtZero:true
+              }
+            }],
+            yAxes:[{
+              stacked:true,
+              categoryPercentage: 0.9,
+              barPercentage: 0.9,
+              maxBarThickness:25,
+              ticks:{
+                beginAtZero:true,
+                autoSkip: false
+              },
+              gridLines:{
+                display:true,
+                offsetGridLines: true
+              }
+            }]
+        },
+        animation: {
+          animateScale: true
+        },
+        legend: {
+          display: true,
+          position: 'right',
+          labels:{
+            usePointStyle: true
+          }
+        }
+    }
+    })};
+  </script>
+</body>
+
+</html>

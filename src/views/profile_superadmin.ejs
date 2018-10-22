@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title lang="en">Home</title>
+  <title lang="es">Inicio</title>
+  <% include partials/head %>
+</head>
+
+<body>
+  <% include partials/left_column %>
+  <div class="main-panel">
+    <% include partials/navbar %>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 my-auto">
+                      <h2 class="card-subtitle text-center"><%=data.users.admin%></h2>
+                      <h5 class="card-subtitle text-center">Administrador</h5>
+                    </div>
+                    <div class="col-md-6 my-auto">
+                        <h2 class="card-subtitle text-center"><%=data.users.consult%></h2>
+                        <h5 class="card-subtitle text-center">Consultor</h5>
+                      </div>
+                  </div>
+                  <h3 class="card-title text-center">Usuarios</h3>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                <h2 class="card-subtitle text-center"><%=data.tests%></h2>
+                <h3 class="card-title text-center">Pruebas disponibles</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                <h2 class="card-subtitle text-center"><%=data.assigned_tests%></h2>
+                <h3 class="card-title text-center">Pruebas asignadas</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                <h2 class="card-subtitle text-center"><%=data.results%></h2>
+                <h3 class="card-title text-center">Resultados</h3>
+              </div>
+            </div>
+          </div>
+          <%data.credits.forEach((credit,index)=>{%>
+          <div class="col-md-12">
+            <div class="card container-fluid">
+              <div class="card-header">
+                <h4 class="card-title">Créditos por prueba asignados a <%=credit.user%></h4>
+              </div>
+              <div class="card-body">
+                <% var column=0;
+                for (var i=0; i<credit.tests.length;i++){
+                  if (column==0){%>
+                    <div class="row">
+                  <%}%>
+                      <div class="col-md-3 my-auto">
+                        <div class="card container-fluid text-center mx-auto">
+                          <div class="card-body">
+                              <div class="chart-container responsive" style="position: relative;">
+                                  <canvas id="credits<%=index%>-<%=i%>"></canvas>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                  <%if(column==3 || i+1==credit.tests.length){%>
+                      </div>
+                 <%column=-1;}
+                column++}%>
+                </div>
+              </div>
+            </div>
+          <%})%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var credits=<%- JSON.stringify(data.credits)%>;
+    for (var i=0; i<credits.length;i++){
+      for (var j=0; j<credits[i].tests.length;j++){
+        var ctx = document.getElementById("credits"+i+"-"+j);
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Asignados", "Creados", "Usados"],
+                datasets: [{
+                    data: credits[i].tests[j].credits,
+                    backgroundColor:'rgba(  6, 58, 81, 1)',
+                    hoverBackgroundColor:'rgba(  6, 58, 81, 0.5)'
+                }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      },
+                      gridLines:{
+                        display:true
+                      }
+                    }],
+                  xAxes: [{
+                  categoryPercentage: 0.9,
+                  barPercentage: 0.9,
+                  maxBarThickness:50,
+                  ticks:{
+                    autoSkip: false
+                  },
+                  gridLines:{
+                    display:true,
+                    offsetGridLines: true
+                  }
+                  }]
+                },
+                animation: {
+                  animateScale: true
+                },
+                legend: {
+                  display: false
+                },
+                title: {
+                    display: true,
+                    text: credits[i].tests[j].name,
+                    padding: 5
+                }
+            }
+        });
+      }
+    }
+console.log(credits)
+  </script>
+</body>
+
+</html>
