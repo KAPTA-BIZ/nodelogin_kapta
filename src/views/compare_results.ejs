@@ -49,21 +49,22 @@
             </div>
           </div>
           <div class="col-md-12"><br></div>
-          <div class="col-md-12">
-            <div class="card container-fluid">
-              <div class="card-header">
-                <h4 class="card-title" lang="es">Categorías comunes</h4>
-                <h4 class="card-title" lang="en"></h4>
-              </div>
-              <div class="card-body">
-                <div class="chart-container responsive" style="position: relative; height: 35vh;">
-                    <canvas id="comon_categories"></canvas>
+          <%if (data.common_categories.labels.length>0){%>
+            <div class="col-md-12">
+              <div class="card container-fluid">
+                <div class="card-header">
+                  <h4 class="card-title" lang="es">Categorías comunes</h4>
+                  <h4 class="card-title" lang="en"></h4>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container responsive" style="position: relative; height: 35vh;">
+                      <canvas id="comon_categories"></canvas>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <%var column=0;
+          <%}
+          var column=0;
           data.categories.forEach((category,index)=>{
           if (column==0){%>
             <div class="col-md-12">

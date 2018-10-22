@@ -23,7 +23,7 @@
                             <div class="card-body">
                                 <p class="card-text">Seleccione los resultados que desea comparar y luego presione en
                                     el botón "Comparar"</p>
-                                <form action="/compare" method="POST" id="form">
+                                <form action="/compare" onsubmit="return validateForm()" method="POST" id="form">
                                     <button type="submit" class="btn btn-primary float-right">Comparar</button>
                                 </form>
                             </div>
@@ -77,6 +77,23 @@
             </div>
         </div>
     </div>
+    <script>
+    function validateForm(){
+        var codes=0;
+        for (var i=1; i<document.forms[0].length;i++){
+            if(document.forms[0][i].checked)
+                codes++;
+        }
+        if(codes<2){
+            alert("Debe seleccionar al menos dos resultados para comparar.")
+            return false
+        }else if (codes>5){
+            alert("El número máximo de resultados a comparar debe ser 5.")
+            return false
+        }
+        return true
+    }
+    </script>
 </body>
 
 </html>
