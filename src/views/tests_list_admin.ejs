@@ -2,8 +2,6 @@
 <html>
 
 <head>
-    <title lang="es">Evaluaciones</title>
-    <title lang="en">Evaluations</title>
     <% include partials/head %>
 </head>
 
@@ -44,9 +42,9 @@
                                                                     <th scope="col" width="40%" lang="es">usuario</th>
                                                                     <th scope="col" width="40%" lang="en">user</th>
                                                                     <th scope="col" width="20%" lang="es" class="text-center">Códigos Usados</th>
-                                                                    <th scope="col" width="20%" lang="en" class="text-center">Codes Used</th>
+                                                                    <th scope="col" width="20%" lang="en" class="text-center">Used codes</th>
                                                                     <th scope="col" width="20%" lang="es" class="text-center">Códigos Asignados</th>
-                                                                    <th scope="col" width="20%" lang="en" class="text-center">Codes assigned</th>
+                                                                    <th scope="col" width="20%" lang="en" class="text-center">Assigned codes</th>
                                                                     <th scope="col" width="20%"></th>
                                                                 </tr>
                                                             </thead>
@@ -81,6 +79,12 @@
                     </div>
                 </div>
         </div>
+        <script>
+        document.title=(Cookies.get("lang")=='es')?"Pruebas":"Tests";
+        document.getElementById("switch-lang").onclick=function(){
+            document.title=(Cookies.get("lang")=='en')?"Pruebas":"Tests";
+        }
+        </script>
 </body>
 
 </html>

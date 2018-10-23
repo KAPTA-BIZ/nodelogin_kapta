@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Set test</title>
     <script type="text/javascript">
         var Tests = <%- JSON.stringify(data.tests) %>;
         function populate() {
@@ -37,8 +36,6 @@
 
 <body class="signup">
     <section id="bg-cont">
-
-
         <div class="container">
             <div class="col-sm-6 mx-auto">
                 <div class="card mt-5">
@@ -121,11 +118,19 @@
                                     </div>
                     </div>
                 </div>
+                <%if(data.user.sa==0){%>
+                    <button lang="es" onclick="history.back()" class="btn btn-sm">Volver atrás</button>
+                    <button lang="en" onclick="history.back()" class="btn btn-sm">Go back</button>
+                <%}else{%>
+                    <button lang="es" onclick="window.location.href='/users_list'" class="btn btn-sm">Volver atrás</button>
+                    <button lang="en" onclick="window.location.href='/users_list'" class="btn btn-sm">Go back</button>
+                <%}%>
             </div>
         </div>
-
-
     </section>
+    <script>
+    document.title=(Cookies.get("lang")=='es')?"Asignar prueba":"Assign test";
+    </script>
 </body>
 
 </html>

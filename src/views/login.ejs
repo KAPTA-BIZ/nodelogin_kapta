@@ -2,7 +2,6 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Inicio de sesión</title>
     <% include partials/head %>
   </head>
   <body class="login">
@@ -17,8 +16,8 @@
               ¡Bienvenido!
             </h1>
             <h3 style="color: white;">
-              <span lang="es">En esta plataforma K@PTA usted puede administrar sus evaluaciones.</span>
-              <span lang="en">In this K@PTA platform you can manage your tests.</span>
+              <span lang="es">Plataforma K@PTA donde puede administrar sus pruebas.</span>
+              <span lang="en">K@PTA platform where you can manage your tests.</span>
             </h3>
             <br />
             <div class="col-sm-2">
@@ -83,5 +82,11 @@
         </div>
       </div>
     </section>
+    <script>
+      document.title=(Cookies.get("lang")=='es')?"Inicio de sesión":"login";
+    document.getElementById("switch-lang").onclick=function(){
+      document.title=(Cookies.get("lang")=='en')?"Inicio de sesión":"login";
+    }
+    </script>
   </body>
 </html>

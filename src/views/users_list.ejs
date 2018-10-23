@@ -2,8 +2,6 @@
 <html>
 
 <head>
-    <title lang="es">Usuarios</title>
-    <title lang="en">Users</title>
     <% include partials/head %>
 </head>
 
@@ -15,8 +13,8 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <a lang="es" href="/signup" class="btn btn-light btn-sm float-right">Registrar usuario</a>
-                        <a lang="en" href="/signup" class="btn btn-light btn-sm float-right">Register user</a>
+                        <a lang="es" href="/signup" class="btn btn-light btn-sm float-right">Nuevo usuario</a>
+                        <a lang="en" href="/signup" class="btn btn-light btn-sm float-right">New user</a>
                     </div>                    
                     <% if(user.sa==1){%>
                     <div class="col-md-12">
@@ -123,6 +121,12 @@
             </div>
         </div>
     </div>
+    <script>
+    document.title=(Cookies.get("lang")=='es')?"Usuarios":"Users";
+    document.getElementById("switch-lang").onclick=function(){
+        document.title=(Cookies.get("lang")=='en')?"Usuarios":"Users";
+    }
+    </script>
 </body>
 
 </html>

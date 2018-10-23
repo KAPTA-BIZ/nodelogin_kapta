@@ -3,8 +3,6 @@
 
 <head>
   <meta charset="utf-8">
-  <title lang="en">Home</title>
-  <title lang="es">Inicio</title>
   <% include partials/head %>
 </head>
 
@@ -19,7 +17,8 @@
             <div class="col-md-12">
                 <div class="card container-fluid">
                     <div class="card-header">
-                      <h4 class="card-title">Distribución de créditos por prueba.</h4>
+                      <h4 class="card-title" lang="es">Distribución de créditos por prueba.</h4>
+                      <h4 class="card-title" lang="en">Credits distribution by test.</h4>
                     </div>
                     <div class="card-body">
                       <div class="chart-container table-responsive" style="position: relative; height: 25vh;">
@@ -43,18 +42,21 @@
                   <div class="col-md-3 my-auto">
                     <div class="card container-fluid mx-auto">
                       <div class="card-header">
-                        <h4 class="card-title">Promedio</h4>
+                        <h4 class="card-title" lang="es">Promedio</h4>
+                        <h4 class="card-title" lang="en">Average</h4>
                       </div>
                       <div class="card-body text-center">
                         <h2 class="card-title"><%=test.average%> %</h2>
                         <h5 class="card-subtitle mb-2 text-muted" lang="es"><a href="/test_view/<%=test.id%>/<%=user._id%>"><%=test.number_of_results%> Resultados</a></h5>
+                        <h5 class="card-subtitle mb-2 text-muted" lang="en"><a href="/test_view/<%=test.id%>/<%=user._id%>"><%=test.number_of_results%> Results</a></h5>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-3 my-auto">
                     <div class="card container-fluid mx-auto">
                       <div class="card-header">
-                        <h4 class="card-title">Códigos</h4>
+                        <h4 class="card-title" lang="es">Códigos</h4>
+                        <h4 class="card-title" lang="en">Codes</h4>
                       </div>
                       <div class="card-body text-center">
                         <div class="chart-container responsive" style="position: relative; height: 22vh;">
@@ -66,16 +68,20 @@
                   <div class="col-md-3 my-auto">
                     <div class="card container-fluid mx-auto">
                       <div class="card-header">
-                        <h4 class="card-title">Últimos resultados</h4>
+                        <h4 class="card-title" lang="es">Últimos resultados</h4>
+                        <h4 class="card-title" lang="en">Latest results</h4>
                       </div>
                       <div class="card-body">
                         <div class="table-responsive">
                           <table class="table table-striped table-hover">
                             <thead>
                               <tr>
-                                <th scope="col" style="width:30%" class="text-center">Código</th>
-                                <th scope="col" style="width:30%" class="text-center">Fecha</th>
-                                <th scope="col" style="width:10%" class="text-center">Resultado</th>
+                                <th scope="col" style="width:30%" class="text-center" lang="es">Código</th>
+                                <th scope="col" style="width:30%" class="text-center" lang="en">Code</th>
+                                <th scope="col" style="width:30%" class="text-center" lang="es">Fecha</th>
+                                <th scope="col" style="width:30%" class="text-center" lang="en">Date</th>
+                                <th scope="col" style="width:10%" class="text-center" lang="es">Resultado</th>
+                                <th scope="col" style="width:10%" class="text-center" lang="en">Result</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -99,7 +105,8 @@
                   <div class="col-md-3 my-auto">
                     <a class="card container-fluid mx-auto">
                       <div class="card-header">
-                        <h4 class="card-title">Códigos disponibles</h4>
+                        <h4 class="card-title" lang="es">Códigos disponibles</h4>
+                        <h4 class="card-title" lang="en">Available Codes</h4>
                       </div>
                       <div class="card-body">
                         <div class="table-responsive">
@@ -114,7 +121,8 @@
                                   if(count==test.codes.created_array.length){
                                     break}
                                     if(i==3 && j==3){%>
-                                      <td><a href="/test_view/<%=test.id%>/<%=user._id%>">más</a></td>
+                                      <td><a href="/test_view/<%=test.id%>/<%=user._id%>" lang="es">más</a>
+                                      <a href="/test_view/<%=test.id%>/<%=user._id%>" lang="en">more</a></td>
                                       <%}else{%>
                                   <td> <%=test.codes.created_array[count]%> </td>
                                 <%}count++;}%>
@@ -141,12 +149,14 @@
     var data_availables=<%= JSON.stringify(data.tests.map(obj=>obj.codes.availables))%>;
     var tests=<%- JSON.stringify(data.tests.map(obj=>obj.name))%>;
     var codes_datasets=<%- JSON.stringify(data.codes_datasets)%>;
+    var charts=[];
+    var label=(Cookies.get("lang")=='es')?["Usados", "Disponibles", "Restantes"]:["Used", "Available", "Left"];
     for (var i=0; i<data_used.length;i++){
       var ctx = document.getElementById("myChart"+i);
       var myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ["Usados", "Disponibles", "Restantes"],
+          labels: label,
           datasets: [{
             data: [data_used[i], data_created[i], data_availables[i]],
             backgroundColor: [
@@ -176,6 +186,7 @@
           }
         }
       });
+      charts.push(myChart);
     }
     
   if (codes_datasets.length>0){
@@ -223,6 +234,16 @@
         }
     }
     })};
+
+    document.title=(Cookies.get("lang")=='es')?"Inicio":"Home";
+    document.getElementById("switch-lang").onclick=function(){
+      document.title=(Cookies.get("lang")=='en')?"Inicio":"Home";
+      for (var i=0; i<charts.length;i++){
+        myChart=charts[i];
+        myChart.data.labels=(Cookies.get("lang")=='en')?["Usados", "Disponibles", "Restantes"]:["Used", "Available", "Left"];
+        myChart.update();
+      }
+    }
   </script>
 </body>
 

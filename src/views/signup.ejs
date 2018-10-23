@@ -2,8 +2,6 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title lang="es">Nuevo usuario</title>
-    <title lang="en">Login</title>
     <% include partials/head %>
   </head>
   <body class="signup">
@@ -71,7 +69,7 @@
                   <div class="form-group">
                     <label for="validatePwd">
                       <span lang="en">Confirm new password</span>
-                      <span lang="es">Confirmar ontraseña</span>
+                      <span lang="es">Confirmar contraseña</span>
                     </label>
                     <input type="password" onpaste="return false" name="validatePwd" class="form-control" required>
                   </div>
@@ -99,6 +97,11 @@
         </div>
       </div>
     </section>
-
+    <script>
+    document.title=(Cookies.get("lang")=='es')?"Nuevo usuario":"Signup";
+    document.getElementById("switch-lang").onclick=function(){
+        document.title=(Cookies.get("lang")=='en')?"Nuevo usuario":"Signup";
+    }
+    </script>
     </body>
 </html>

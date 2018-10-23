@@ -2,8 +2,6 @@
 <html>
 
 <head>
-    <title lang="es">Resultados</title>
-    <title lang="en">Results</title>
     <% include partials/head %>
 </head>
 
@@ -87,7 +85,7 @@
                     <div class="col-md-12">
                         <div class="card container-fluid">
                             <div class="card-header">
-                                <h4 class="card-title" lang="es">Categorias</h4>
+                                <h4 class="card-title" lang="es">Categorías</h4>
                                 <h4 class="card-title" lang="en">Categories</h4>
                             </div>
                             <div class="card-body">
@@ -537,6 +535,7 @@
     <% console.log(data.category_results.data)%>
     <script>
         var ctx = document.getElementById("myChart");
+        var label=(Cookies.get('lang')=='es')?'Promedio':'Average';
         var myChart = new Chart(ctx, {
           type: 'horizontalBar',
           data: {
@@ -547,7 +546,7 @@
               backgroundColor: 'rgba(  6, 58, 81,1)',
               hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
             }, {
-              label: 'Promedio',
+              label: label,
               data: [<%- data.category_results.average %>],
               backgroundColor: 'rgba( 42, 98,123,1)',
               hoverBackgroundColor: 'rgba( 42, 98,123,0.5)'
@@ -585,6 +584,16 @@
             }
           }
         });
+        document.title=(Cookies.get("lang")=='es')?"Resultado <%= data.access_code_used%>":"Result <%= data.access_code_used%>";
+        document.getElementById("switch-lang").onclick=function(){
+            document.title=(Cookies.get("lang")=='en')?"Resultado <%= data.access_code_used%>":"Result <%= data.access_code_used%>";
+            if(Cookies.get('lang')=='en'){
+                myChart.data.datasets[1].label='Promedio'
+            }else{
+                myChart.data.datasets[1].label='Average'
+            }
+            myChart.update();
+                }
       </script>
 </body>
 
