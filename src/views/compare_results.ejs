@@ -2,393 +2,397 @@
 <html>
 
 <head>
-  <% include partials/head %>
+    <% include partials/head %>
 </head>
 
 <body>
-  <% include partials/left_column %>
-  <div class="main-panel">
-    <% include partials/navbar %>
-    <div class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card-deck">
-              <div class="card container-fluid">
-                <div class="card-header">
-                  <h5 class="card-title" lang="es">Promedio General</h5>
-                  <h5 class="card-title" lang="en">Overall Average</h5>
-                </div>
-                <div class="card-body">
-                  <div class="chart-container responsive" style="position: relative;">
-                    <canvas id="averageChart"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="card container-fluid">
-                <div class="card-header">
-                  <h5 class="card-title" lang="es">Duración</h5>
-                  <h5 class="card-title" lang="en">Duration</h5>
-                </div>
-                <div class="card-body">
-                  <div class="chart-container responsive" style="position: relative;">
-                    <canvas id="duration"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="card container-fluid">
-                  <div class="card-header">
-                    <h5 class="card-title" lang="es">Puntos</h5>
-                    <h5 class="card-title" lang="en">Score</h5>
-                  </div>
-                  <div class="card-body">
-                    <div class="chart-container responsive" style="position: relative;">
-                      <canvas id="score"></canvas>
-                    </div>
-                  </div>
-                </div>
-            </div>
-          </div>
-          <div class="col-md-12"><br></div>
-          <%if (data.common_categories.labels.length>0){%>
-            <div class="col-md-12">
-              <div class="card container-fluid">
-                <div class="card-header">
-                  <h4 class="card-title" lang="es">Categorías comunes</h4>
-                  <h4 class="card-title" lang="en">Common categories</h4>
-                </div>
-                <div class="card-body">
-                  <div class="chart-container responsive" style="position: relative; height: 35vh;">
-                      <canvas id="comon_categories"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <%}
+    <% include partials/left_column %>
+        <div class="main-panel">
+            <% include partials/navbar %>
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-deck">
+                                    <div class="card container-fluid">
+                                        <div class="card-header">
+                                            <h5 class="card-title" lang="es">Promedio General</h5>
+                                            <h5 class="card-title" lang="en">Overall Average</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container responsive" style="position: relative;">
+                                                <canvas id="averageChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card container-fluid">
+                                        <div class="card-header">
+                                            <h5 class="card-title" lang="es">Duración</h5>
+                                            <h5 class="card-title" lang="en">Duration</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container responsive" style="position: relative;">
+                                                <canvas id="duration"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card container-fluid">
+                                        <div class="card-header">
+                                            <h5 class="card-title" lang="es">Puntos</h5>
+                                            <h5 class="card-title" lang="en">Score</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container responsive" style="position: relative;">
+                                                <canvas id="score"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12"><br></div>
+                            <%if (data.common_categories.labels.length>0){%>
+                                <div class="col-md-12">
+                                    <div class="card container-fluid">
+                                        <div class="card-header">
+                                            <h4 class="card-title" lang="es">Categorías comunes</h4>
+                                            <h4 class="card-title" lang="en">Common categories</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container responsive" style="position: relative; height: 35vh;">
+                                                <canvas id="comon_categories"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%}
           var column=0;
           data.categories.forEach((category,index)=>{
           if (column==0){%>
-            <div class="col-md-12">
-              <div class="card-deck">
-                  <div class="card container-fluid">
-                      <div class="card-header">
-                        <h5 class="card-title" lang="es">Categorías del resultado <%= data.labels[index]%></h5>
-                        <h5 class="card-title" lang="en"><%= data.labels[index]%> result categories</h5>
-                      </div>
-                      <div class="card-body">
-                        <div class="chart-container responsive" style="position: relative; height: 25vh;">
-                          <canvas id="category<%=index%>"></canvas>
-                        </div>
-                      </div>
-                    </div>
-          <%column++;
+                                    <div class="col-md-12">
+                                        <div class="card-deck">
+                                            <div class="card container-fluid">
+                                                <div class="card-header">
+                                                    <h5 class="card-title" lang="es">Categorías del resultado
+                                                        <%= data.labels[index]%>
+                                                    </h5>
+                                                    <h5 class="card-title" lang="en">
+                                                        <%= data.labels[index]%> result categories</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="chart-container responsive" style="position: relative; height: 25vh;">
+                                                        <canvas id="category<%=index%>"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%column++;
           }else{%>
-                  <div class="card container-fluid">
-                    <div class="card-header">
-                      <h5 class="card-title" lang="es">Categorías del resultado <%= data.labels[index]%></h5>
-                      <h5 class="card-title" lang="en"><%= data.labels[index]%> result categories</h5>
-                    </div>
-                    <div class="card-body">
-                      <div class="chart-container responsive" style="position: relative; height: 25vh;">
-                        <canvas id="category<%=index%>"></canvas>
-                      </div>
-                    </div>
-                  </div>
-              </div>
-            </div>
-            <div class="col-md-12"><br></div>
-          <%column=0;
+                                                <div class="card container-fluid">
+                                                    <div class="card-header">
+                                                        <h5 class="card-title" lang="es">Categorías del resultado
+                                                            <%= data.labels[index]%>
+                                                        </h5>
+                                                        <h5 class="card-title" lang="en">
+                                                            <%= data.labels[index]%> result categories</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="chart-container responsive" style="position: relative; height: 25vh;">
+                                                            <canvas id="category<%=index%>"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12"><br></div>
+                                    <%column=0;
           }});
           if(column==1){%>
-                <div class="card container-fluid" style="visibility: hidden;">
+                                        <div class="card container-fluid" style="visibility: hidden;">
+                                        </div>
+                        </div>
+                    </div>
+                    <%}%>
                 </div>
-              </div>
-            </div>
-          <%}%>
         </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    var ctx = document.getElementById("averageChart");
-    var ctx2 = document.getElementById("duration");
-    var ctx3 = document.getElementById("score");
-    var ctx4 = document.getElementById("comon_categories");
+        </div>
+        </div>
+        <script>
+            var ctx = document.getElementById("averageChart");
+            var ctx2 = document.getElementById("duration");
+            var ctx3 = document.getElementById("score");
+            var ctx4 = document.getElementById("comon_categories");
 
-    var averageChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: <%- JSON.stringify(data.labels) %>,
-        datasets: [{
-          data: [<%- data.percentages %>],
-          backgroundColor: 'rgba(  6, 58, 81,1)',
-          hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              max: 100,
-              callback: function (value, index, values) {
-                return value + ' %';
-              }
-            }
-          }],
-          xAxes: [{
-            categoryPercentage: 0.9,
-            barPercentage: 0.9,
-            maxBarThickness:70,
-            ticks: {
-                  autoSkip: false,
-            },
-            gridLines:{
-              display:true,
-              offsetGridLines: true
-            }
-          }]
-        },
-        animation: {
-          animateScale: true
-        },
-        legend: {
-          display: false
-        }
-      }
-    });
-
-    var duration = new Chart(ctx2, {
-      type: 'bar',
-      data: {
-        labels: <%- JSON.stringify(data.labels) %>,
-        datasets: [{
-          data: [<%- data.duration %>],
-          backgroundColor: 'rgba(  6, 58, 81,1)',
-          hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              callback: function (value, index, values) {
-                return value + '\'';
-              }
-            }
-          }],
-          xAxes: [{
-            categoryPercentage: 0.9,
-            barPercentage: 0.9,
-            maxBarThickness:70,
-            ticks: {
-                  autoSkip: false,
-            },
-            gridLines:{
-              display:true,
-              offsetGridLines: true
-            }
-          }]
-        },
-        animation: {
-          animateScale: true
-        },
-        legend: {
-          display: false
-        }
-      }
-    });
-    var label=(Cookies.get("lang")=='es')?['Correctos','Totales']:['Correct','Total'];
-    var score = new Chart(ctx3, {
-      type: 'bar',
-      data: {
-        labels: <%- JSON.stringify(data.labels) %>,
-        datasets: [{
-          label: label[0],
-          data: [<%- data.points_scored %>],
-          backgroundColor: 'rgba(  6, 58, 81,1)',
-          hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
-        }, {
-          label: label[1],
-          data: [<%- data.points_available %>],
-          backgroundColor: 'rgba( 42, 98,123,1)',
-          hoverBackgroundColor: 'rgba( 42, 98,123,0.5)'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }],
-          xAxes: [{
-            categoryPercentage: 0.9,
-            barPercentage: 0.9,
-            maxBarThickness:70,
-            ticks: {
-                  autoSkip: false,
-            },
-            gridLines:{
-              display:true,
-              offsetGridLines: true
-            }
-          }]
-        },
-        animation: {
-          animateScale: true
-        },
-        legend: {
-          display: true,
-          position: 'left',
-          labels:{
-            usePointStyle: true
-          }
-        }
-      }
-    });
-
-    var color=['rgba(  6, 58, 81,1)',
-              'rgba( 42, 98,123,1)',
-              'rgba( 22, 78,103,1)',
-              'rgba(  2, 40, 57,1)',
-              'rgba(  0, 23, 32,1)'
-      ];
-
-    var colorHover=['rgba(  6, 58, 81,0.5)',
-              'rgba( 42, 98,123,0.5)',
-              'rgba( 22, 78,103,0.5)',
-              'rgba(  2, 40, 57,0.5)',
-              'rgba(  0, 23, 32,0.5)'
-      ];
-
-    console.log(<%- JSON.stringify(data)%>);
-    var labels=<%- JSON.stringify(data.common_categories.labels) %>;
-    var results=<%- JSON.stringify(data.labels) %>;
-    var percentages=<%- JSON.stringify(data.common_categories.percentage) %>;
-    var datasets=[];
-
-    results.forEach((result,index)=>{
-      var data=[];
-      percentages.forEach(percentage=>{
-        data.push(percentage[index]);
-      });
-      datasets.push({
-        label:result,
-        data: data,
-        backgroundColor:color[index],
-        hoverBackgroundColor: colorHover[index]
-      });
-    });
-
-    var comon_categories = new Chart(ctx4, {
-      type: 'horizontalBar',
-      data: {
-        labels: labels,
-        datasets: datasets
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          xAxes: [{
-            ticks: {
-              beginAtZero: true,
-              max:100,
-              callback: function(value, index, values) {
-                      return value+' %';
-                  }
-            }
-          }],
-          yAxes: [{
-            categoryPercentage: 0.9,
-            barPercentage: 0.9,
-            maxBarThickness:50,
-            ticks:{
-              autoSkip: false
-            },
-            gridLines:{
-              display:true,
-              offsetGridLines: true
-            }
-          }]
-        },
-        animation: {
-          animateScale: true
-        },
-        legend: {
-          display: true,
-          position: 'bottom'
-        }
-      }
-    });
-
-   var categories = <%- JSON.stringify(data.categories)%>;
-
-    categories.forEach((element,index) => {
-      console.log(element)
-      var ctx_temp=document.getElementById("category"+index);
-      var myChar_temp = new Chart(ctx_temp, {
-          type: 'horizontalBar',
-          data: {
-            labels: element.labels,
-            datasets: [{
-              data: element.percentage,
-              backgroundColor: 'rgba(  6, 58, 81,1)',
-              hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              xAxes: [{
-                ticks: {
-                  beginAtZero: true,
-                  max:100,
-                  callback: function(value, index, values) {
-                          return value+' %';
-                      }
-                }
-              }],
-              yAxes: [{
-                categoryPercentage: 0.9,
-                barPercentage: 0.9,
-                maxBarThickness:25,
-                ticks:{
-                  autoSkip: false
+            var averageChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: <%- JSON.stringify(data.labels) %>,
+                    datasets: [{
+                        data: [<%- data.percentages %>],
+                        backgroundColor: 'rgba(  6, 58, 81,1)',
+                        hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
+                    }]
                 },
-                gridLines:{
-                  display:true,
-                  offsetGridLines: true
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                max: 100,
+                                callback: function(value, index, values) {
+                                    return value + ' %';
+                                }
+                            }
+                        }],
+                        xAxes: [{
+                            categoryPercentage: 0.9,
+                            barPercentage: 0.9,
+                            maxBarThickness: 70,
+                            ticks: {
+                                autoSkip: false,
+                            },
+                            gridLines: {
+                                display: true,
+                                offsetGridLines: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        animateScale: true
+                    },
+                    legend: {
+                        display: false
+                    }
                 }
-              }]
-            },
-            animation: {
-              animateScale: true
-            },
-            legend: {
-              display: false
-            }
-          }
-        });
-    });
+            });
 
-    document.title=(Cookies.get("lang")=='es')?"Resultado":"Result";
-    document.getElementById("switch-lang").onclick=function(){
-        document.title=(Cookies.get("lang")=='en')?"Resultado":"Result";
-        score.data.datasets[0].label=(Cookies.get("lang")=='en')?'Correctos':'Correct';
-        score.data.datasets[1].label=(Cookies.get("lang")=='en')?'Totales':'Total';
-        score.update();
-    }
-  </script>
+            var duration = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: <%- JSON.stringify(data.labels) %>,
+                    datasets: [{
+                        data: [<%- data.duration %>],
+                        backgroundColor: 'rgba(  6, 58, 81,1)',
+                        hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                callback: function(value, index, values) {
+                                    return value + '\'';
+                                }
+                            }
+                        }],
+                        xAxes: [{
+                            categoryPercentage: 0.9,
+                            barPercentage: 0.9,
+                            maxBarThickness: 70,
+                            ticks: {
+                                autoSkip: false,
+                            },
+                            gridLines: {
+                                display: true,
+                                offsetGridLines: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        animateScale: true
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+            var label = (Cookies.get("lang") == 'es') ? ['Correctos', 'Totales'] : ['Correct', 'Total'];
+            var score = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: <%- JSON.stringify(data.labels) %>,
+                    datasets: [{
+                        label: label[0],
+                        data: [<%- data.points_scored %>],
+                        backgroundColor: 'rgba(  6, 58, 81,1)',
+                        hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
+                    }, {
+                        label: label[1],
+                        data: [<%- data.points_available %>],
+                        backgroundColor: 'rgba( 42, 98,123,1)',
+                        hoverBackgroundColor: 'rgba( 42, 98,123,0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            categoryPercentage: 0.9,
+                            barPercentage: 0.9,
+                            maxBarThickness: 70,
+                            ticks: {
+                                autoSkip: false,
+                            },
+                            gridLines: {
+                                display: true,
+                                offsetGridLines: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        animateScale: true
+                    },
+                    legend: {
+                        display: true,
+                        position: 'left',
+                        labels: {
+                            usePointStyle: true
+                        }
+                    }
+                }
+            });
+
+            var color = ['rgba(  6, 58, 81,1)',
+                'rgba( 42, 98,123,1)',
+                'rgba( 22, 78,103,1)',
+                'rgba(  2, 40, 57,1)',
+                'rgba(  0, 23, 32,1)'
+            ];
+
+            var colorHover = ['rgba(  6, 58, 81,0.5)',
+                'rgba( 42, 98,123,0.5)',
+                'rgba( 22, 78,103,0.5)',
+                'rgba(  2, 40, 57,0.5)',
+                'rgba(  0, 23, 32,0.5)'
+            ];
+
+            var labels = <%- JSON.stringify(data.common_categories.labels) %>;
+            var results = <%- JSON.stringify(data.labels) %>;
+            var percentages = <%- JSON.stringify(data.common_categories.percentage) %>;
+            var datasets = [];
+
+            results.forEach((result, index) => {
+                var data = [];
+                percentages.forEach(percentage => {
+                    data.push(percentage[index]);
+                });
+                datasets.push({
+                    label: result,
+                    data: data,
+                    backgroundColor: color[index],
+                    hoverBackgroundColor: colorHover[index]
+                });
+            });
+
+            var comon_categories = new Chart(ctx4, {
+                type: 'horizontalBar',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                max: 100,
+                                callback: function(value, index, values) {
+                                    return value + ' %';
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            categoryPercentage: 0.9,
+                            barPercentage: 0.9,
+                            maxBarThickness: 50,
+                            ticks: {
+                                autoSkip: false
+                            },
+                            gridLines: {
+                                display: true,
+                                offsetGridLines: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        animateScale: true
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                }
+            });
+
+            var categories = <%- JSON.stringify(data.categories)%>;
+
+            categories.forEach((element, index) => {
+                var ctx_temp = document.getElementById("category" + index);
+                var myChar_temp = new Chart(ctx_temp, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: element.labels,
+                        datasets: [{
+                            data: element.percentage,
+                            backgroundColor: 'rgba(  6, 58, 81,1)',
+                            hoverBackgroundColor: 'rgba(  6, 58, 81,0.5)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    callback: function(value, index, values) {
+                                        return value + ' %';
+                                    }
+                                }
+                            }],
+                            yAxes: [{
+                                categoryPercentage: 0.9,
+                                barPercentage: 0.9,
+                                maxBarThickness: 25,
+                                ticks: {
+                                    autoSkip: false
+                                },
+                                gridLines: {
+                                    display: true,
+                                    offsetGridLines: true
+                                }
+                            }]
+                        },
+                        animation: {
+                            animateScale: true
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
+            });
+
+            document.title = (Cookies.get("lang") == 'es') ? "Resultado" : "Result";
+            document.getElementById("switch-lang").onclick = function() {
+                document.title = (Cookies.get("lang") == 'en') ? "Resultado" : "Result";
+                score.data.datasets[0].label = (Cookies.get("lang") == 'en') ? 'Correctos' : 'Correct';
+                score.data.datasets[1].label = (Cookies.get("lang") == 'en') ? 'Totales' : 'Total';
+                score.update();
+            }
+        </script>
 </body>
 
 </html>
