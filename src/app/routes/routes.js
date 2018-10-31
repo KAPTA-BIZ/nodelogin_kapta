@@ -604,12 +604,27 @@ module.exports = (app, passport) => {
 
     //-----------------Lista de usuarios (superadmin)-------------//
     app.get('/users_list', isLoggedIn, (req, res) => {
+        var consultants = [];
         if (req.user.sa == 1) {
             UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
                 if (err) {
                     res.sendStatus(502);
                 } else {
-                    res.render('users_list', { items: resultArray, user: req.user });
+                    resultArray.forEach(result => {
+                        if (result.sa == 0) {
+                            var [user_id, user_domain] = result.local.email.split("@");
+                            consultants.push({
+                                id: result._id,
+                                email: user_id.substring(0, 3) + '*****@' + user_domain,
+                                admin_email: result.admin_email
+                            });
+                        }
+                    });
+                    res.render('users_list', {
+                        consultants: consultants,
+                        items: resultArray,
+                        user: req.user
+                    });
                 }
             });
         } else if (req.user.sa == 2) {
@@ -617,7 +632,20 @@ module.exports = (app, passport) => {
                 if (err) {
                     res.sendStatus(502);
                 } else {
-                    res.render('users_list', { items: resultArray, user: req.user });
+                    resultArray.forEach(result => {
+                        if (result.sa == 0) {
+                            consultants.push({
+                                id: result._id,
+                                email: result.local.email,
+                                admin_email: result.admin_email
+                            });
+                        }
+                    });
+                    res.render('users_list', {
+                        consultants: consultants,
+                        items: resultArray,
+                        user: req.user
+                    });
                 }
             });
         }
@@ -686,8 +714,12 @@ module.exports = (app, passport) => {
                                     id: administrator._id
                                 });
                                 assignment.users.forEach(assignment_user => {
+                                    if (req.user.sa == 1) {
+                                        var [email_id, email_domain] = assignment_user.email.split("@");
+                                        email_id = email_id.substring(0, 3);
+                                    }
                                     users.push({
-                                        email: assignment_user.email,
+                                        email: (req.user.sa == 1) ? email_id + '*****@' + email_domain : assignment_user.email,
                                         codes_used: assignment_user.codes_used,
                                         codes_max: assignment_user.codes_max,
                                         id: assignment_user.id

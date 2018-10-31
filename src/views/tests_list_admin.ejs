@@ -15,14 +15,15 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header ">
-                                        <h4 lang="es">Lista de pruebas disponibles para <%= data.administrator.email%>.</h4>
-                                        <h4 lang="en">Available tests for <%= data.administrator.email%>.</h4>
+                                        <h4 lang="es">Lista de pruebas disponibles para
+                                            <%= data.administrator.email%>.</h4>
+                                        <h4 lang="en">Available tests for
+                                            <%= data.administrator.email%>.</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="list-group list-group-flush" id="accordion">
                                             <% data.assignments.forEach(function(item,index) { %>
-                                                <a class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapse<%= index%>" aria-expanded="true"
-                                                    aria-controls="collapse<%= index%>">
+                                                <a class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapse<%= index%>" aria-expanded="true" aria-controls="collapse<%= index%>">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <%= item.test_name %>
@@ -33,8 +34,7 @@
                                                         </div>
                                                     </div>
                                                 </a>
-                                                <div id="collapse<%= index%>" class="collapse container-fluid <%if (index==0){%>show<% }; %>" aria-labelledby="headingOne"
-                                                    data-parent="#accordion">
+                                                <div id="collapse<%= index%>" class="collapse container-fluid <%if (index==0){%>show<% }; %>" aria-labelledby="headingOne" data-parent="#accordion">
                                                     <div class="table-responsive">
                                                         <table class="table table-hover table-striped">
                                                             <thead>
@@ -45,11 +45,13 @@
                                                                     <th scope="col" width="20%" lang="en" class="text-center">Used codes</th>
                                                                     <th scope="col" width="20%" lang="es" class="text-center">Códigos Asignados</th>
                                                                     <th scope="col" width="20%" lang="en" class="text-center">Assigned codes</th>
-                                                                    <th scope="col" width="20%"></th>
+                                                                    <%if (user.sa!=1){%>
+                                                                        <th scope="col" width="20%"></th>
+                                                                        <%}%>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <% item.users.forEach(function(item_user) { %>
+                                                                <% item.users.forEach(function(item_user,index) { %>
                                                                     <tr>
                                                                         <td>
                                                                             <%=item_user.email%>
@@ -60,10 +62,16 @@
                                                                         <td class="text-center">
                                                                             <%=item_user.codes_max%>
                                                                         </td>
-                                                                        <td class="text-center">
-                                                                            <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="es">ver prueba</a>
-                                                                            <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="en">see test</a>
-                                                                        </td>
+                                                                        <%if (user.sa==2){%>
+                                                                            <td class="text-center">
+                                                                                <%if (index==0){%>
+                                                                                    <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="es">ver prueba</a>
+                                                                                    <a href="/test_view/<%=item.id%>/<%=item_user.id%>" lang="en">see test</a>
+                                                                                    <%}else{%>
+                                                                                        <a href="#"> </a>
+                                                                                        <%}%>
+                                                                            </td>
+                                                                            <%}%>
                                                                     </tr>
                                                                     <% }); %>
                                                             </tbody>
@@ -71,7 +79,7 @@
                                                     </div>
                                                 </div>
                                                 <% }); %>
-                                        </div> 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -80,10 +88,10 @@
                 </div>
         </div>
         <script>
-        document.title=(Cookies.get("lang")=='es')?"Pruebas":"Tests";
-        document.getElementById("switch-lang").onclick=function(){
-            document.title=(Cookies.get("lang")=='en')?"Pruebas":"Tests";
-        }
+            document.title = (Cookies.get("lang") == 'es') ? "Pruebas" : "Tests";
+            document.getElementById("switch-lang").onclick = function() {
+                document.title = (Cookies.get("lang") == 'en') ? "Pruebas" : "Tests";
+            }
         </script>
 </body>
 
