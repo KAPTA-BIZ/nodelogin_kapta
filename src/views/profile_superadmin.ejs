@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <% include partials/head %>
+</head>
+
+<body>
+  <% include partials/left_column %>
+  <div class="main-panel">
+    <% include partials/navbar %>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid mx-auto">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td lang="es">Administrador</td>
+                        <td lang="en">Administrator</td>
+                        <td class="text-center"><h2 class="card-subtitle text-center"><%=data.users.admin%></h2></td>
+                      </tr>
+                      <tr>
+                        <td lang="es">Consultor</td>
+                        <td lang="en">Consultant</td>
+                        <td class="text-center"><h2 class="card-subtitle text-center"><%=data.users.consult%></h2></td>
+                      </tr>
+                      </tbody>
+                  </table>
+                </div>
+                  <h3 class="card-title text-center" lang="es">Usuarios</h3>
+                  <h3 class="card-title text-center" lang="en">Users</h3>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                <h2 class="card-subtitle text-center"><%=data.tests%></h2>
+                <h3 class="card-title text-center" lang="es">Pruebas disponibles</h3>
+                <h3 class="card-title text-center" lang="en">Available tests</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                <h2 class="card-subtitle text-center"><%=data.assigned_tests%></h2>
+                <h3 class="card-title text-center" lang="es">Pruebas asignadas</h3>
+                <h3 class="card-title text-center" lang="en">Assigned tests</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 my-auto">
+            <div class="card container-fluid text-center mx-auto">
+              <div class="card-body">
+                <h2 class="card-subtitle text-center"><%=data.results%></h2>
+                <h3 class="card-title text-center" lang="es">Resultados</h3>
+                <h3 class="card-title text-center" lang="en">Results</h3>
+              </div>
+            </div>
+          </div>
+          <%data.credits.forEach((credit,index)=>{%>
+          <div class="col-md-12">
+            <div class="card container-fluid">
+              <div class="card-header">
+                <h4 class="card-title" lang="es">Créditos por prueba asignados al usuario <%=credit.user%></h4>
+                <h4 class="card-title" lang="en">Credits per test assigned to the user <%=credit.user%></h4>
+              </div>
+              <div class="card-body">
+                <% var column=0;
+                for (var i=0; i<credit.tests.length;i++){
+                  if (column==0){%>
+                    <div class="row">
+                  <%}%>
+                      <div class="col-md-3 my-auto">
+                        <div class="card container-fluid text-center mx-auto">
+                          <div class="card-body">
+                              <div class="chart-container responsive" style="position: relative;">
+                                  <canvas id="credits<%=index%>-<%=i%>"></canvas>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                  <%if(column==3 || i+1==credit.tests.length){%>
+                      </div>
+                 <%column=-1;}
+                column++}%>
+                </div>
+              </div>
+            </div>
+          <%})%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var credits=<%- JSON.stringify(data.credits)%>;
+    var charts=[];
+    var labels=(Cookies.get('lang')=='es')?["Asignados", "Creados", "Usados"]:["Assigned", "Created", "Used"];
+    for (var i=0; i<credits.length;i++){
+      for (var j=0; j<credits[i].tests.length;j++){
+        var ctx = document.getElementById("credits"+i+"-"+j);
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: credits[i].tests[j].credits,
+                    backgroundColor:'rgba(  6, 58, 81, 1)',
+                    hoverBackgroundColor:'rgba(  6, 58, 81, 0.5)'
+                }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      },
+                      gridLines:{
+                        display:true
+                      }
+                    }],
+                  xAxes: [{
+                  categoryPercentage: 0.9,
+                  barPercentage: 0.9,
+                  maxBarThickness:50,
+                  ticks:{
+                    autoSkip: false
+                  },
+                  gridLines:{
+                    display:true,
+                    offsetGridLines: true
+                  }
+                  }]
+                },
+                animation: {
+                  animateScale: true
+                },
+                legend: {
+                  display: false
+                },
+                title: {
+                    display: true,
+                    text: credits[i].tests[j].name,
+                    padding: 5
+                }
+            }
+        });
+        charts.push(myChart);
+      }
+    }
+    document.title=(Cookies.get("lang")=='es')?"Inicio":"Home";
+  document.getElementById("switch-lang").onclick=function(){
+    document.title=(Cookies.get("lang")=='en')?"Inicio":"Home";
+    for (var i=0; i<charts.length;i++){
+      myChart=charts[i];
+      if(Cookies.get('lang')=='en'){
+        myChart.data.labels=["Asignados", "Creados", "Usados"];
+      }else{
+        myChart.data.labels=["Assigned", "Created", "Used"];
+      }
+      myChart.update();
+    }
+  }
+  </script>
+</body>
+
+</html>

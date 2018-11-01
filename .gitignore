@@ -1,2 +1,5 @@
 /node_modules/
+/Doc/
 .vscode/
+ngrok.exe
+resultadosjson.txt

@@ -1,87 +1,95 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
-    <title>Inicio de sesión</title>
     <% include partials/head %>
-  </head>
-  <body class="login">
+</head>
+
+<body class="login">
     <section class="container-fluid">
-      <div class="row">
-        <div class="col">
-          <div style="position: absolute; max-width: 80%; z-index: 3; margin: 40vh auto auto 5%; ">
-            <h1 lang="en" style="color: white;">
-              Welcome!
-            </h1>
-            <h1 lang="es" style="color: white;">
-              ¡Bienvenido!
-            </h1>
-            <h3 style="color: white;">
-              <span lang="es">En esta plataforma usted puede ver los resultados de sus evaluaciones.</span>
-              <span lang="en">With K@PTA you can see, manage and improve your evaluation results.</span>
-            </h3>
-            <br />
-            <div class="col-sm-2">
-              <button id="switch-lang" class="btn">
+        <div class="row">
+            <div class="col">
+                <div style="position: absolute; max-width: 80%; z-index: 3; margin: 40vh auto auto 5%; ">
+                    <h1 lang="en" style="color: white;">
+                        Welcome!
+                    </h1>
+                    <h1 lang="es" style="color: white;">
+                        ¡Bienvenido!
+                    </h1>
+                    <h3 style="color: white;">
+                        <span lang="es">Plataforma K@PTA donde puede administrar sus pruebas.</span>
+                        <span lang="en">K@PTA platform where you can manage your tests.</span>
+                    </h3>
+                    <br />
+                    <div class="col-sm-2">
+                        <button id="switch-lang" class="btn">
                 <span lang="en">EN</span>
                 <span lang="es">ES</span>
                 <img lang="es" src="../../img/lang/spanish.png" width="30" />
                 <img lang="en" src="../../img/lang/english.png" width="30" />
               </button>
-            </div>
-
-          </div>
-          <div id="bg-cont"></div>
-        </div>
-        <div class="col" style="background:white; height: 100vh;">
-          <div class="container">
-            <div class="col-sm-12 col-lg-8 mx-auto" style="margin-top: 25vh;">
-
-                <div class="col-sm-12 ">
-                    <div class="row">
-                      <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
-                          <img src=/img/logo/kapta.png alt="logo de K@PTA"/>
-                      </div>
                     </div>
-                  </div>
-                  <hr />
-                  <div class="col-sm-12" style="margin-top: 20px;">
-                    <h1 lang="es" style="font-size:2em;">Iniciar Sesión</h1>
-                    <h1 lang="en" style="font-size:2em;">Sign in</h1>
-                  </div>
-    
-                <% if (message.length > 0) { %>
-                  <div class="alert alert-danger">
-                    <%= message %>
-                  </div>
-                <% } %>
-    
-                <!-- form -->
-                <form action="/login" method="post">
-                  <div class="form-group">
-                    <label for="email">
-                      <span lang="en">Email</span>
-                      <span lang="es">Correo electrónico</span>
-                    </label>
-                    <input type="email" name="email" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="password">
-                      <span lang="en">Password</span>
-                      <span lang="es">Contraseña</span>
-                    </label>
-                    <input type="password" name="password" class="form-control" required>
-                  </div>
-                  <input lang="es" type="submit" class="btn btn-dark btn-lg" value="Ingresar">
-                  <input lang="en" type="submit" class="btn btn-dark btn-lg" value="Start">
-                </form>
-                <div class="text-center">
-                </div>
 
+                </div>
+                <div id="bg-cont"></div>
             </div>
-          </div>
+            <div class="col" style="background:white; height: 100vh;">
+                <div class="container">
+                    <div class="col-sm-12 col-lg-8 mx-auto" style="margin-top: 25vh;">
+
+                        <div class="col-sm-12 ">
+                            <div class="row">
+                                <div class="col login-img" style="border-right: 1px solid rgba(0,0,0,.1);">
+                                    <img src=/img/logo/kapta.png alt="logo de K@PTA" />
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="col-sm-12" style="margin-top: 20px;">
+                            <h1 lang="es" style="font-size:2em;">Iniciar Sesión</h1>
+                            <h1 lang="en" style="font-size:2em;">Sign in</h1>
+                        </div>
+
+                        <% if (message.length > 0) { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                                <!-- form -->
+                                <form action="/login" method="post">
+                                    <div class="form-group">
+                                        <label for="email">
+                                          <span lang="en">Email</span>
+                                          <span lang="es">Correo electrónico</span>
+                                        </label>
+                                        <input type="email" name="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">
+                                          <span lang="en">Password</span>
+                                          <span lang="es">Contraseña</span>
+                                        </label>
+                                        <input type="password" name="password" class="form-control" autocomplete="on" required>
+                                    </div>
+                                    <input lang="es" type="submit" class="btn btn-dark btn-lg" value="Ingresar">
+                                    <input lang="en" type="submit" class="btn btn-dark btn-lg" value="Start">
+                                </form>
+                                <div class="text-center">
+                                </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
-  </body>
+    <script>
+        document.title = (Cookies.get("lang") == 'es') ? "Inicio de sesión" : "login";
+        document.getElementById("switch-lang").onclick = function() {
+            document.title = (Cookies.get("lang") == 'en') ? "Inicio de sesión" : "login";
+        }
+    </script>
+</body>
+
 </html>

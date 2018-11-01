@@ -15,7 +15,7 @@
   "dependencies": {
     "assert": "1.4.1",
     "bcrypt-nodejs": "0.0.3",
-    "body-parser": "1.18.2",
+    "body-parser": "1.18.3",
     "chart.js": "^2.7.2",
     "connect-flash": "0.1.1",
     "cookie-parser": "1.4.3",
@@ -35,7 +35,7 @@
     "mongodb": "2.2.33",
     "mongoose": "5.0.3",
     "morgan": "1.9.0",
-    "node-forge": "0.7.1",
+    "node-forge": "^0.7.5",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
     "react": "16.1.1",

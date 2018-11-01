@@ -1811,7 +1811,7 @@ fieldset[disabled] .form-control {
     padding-bottom: 5px;
     border-top: none !important;
     border-bottom: none;
-    text-align: left !important;
+    /*text-align: left !important;*/
 }
 
 .table .td-actions .btn {
@@ -2970,7 +2970,7 @@ Copyright (c) 2015 Daniel Eden
 .card .table tbody td:last-child,
 .card .table thead th:last-child {
     padding-right: 15px;
-    display: inline-flex;
+    /*display: inline-flex;*/
 }
 
 .card .alert {

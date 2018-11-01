@@ -1,110 +1,121 @@
 <meta charset="UTF-8">
 <link rel="shortcut icon" href="/img/kapta_icon.ico">
 <!--     Fonts and icons     -->
-<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'
+/>
 <link rel="stylesheet" href="/css/fonts.css" />
-<link rel="stylesheet" href="/css/font-awesome.min.css" />
+<!--<link rel="stylesheet" href="/css/font-awesome.min.css" />-->
 <!-- CSS Files -->
-<link href="/css/bootstrap.min.css" rel="stylesheet" />
-<link href="/css/animate.min.css" rel="stylesheet"/>
+<!--<link href="/css/bootstrap.min.css" rel="stylesheet" />-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link href="/css/animate.min.css" rel="stylesheet" />
 <link href="/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
 <link rel="stylesheet" href="/css/main.css">
-<link rel="stylesheet" href="/css/pe-icon-7-stroke.css"  />
+<link rel="stylesheet" href="/css/pe-icon-7-stroke.css" />
 
-<script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
-<script src="/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-<!-- <script src="/js/core/popper.min.js" type="text/javascript"></script> -->
-<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"></script>
+<!--<script src="/js/jquery.3.2.1.min.js" type="text/javascript"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"></script>
+<!--<script src="/js/core/popper.min.js" type="text/javascript"></script>-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+  crossorigin="anonymous"></script>
+<!--<script src="/js/bootstrap.min.js" type="text/javascript"></script>-->
 <script src="/js/chartist.min.js"></script>
 <!-- <script src="/js/plugins/bootstrap-switch.js"></script> -->
 <script src="/js/plugins/bootstrap-notify.js"></script>
 <script src="/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
+<script src="/js/Chart.js"></script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+<!--<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>-->
+
 <script>
-$(function () {
-  
-  function langButtonListen(){
-    $("#switch-lang").click(function(e){
-      e.preventDefault();
-      $('[lang="en"]').toggle();
-      $('[lang="es"]').toggle();
+  $(function () {
 
-      //Switch cookie
-      if (Cookies.get('lang') === 'en') {
-        Cookies.set('lang', 'es', { expires: 7 });
+    function langButtonListen() {
+      $("#switch-lang").click(function (e) {
+        e.preventDefault();
+        $('[lang="en"]').toggle();
+        $('[lang="es"]').toggle();
+
+        //Switch cookie
+        if (Cookies.get('lang') === 'en') {
+          Cookies.set('lang', 'es', { expires: 7 });
+        } else {
+          Cookies.set('lang', 'en', { expires: 7 });
+        }
+
+      })
+    }
+    console.log(Cookies.get('lang'))
+
+    if (Cookies.get('lang')) {
+      var lang = Cookies.get('lang');
+      if (lang === 'en') {
+        console.log("english")
+        $('[lang="es"]').hide();
+        langButtonListen();
       } else {
-        Cookies.set('lang', 'en', { expires: 7 });
+        $('[lang="en"]').hide();
+        langButtonListen();
       }
-
-    })
-  }
-  console.log(Cookies.get('lang'))
-
-  if (Cookies.get('lang')) {
-    var lang = Cookies.get('lang');
-    if (lang === 'en') {
-      console.log("english")
-      $('[lang="es"]').hide();
-      langButtonListen();
     } else {
       $('[lang="en"]').hide();
-      langButtonListen();
-    }
-  }else{
-    $('[lang="en"]').hide();
-    if("geolocation" in navigator){
-      console.log("available", navigator)
-      navigator.geolocation.getCurrentPosition(function(position){
-        var lat = position.coords.latitude, lon = position.coords.longitude
-        $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+lon+'&sensor=true', null, function (response) {
-          var country = response.results[response.results.length-1].formatted_address;
-          
-          if(country === 'Colombia' || country === 'Peru' || country === 'Argentina' || country === 'Panama' || country === 'España' || country === 'Chile' || country === 'Salvador' || country === 'Costa Rica'){
-            $('[lang="en"]').hide();
-            Cookies.set('lang','es', {expires: 7})
-            langButtonListen();
-          }else{
-            $('[lang="es"]').hide();
-            Cookies.set('lang','en', {expires: 7})
-            langButtonListen();
-          }
-        }).fail(
-          function (err){
-            console.log("Failed to connect", err);
-            $('[lang="en"]').hide();
-            Cookies.set('lang','es', {expires: 7})
-            langButtonListen();
+      if ("geolocation" in navigator) {
+        console.log("available", navigator)
+        navigator.geolocation.getCurrentPosition(function (position) {
+          var lat = position.coords.latitude, lon = position.coords.longitude
+          $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lon + '&sensor=true', null, function (response) {
+            var country = response.results[response.results.length - 1].formatted_address;
+
+            if (country === 'Colombia' || country === 'Peru' || country === 'Argentina' || country === 'Panama' || country === 'España' || country === 'Chile' || country === 'Salvador' || country === 'Costa Rica') {
+              $('[lang="en"]').hide();
+              Cookies.set('lang', 'es', { expires: 7 })
+              langButtonListen();
+            } else {
+              $('[lang="es"]').hide();
+              Cookies.set('lang', 'en', { expires: 7 })
+              langButtonListen();
+            }
+          }).fail(
+            function (err) {
+              console.log("Failed to connect", err);
+              $('[lang="en"]').hide();
+              Cookies.set('lang', 'es', { expires: 7 })
+              langButtonListen();
+            })
+        },
+          function (err) {
+            if (err.code == err.PERMISSION_DENIED) {
+              console.log("Permission denied", err);
+              $('[lang="en"]').hide();
+              Cookies.set('lang', 'es', { expires: 7 })
+              langButtonListen();
+            } else {
+              console.log("Unknown error ", err);
+              $('[lang="en"]').hide();
+              Cookies.set('lang', 'es', { expires: 7 })
+              langButtonListen();
+            }
           })
-      },
-      function(err){
-        if(err.code == err.PERMISSION_DENIED){
-          console.log("Permission denied", err);
-          $('[lang="en"]').hide();
-          Cookies.set('lang','es', {expires: 7})
-          langButtonListen();
-        }else{
-          console.log("Unknown error ", err);
-          $('[lang="en"]').hide();
-          Cookies.set('lang','es', {expires: 7})
-          langButtonListen();
-        }
-      })
-    }else{
-      console.log("Geo is not available ", err);
-      $('[lang="en"]').hide();
-      Cookies.set('lang','es', {expires: 7})
-      langButtonListen();
+      } else {
+        console.log("Geo is not available ", err);
+        $('[lang="en"]').hide();
+        Cookies.set('lang', 'es', { expires: 7 })
+        langButtonListen();
+      }
     }
-  }
 
 
-})
+  })
 
 
 </script>
-

@@ -1811,7 +1811,7 @@ fieldset[disabled] .form-control {
     padding-bottom: 5px;
     border-top: none !important;
     border-bottom: none;
-    text-align: left !important;
+    /*text-align: left !important;*/
 }
 
 .table .td-actions .btn {
@@ -1898,9 +1898,8 @@ fieldset[disabled] .form-control {
 
 .form-check input[type="checkbox"],
 .form-check-radio input[type="radio"] {
-    opacity: 0;
+    opacity: 1;
     position: absolute;
-    visibility: hidden;
 }
 
 .form-check input[type="checkbox"]:checked+.form-check-sign::after {
@@ -2970,7 +2969,7 @@ Copyright (c) 2015 Daniel Eden
 .card .table tbody td:last-child,
 .card .table thead th:last-child {
     padding-right: 15px;
-    display: inline-flex;
+    /*display: inline-flex;*/
 }
 
 .card .alert {
@@ -4589,9 +4588,6 @@ Copyright (c) 2015 Daniel Eden
     .table-full-width {
         margin-left: -15px;
         margin-right: -15px;
-    }
-    .table-responsive {
-        overflow: visible;
     }
 }
 

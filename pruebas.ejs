@@ -1,0 +1,40 @@
+<script>
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+              type: 'horizontalBar',
+              data: {
+                labels: [<%- data.category_results.labels%>],
+                datasets: [{
+                  label: 'MCOG',
+                  data: [<%- data.category_results.data%>],
+                  backgroundColor: "grey"
+                },{
+                  label: 'MCOG',
+                  data: [<%- data.category_results.average%>],
+                  backgroundColor: "green"
+                }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio:false,
+                scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    max:100,
+                    callback: function(value, index, values) {
+                        return  value+' %';
+                    }
+                }
+            }],
+            yAxes:[{
+                categoryPercentage: 0.9,
+                barPercentage: 0.9
+            }]
+        },
+                animation: {
+                  animateScale: true
+                }
+              }
+            });
+          </script>

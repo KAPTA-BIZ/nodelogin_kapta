@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include partials/head %>
+</head>
+
+<body>
+    <% include partials/left_column %>
+    <div class="main-panel">
+        <% include partials/navbar %>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card container-fluid">
+                            <div class="card-header ">
+                                <h4 class="card-title" lang="es">Comparar resultados.</h4>
+                                <h4 class="card-title" lang="en">Compare results.</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" lang="es">Seleccione los resultados que desea comparar y luego presione en el botón "Comparar"</p>
+                                <p class="card-text" lang="en">Select the results you want to compare and then click on the "Compare" button.</p>
+                                <form action="/compare" onsubmit="return validateForm()" method="POST" id="form">
+                                    <button type="submit" class="btn btn-primary float-right" lang="es">Comparar</button>
+                                    <button type="submit" class="btn btn-primary float-right" lang="en">Compare</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <% datasets.forEach(data=>{%>
+                    <div class="col-md-12">
+                        <div class="card container-fluid">
+                            <div class="card-header ">
+                                <h4 class="card-title" lang="es">Resultados de la prueba <em><%= data.test_name%></em> </h4>
+                                <h4 class="card-title" lang="en"><em><%= data.test_name%></em> results</h4>
+                            </div>
+                            <div class="card-body">
+                                <% var column=0;
+                                data.codes.forEach(code=>{
+                                    console.log(code)
+                                if (column==0){%>
+                                <div class="row">
+                                    <div class="col-md-3 my-auto">
+                                        <div class="form-check mx-auto">
+                                            <input class="form-check-input" type="checkbox" value="<%=code%>" name="<%=code%>" id="<%=code%>" form="form">
+                                            <label style="font-size:14px; color: black" for="<%=code%>"><%=code%></label>
+                                        </div>
+                                    </div>
+                               <%}else if(column<3){%>
+                                    <div class="col-md-3 my-auto">
+                                            <div class="form-check mx-auto">
+                                                <input class="form-check-input" type="checkbox" value="<%=code%>" name="<%=code%>" id="<%=code%>" form="form">
+                                                <label style="font-size:14px; color: black" for="<%=code%>"><%=code%></label>
+                                            </div>
+                                        </div>
+                               <%}else{%>
+                                    <div class="col-md-3 my-auto">
+                                            <div class="form-check mx-auto">
+                                                <input class="form-check-input" type="checkbox" value="<%=code%>" name="<%=code%>" id="<%=code%>" form="form">
+                                                <label style="font-size:14px; color: black" for="<%=code%>"><%=code%></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <%column=-1
+                                }
+                                column++;
+                                });
+                                if(column!=0){%>
+                                </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                    <%})%>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    function validateForm(){
+        var codes=0;
+        for (var i=1; i<document.forms[0].length;i++){
+            if(document.forms[0][i].checked)
+                codes++;
+        }
+        if(codes<2){
+            alert("Debe seleccionar al menos dos resultados para comparar.")
+            return false
+        }else if (codes>5){
+            alert("El número máximo de resultados a comparar debe ser 5.")
+            return false
+        }
+        return true
+    }
+    document.title=(Cookies.get("lang")=='es')?"Comparar resultados":"Compare results";
+    document.getElementById("switch-lang").onclick=function(){
+        document.title=(Cookies.get("lang")=='en')?"Comparar resultados":"Compare results";
+    }
+    </script>
+</body>
+
+</html>
