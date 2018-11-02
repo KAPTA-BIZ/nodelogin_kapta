@@ -58,7 +58,7 @@
                                             <h4 class="card-title" lang="en">Common categories</h4>
                                         </div>
                                         <div class="card-body">
-                                            <div class="chart-container responsive" style="position: relative; height: 35vh;">
+                                            <div class="chart-container responsive" style="position: relative; height: <%=(data.common_categories.labels.length-1)*4+15+(data.labels.length-2)*4%>vh;">
                                                 <canvas id="comon_categories"></canvas>
                                             </div>
                                         </div>
@@ -120,7 +120,6 @@
             var ctx2 = document.getElementById("duration");
             var ctx3 = document.getElementById("score");
             var ctx4 = document.getElementById("comon_categories");
-
             var averageChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -293,47 +292,49 @@
                 });
             });
 
-            var comon_categories = new Chart(ctx4, {
-                type: 'horizontalBar',
-                data: {
-                    labels: labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        xAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                max: 100,
-                                callback: function(value, index, values) {
-                                    return value + ' %';
+            if (ctx4) {
+                var comon_categories = new Chart(ctx4, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: labels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    callback: function(value, index, values) {
+                                        return value + ' %';
+                                    }
                                 }
-                            }
-                        }],
-                        yAxes: [{
-                            categoryPercentage: 0.9,
-                            barPercentage: 0.9,
-                            maxBarThickness: 50,
-                            ticks: {
-                                autoSkip: false
-                            },
-                            gridLines: {
-                                display: true,
-                                offsetGridLines: true
-                            }
-                        }]
-                    },
-                    animation: {
-                        animateScale: true
-                    },
-                    legend: {
-                        display: true,
-                        position: 'bottom'
+                            }],
+                            yAxes: [{
+                                categoryPercentage: 0.9,
+                                barPercentage: 0.9,
+                                maxBarThickness: 50,
+                                ticks: {
+                                    autoSkip: false
+                                },
+                                gridLines: {
+                                    display: true,
+                                    offsetGridLines: true
+                                }
+                            }]
+                        },
+                        animation: {
+                            animateScale: true
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
                     }
-                }
-            });
+                });
+            }
 
             var categories = <%- JSON.stringify(data.categories)%>;
 
