@@ -1025,40 +1025,43 @@ module.exports = (app, passport) => {
 
     //------------------------Compare tool--------------------------------//
     app.get('/compare', isLoggedIn, (req, res) => {
-        Codes.find({ 'user_email': req.user.local.email, 'used': 1 }, null, { sort: { 'assignment_id': 1 } }, (err, codes) => {
-            if (err) {
-                res.sendStatus(502);
-            } else {
-                var datasets = [];
-                var assignment_ids = []
-                var index;
-                codes.forEach(code => {
-                    index = datasets.findIndex(doc => doc.assignment_id == code.assignment_id);
-                    if (index == -1) {
-                        assignment_ids.push(code.assignment_id);
-                        datasets.push({
-                            assignment_id: code.assignment_id,
-                            codes: [code.code]
-                        });
-                    } else {
-                        datasets[index].codes.push(code.code);
-                    }
-                });
-                Assignments.find({ _id: { $in: assignment_ids } }, null, (err, assignments) => {
-                    if (err) {
-                        res.sendStatus(502);
-                    } else {
-                        assignments.forEach(assignment => {
-                            datasets[datasets.findIndex(doc => doc.assignment_id == assignment._id)].test_name = assignment.test_name;
-                        });
-                        res.render('compare', {
-                            user: req.user,
-                            datasets: datasets
-                        });
-                    }
-                });
-            }
-        });
+        if (req.user.sa == 0 || req.user.sa == 2) {
+            Assignments.find((req.user.sa == 0) ? { 'users.email': req.user.local.email } : { 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                if (err) {
+                    res.sendStatus(502);
+                } else {
+                    Codes.find({ 'user_email': req.user.local.email, 'used': 1 }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                        if (err) {
+                            res.sendStatus(502);
+                        } else {
+                            var datasets = [];
+                            var index = -1;
+                            assignments.forEach(assignment => {
+                                first_flag = true;
+                                codes.filter(doc => doc.assignment_id == assignment._id).forEach(code => {
+                                    if (first_flag) {
+                                        datasets.push({
+                                            assignment_id: code.assignment_id,
+                                            codes: [code.code],
+                                            test_name: assignment.test_name
+                                        });
+                                        first_flag = false;
+                                        index++;
+                                    } else {
+                                        datasets[index].codes.push(code.code);
+                                    }
+                                });
+                            });
+                            res.render('compare', {
+                                user: req.user,
+                                datasets: datasets
+                            });
+                        }
+                    });
+                }
+            });
+
+        }
     });
 
     app.post('/compare', isLoggedIn, (req, res) => {
