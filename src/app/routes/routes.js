@@ -155,7 +155,7 @@ module.exports = (app, passport) => {
                     }
                 });
                 break;
-            case '0': //consultor
+            case '0': //dealer
                 var data = {
                     tests: [],
                     codes_datasets: []
@@ -168,7 +168,7 @@ module.exports = (app, passport) => {
                     }
                 });
                 break;
-            case '2': //admin
+            case '2': //NSC
                 var data = {
                     tests: [],
                     codes_datasets: []
@@ -299,7 +299,7 @@ module.exports = (app, passport) => {
                                                 data: data
                                             });
                                         } else {
-                                            (admin_users) ? get_data(i + 1, assignments, admin_users): get_data(i + 1, assignments);
+                                            (admin_users) ? get_data(i + 1, assignments, admin_users) : get_data(i + 1, assignments);
                                         }
                                     }
                                 });
@@ -330,14 +330,14 @@ module.exports = (app, passport) => {
                     var data = {};
                     data.user = user;
                     data.message = message;
-                    if (user.sa == 2) { //->usuario admin
+                    if (user.sa == 2) { //->usuario NSC
                         Assignments.find({ 'admin_email': user.local.email }, 'test_id', (err, results) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
                                 var exceptions = [];
                                 if (results.length > 0) {
-                                    results.forEach(function(item) {
+                                    results.forEach(function (item) {
                                         exceptions.push(item.test_id);
                                     });
                                 }
@@ -354,7 +354,7 @@ module.exports = (app, passport) => {
                                 });
                             }
                         });
-                    } else if (user.sa == 0) { //->usuario consultor..
+                    } else if (user.sa == 0) { //->usuario dealer..
                         Assignments.find({ $and: [{ 'admin_email': user.admin_email }, { 'users.email': { $ne: user.local.email } }] }, null, { sort: { 'test_name': 1 } }, (err, tests) => {
                             if (err) {
                                 res.sendStatus(502);
@@ -378,6 +378,7 @@ module.exports = (app, passport) => {
         request(uri, (error, response, body) => {
             if (!error && response.statusCode === 200) {
                 var cleanBody = JSON.parse(body);
+                console.log(cleanBody);
                 var LinksNumber = cleanBody['links'].length;
                 if (LinksNumber > 0) {
                     var newTest = new Object;
@@ -452,6 +453,7 @@ module.exports = (app, passport) => {
     });
 
     app.post('/setnewtest/:id', isLoggedIn, (req, res) => {
+        console.log(req.body);
         if (req.body.linklist == -1) {
             setNewTest(req.params.id, req.user, res, 1);
         } else if (req.body.testlist == -1) {
@@ -461,7 +463,7 @@ module.exports = (app, passport) => {
                 if (err) {
                     res.sendStatus(502);
                 } else {
-                    if (user.sa == 2) { //-> usuario admin
+                    if (user.sa == 2) { //-> usuario NSC
                         API_Test.findOne({ 'test_name': req.body.test_name }, null, (err, test) => {
                             if (err) {
                                 res.sendStatus(502);
@@ -478,16 +480,33 @@ module.exports = (app, passport) => {
                                 newAssignment.codes_created = 0;
                                 newAssignment.codes_used = 0;
                                 newAssignment.codes_availables = req.body.MaxCodes;
-                                newAssignment.save(function(err) {
+                                UserSchema.find({ 'admin_email': user.local.email }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
-                                        res.redirect('/users_list');
+                                        newAssignment.users = [];
+                                        let usertemp = {};
+                                        resultArray.forEach(result => {
+                                            usertemp = {}
+                                            usertemp.id = result._id;
+                                            usertemp.email = result.local.email;
+                                            usertemp.codes_max = 0;
+                                            usertemp.codes_created = 0;
+                                            usertemp.codes_used = 0;
+                                            newAssignment.users.push(usertemp);
+                                        });
+                                        newAssignment.save(function (err) {
+                                            if (err) {
+                                                res.sendStatus(502);
+                                            } else {
+                                                res.redirect('/users_list');
+                                            }
+                                        });
                                     }
                                 });
                             }
                         });
-                    } else if (user.sa == 0) { //->usuario consultor...
+                    } else if (user.sa == 0) { //->usuario Dealer...
                         Assignments.findOneAndUpdate({ 'test_name': req.body.test_name, 'admin_email': user.admin_email }, {
                             $push: {
                                 'users': {
@@ -579,7 +598,7 @@ module.exports = (app, passport) => {
                                                         new_code_schema.used = 0;
                                                         new_code_schema.assignment_id = assignment._id;
                                                         new_code_schema.user_email = test_user.local.email;
-                                                        new_code_schema.save(function(err) {
+                                                        new_code_schema.save(function (err) {
                                                             if (err) {
                                                                 res.sendStatus(502);
                                                             } else {

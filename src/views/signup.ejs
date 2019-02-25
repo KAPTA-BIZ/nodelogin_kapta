@@ -14,8 +14,8 @@
             <button lang="en" onclick="history.back()" class="btn">Go back</button>
             </div>
             <h3 style="color: white;">
-              <span lang="es">Registre sus usuarios en esta pantalla. Debe añadir el correo para que ellos accedan y la contraseña.</span>
-              <span lang="en">Register yours users at this screen. You must add the email and the password.</span>
+              <span lang="es">Registre nuevos usuarios aquí. Debe utilizar el número de concesionario del Grupo BMW y una contraseña.</span>
+              <span lang="en">Register new users here. You must use the BMW Group dealer number and a password.</span>
             </h3>
             <br />
             <div class="col-sm-2">
@@ -54,10 +54,10 @@
                 <form action="/signup" method="post">
                   <div class="form-group">
                     <label for="email">
-                      <span lang="en">Email</span>
-                      <span lang="es">Correo electrónico</span>
+                      <span lang="en">BMW Group dealer number</span>
+                      <span lang="es">Número de concesionario del Grupo BMW</span>
                     </label>
-                    <input type="email" name="email" class="form-control" required>
+                    <input type="text" name="email" class="form-control" required>
                   </div>
                   <div class="form-group">
                     <label for="password">

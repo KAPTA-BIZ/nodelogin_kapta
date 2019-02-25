@@ -15,16 +15,16 @@
                     <div class="col-md-12">
                         <div class="card container-fluid">
                             <div class="card-header ">
-                                <h4 lang="es">Lista de pruebas disponibles para <%=data.consultant.email%>.</h4>
-                                <h4 lang="en">Available tests for <%=data.consultant.email%>.</h4>
+                                <h4 lang="es">Evaluaciones disponibles para <%=data.consultant.email%>.</h4>
+                                <h4 lang="en">Available assessments for <%=data.consultant.email%>.</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
                                         <thead>
                                             <tr>
-                                                <th scope="col" width="40%" lang="es">Prueba</th>
-                                                <th scope="col" width="40%" lang="en">Test</th>
+                                                <th scope="col" width="40%" lang="es">Evaluación</th>
+                                                <th scope="col" width="40%" lang="en">Assessment</th>
                                                 <th scope="col" width="20%" lang="es" class="text-center">Códigos Usados</th>
                                                 <th scope="col" width="20%" lang="en" class="text-center">Used codes</th>
                                                 <th scope="col" width="20%" lang="es" class="text-center">Códigos Asignados</th>
@@ -45,8 +45,8 @@
                                                     <%=assignment.codes_max%>
                                                 </td>
                                                 <td class="text-center">
-                                                    <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="es">Ver prueba</a>
-                                                    <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="en">see test</a>
+                                                    <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="es">Ver evaluación</a>
+                                                    <a href="/test_view/<%=assignment.id%>/<%=data.consultant.id%>" lang="en">Explore assessment</a>
                                                 </td>
                                             </tr>
                                             <%})%>

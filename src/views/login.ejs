@@ -18,8 +18,8 @@
                         ¡Bienvenido!
                     </h1>
                     <h3 style="color: white;">
-                        <span lang="es">Plataforma K@PTA donde puede administrar sus pruebas.</span>
-                        <span lang="en">K@PTA platform where you can manage your tests.</span>
+                        <span lang="es">Plataforma de evaluación de K@PTA.</span>
+                        <span lang="en">K@PTA Assessment Dashboard.</span>
                     </h3>
                     <br />
                     <div class="col-sm-2">
@@ -48,7 +48,7 @@
                         <hr />
                         <div class="col-sm-12" style="margin-top: 20px;">
                             <h1 lang="es" style="font-size:2em;">Iniciar Sesión</h1>
-                            <h1 lang="en" style="font-size:2em;">Sign in</h1>
+                            <h1 lang="en" style="font-size:2em;">Login</h1>
                         </div>
 
                         <% if (message.length > 0) { %>
@@ -61,10 +61,10 @@
                                 <form action="/login" method="post">
                                     <div class="form-group">
                                         <label for="email">
-                                          <span lang="en">Email</span>
-                                          <span lang="es">Correo electrónico</span>
+                                          <span lang="en">BMW Group dealer number</span>
+                                          <span lang="es">Número de concesionario del Grupo BMW</span>
                                         </label>
-                                        <input type="email" name="email" class="form-control" required>
+                                        <input type="text" name="email" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="password">
