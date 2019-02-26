@@ -34,8 +34,36 @@
                                             <h4 class="card-title" lang="es">Códigos disponibles</h4>
                                             <h4 class="card-title" lang="en">Available Codes</h4>
                                         </div>
+
+                                        <!--*******************************************-->
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <tbody>
+                                                        <%var count=0
+                                                        for(var i=0; i<5;i++){
+                                                            if(count==data.codes.length){
+                                                            break}%>
+                                                            <tr>
+                                                                <%for(var j=0; j<10;j++){
+                                                                if(count==data.codes.length){
+                                                                break}%>                                                      
+                                                                <td>
+                                                                    <%=data.codes[count].code%>
+                                                                </td>
+                                                                <%count++;}%>   
+                                                            </tr>
+                                                        <%}%>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!--*******************************************-->
+
+
                                     </div>
                                 </div>
+
 
                                     <%if(user.sa==0||user.sa==2){
            data.tests.forEach((test,index)=>{%>

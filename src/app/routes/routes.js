@@ -158,20 +158,30 @@ module.exports = (app, passport) => {
             case '0': //dealer
                 var data = {
                     tests: [],
-                    codes_datasets: []
+                    codes_datasets: [],
+                    codes: []
                 };
                 Assignments.find({ 'users.id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
-                        get_data(0, assignments);
+                        Codes.find({ 'user_email': req.user.local.email }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                            if (err) {
+                                res.sendStatus(502);
+                            } else {
+                                console.log(codes);
+                                data.codes = codes;
+                                get_data(0, assignments);
+                            }
+                        });
                     }
                 });
                 break;
             case '2': //NSC
                 var data = {
                     tests: [],
-                    codes_datasets: []
+                    codes_datasets: [],
+                    codes: []
                 };
                 var color = ['rgba(  6, 58, 81,1)',
                     'rgba( 42, 98,123,1)',
