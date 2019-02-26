@@ -17,8 +17,8 @@
                                 <div class="col-md-12">
                                     <div class="card container-fluid">
                                         <div class="card-header">
-                                            <h4 class="card-title" lang="es">Distribución de créditos por prueba.</h4>
-                                            <h4 class="card-title" lang="en">Credits distribution by test.</h4>
+                                            <h4 class="card-title" lang="es">Resumen de consumo de evaluación.</h4>
+                                            <h4 class="card-title" lang="en">Assessment usage summary.</h4>
                                         </div>
                                         <div class="card-body">
                                             <div class="chart-container table-responsive" style="position: relative; height: 25vh;">
@@ -28,6 +28,15 @@
                                     </div>
                                 </div>
                                 <%}%>
+                                <div class="col-md-12">
+                                    <div class="card container-fluid">
+                                        <div class="card-header">
+                                            <h4 class="card-title" lang="es">Códigos disponibles</h4>
+                                            <h4 class="card-title" lang="en">Available Codes</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
                                     <%if(user.sa==0||user.sa==2){
            data.tests.forEach((test,index)=>{%>
                                         <div class="col-md-12">
@@ -43,8 +52,8 @@
                                                         <div class="col-md-3 my-auto">
                                                             <div class="card container-fluid mx-auto">
                                                                 <div class="card-header">
-                                                                    <h4 class="card-title" lang="es">Promedio</h4>
-                                                                    <h4 class="card-title" lang="en">Average</h4>
+                                                                    <h4 class="card-title" lang="es">Promedio de la prueba de conocimiento</h4>
+                                                                    <h4 class="card-title" lang="en">Knowledge Test Average</h4>
                                                                 </div>
                                                                 <div class="card-body text-center">
                                                                     <h2 class="card-title">

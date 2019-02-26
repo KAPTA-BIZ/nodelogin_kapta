@@ -246,7 +246,7 @@ module.exports = (app, passport) => {
                                                 availables: assignment.codes_availables,
                                                 created_array: codes_array_unused
                                             }
-                                            if (i == 0) {
+                                            /* if (i == 0) {
                                                 data.codes_datasets.push({
                                                     label: req.user.local.email,
                                                     data: [assignment.codes_max],
@@ -255,7 +255,7 @@ module.exports = (app, passport) => {
                                                 });
                                             } else {
                                                 data.codes_datasets[0].data.push(assignment.codes_max);
-                                            }
+                                            } */
                                             for (var l = 0; l < admin_users.length; l++) {
                                                 user = admin_users[l];
                                                 k = assignment.users.findIndex(doc => doc.email == user.local.email)
@@ -308,6 +308,7 @@ module.exports = (app, passport) => {
                     }
                 });
             } else {
+                res.send(data);
                 res.render('profile_client', {
                     user: req.user,
                     data: data
@@ -453,7 +454,6 @@ module.exports = (app, passport) => {
     });
 
     app.post('/setnewtest/:id', isLoggedIn, (req, res) => {
-        console.log(req.body);
         if (req.body.linklist == -1) {
             setNewTest(req.params.id, req.user, res, 1);
         } else if (req.body.testlist == -1) {
@@ -532,6 +532,94 @@ module.exports = (app, passport) => {
                 }
             });
         }
+    });
+
+    //----------------Generar codigos-----------------//
+    app.get('/setCodes/:id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.id, null, (err, user) => {
+            if (err) {
+                res.sendStatus(502);
+            } else {
+                res.render('set_codes', {
+                    user: user,
+                    data: {}
+                });
+            }
+        });
+
+    });
+
+    app.post('/setCodes/:id', isLoggedIn, (req, res) => {
+        UserSchema.findById(req.params.id, null, (err, test_user) => {
+            if (err) {
+                res.sendStatus(502);
+            } else {
+                Assignments.findOne({ 'admin_email': req.user.local.email }, null, (err, assignment) => {
+                    if (err) {
+                        res.sendStatus(502);
+                    } else {
+                        generate_code(0, req.body.MaxCodes);
+
+                        function generate_code(i, number) {
+                            var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                            if (i < number) {
+                                var new_code = '';
+                                for (var j = 0; j < 4; j++) {
+                                    new_code += chars[Math.floor(Math.random() * chars.length)];
+                                }
+                                check_code(i, number, new_code);
+                            } else {
+                                res.redirect('/users_list');
+                            }
+                        }
+
+                        function check_code(i, number, new_code) {
+                            Codes.findOne({ 'code': new_code }, null, (err, result) => {
+                                if (err) {
+                                    res.sendStatus(502);
+                                } else {
+                                    if (result) {
+                                        generate_code(i, number);
+                                    } else {
+                                        request.post({
+                                            headers: { 'Content-type': 'application/json; charset=utf-8' },
+                                            url: require('../../classmarker/addCode')(assignment.access_list_id),
+                                            body: JSON.stringify([new_code])
+                                        }, (err, res, body) => {
+                                            if (err) {
+                                                res.sendStatus(502);
+                                            } else {
+                                                var cleanBody = JSON.parse(body);
+                                                if (cleanBody.status != 'ok' || cleanBody.access_lists.access_list.num_codes_added == 0) {
+                                                    generate_code(i, number);
+                                                } else {
+                                                    var new_code_schema = new Codes();
+                                                    new_code_schema.code = new_code;
+                                                    new_code_schema.used = 0;
+                                                    new_code_schema.assignment_id = 0;
+                                                    new_code_schema.user_email = test_user.local.email;
+                                                    new_code_schema.save(function (err) {
+                                                        if (err) {
+                                                            res.sendStatus(502);
+                                                        } else {
+                                                            generate_code(i + 1, number);
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+            }
+        });
+        console.log(req.body.MaxCodes);
+        console.log(req.params.id);
     });
 
     //---------------- Generar codigos -------------//

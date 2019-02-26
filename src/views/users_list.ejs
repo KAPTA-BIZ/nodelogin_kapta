@@ -75,8 +75,8 @@
                                                         <thead>
                                                             <th scope="col" lang="es">Número de Concesionario</th>
                                                             <th scope="col" lang="en">Dealer Number</th>
-                                                            <th scope="col" lang="es">Administrador</th>
-                                                            <th scope="col" lang="en">Administrator</th>
+                                                            <!-- <th scope="col" lang="es">Administrador</th>
+                                                            <th scope="col" lang="en">Administrator</th> -->
                                                             <th></th>
                                                             <% if(false){%>
                                                                 <th></th>
@@ -88,16 +88,16 @@
                                                                     <td>
                                                                         <%= item.email%>
                                                                     </td>
-                                                                    <% if(item.admin_email){%>
+                                                                    <!-- <% if(item.admin_email){%>
                                                                         <td>
                                                                             <%= item.admin_email%>
                                                                         </td>
                                                                         <%}else{%>
                                                                             <td>*</td>
-                                                                            <%}%>
+                                                                            <%}%> -->
                                                                                 <td>
-                                                                                    <a lang="es" href="/setnewtest/<%= item.id %>">Asignar prueba</a>
-                                                                                    <a lang="en" href="/setnewtest/<%= item.id %>">Assign test</a>
+                                                                                    <a lang="es" href="/setCodes/<%= item.id %>">Crear nuevos códigos</a>
+                                                                                    <a lang="en" href="/setCodes/<%= item.id %>">Create new codes</a>
                                                                                 </td>
                                                                                 <% if(false){%>
                                                                                     <td>
