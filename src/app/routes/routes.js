@@ -10,6 +10,7 @@ var Codes = require('../models/Codes');
 var LinkResults = require('../models/LinkResults');
 var SummaryResults = require('../models/SummaryResults');
 var storageLinkResult = require('./storage/StorageLinkResult');
+var fs = require('fs');
 
 mongoose.Promise = global.Promise;
 
@@ -21,13 +22,18 @@ module.exports = (app, passport) => {
     //------------------------------- WEBHOOK--------------------------------//
     app.use(bodyParser.json());
 
-    app.post('/aSdgsDdFSDa', (req, res) => {
+    app.post('/vGLfjH@d=u9Fht8K', (req, res) => {
         var jsonData = req.body;
         /*Al momento de recorrer el cuerpo de la peticion, no se garantiza
         mantener el orden del objeto, este cambio de orden no permite 
         comparar la firma pues el mensaje se considera diferente*/
         if (jsonData.payload_type) {
             res.sendStatus(200);
+            fs.writeFile("test.txt", JSON.stringify(jsonData), function (err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
             if (jsonData.payload_type == 'single_user_test_results_link') {
                 storageLinkResult(jsonData);
             }
@@ -85,13 +91,13 @@ module.exports = (app, passport) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
-                        var admin_users = [],
-                            consult_users = [];
+                        var NSC_users = [],
+                            dealer_users = [];
                         users.forEach(user => {
                             if (user.sa == 0) {
-                                consult_users.push(user.local.email);
+                                dealer_users.push(user.local.user);
                             } else if (user.sa == 2) {
-                                admin_users.push(user.local.email);
+                                NSC_users.push(user.local.user);
                             }
                         });
                         API_Test.find({}, null, (err, tests) => {
@@ -102,11 +108,12 @@ module.exports = (app, passport) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
-                                        Assignments.find({}, null, { sort: { 'admin_email': 1, 'test_name': 1 } }, (err, assignments) => {
+                                        Assignments.find({}, null, { sort: { 'NSC': 1, 'test_name': 1 } }, (err, assignments) => {
+                                            console.log(assignments);
                                             if (err) {
                                                 res.sendStatus(502);
                                             } else {
-                                                var admin_email = '';
+                                                var NSC = '';
                                                 var index = -1;
                                                 var credits = [];
                                                 assignments.forEach(assignment => {
@@ -115,11 +122,11 @@ module.exports = (app, passport) => {
                                                         assignment_credits[1] += user.codes_created;
                                                         assignment_credits[2] += user.codes_used;
                                                     })
-                                                    if (admin_email != assignment.admin_email) {
+                                                    if (NSC != assignment.NSC) {
                                                         index++;
-                                                        admin_email = assignment.admin_email;
+                                                        NSC = assignment.NSC;
                                                         credits.push({
-                                                            user: admin_email,
+                                                            user: NSC,
                                                             tests: [{
                                                                 name: assignment.test_name,
                                                                 credits: assignment_credits
@@ -134,8 +141,8 @@ module.exports = (app, passport) => {
                                                 });
                                                 var data = {
                                                     users: {
-                                                        admin: admin_users.length,
-                                                        consult: consult_users.length
+                                                        admin: NSC_users.length,
+                                                        consult: dealer_users.length
                                                     },
                                                     tests: tests.length,
                                                     assigned_tests: assignments.length,
@@ -161,15 +168,14 @@ module.exports = (app, passport) => {
                     codes_datasets: [],
                     codes: []
                 };
-                Assignments.find({ 'users.id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                Assignments.find({ 'dealers.id': req.user._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
-                        Codes.find({ 'user_email': req.user.local.email }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                        Codes.find({ 'dealer': req.user.local.user, 'assignment_id': 0 }, null, { sort: { 'code': 1 } }, (err, codes) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
-                                console.log(codes);
                                 data.codes = codes;
                                 get_data(0, assignments);
                             }
@@ -221,20 +227,20 @@ module.exports = (app, passport) => {
                     } else {
                         if (!sumary) {
                             sumary = {
-                                test_average: '-',
+                                knowledge_test_average: '-',
                                 number_of_results: 0
                             }
                         }
-                        Codes.find({ 'assignment_id': assignment._id, 'user_email': req.user.local.email }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                        Codes.find({ 'assignment_id': assignment._id, 'dealer': req.user.local.user }, null, { sort: { 'code': 1 } }, (err, codes) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
                                 var codes_array_used = [];
                                 var codes_array_unused = [];
                                 codes.forEach(code => {
-                                    code.used == 0 ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
+                                    code.assignment_id == 0 ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
                                 });
-                                LinkResults.find({ 'access_code_used': { $in: codes_array_used } }, ['percentage', 'time_finished', 'access_code_used'], { sort: { 'time_finished': -1 }, limit: 3 }, (err, results) => {
+                                LinkResults.find({ 'access_code_used': { $in: codes_array_used } }, ['knowledge_test_average', 'time_finished', 'access_code_used'], { sort: { 'time_finished': -1 }, limit: 3 }, (err, results) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
@@ -245,7 +251,7 @@ module.exports = (app, passport) => {
                                                 id: result._id,
                                                 code: result.access_code_used,
                                                 date: date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear(),
-                                                percentage: result.percentage
+                                                percentage: result.knowledge_test_average
                                             });
                                         });
                                         var codes_temp;
@@ -282,12 +288,12 @@ module.exports = (app, passport) => {
                                                 data.codes_datasets[0].data[i] -= (k == -1) ? 0 : assignment.users[k].codes_max;
                                             }
                                         } else {
-                                            for (var user of assignment.users) {
-                                                if (user.email == req.user.local.email) {
+                                            for (var dealer of assignment.dealers) {
+                                                if (dealer.email == req.user.local.email) {
                                                     codes_temp = {
-                                                        used: user.codes_used,
-                                                        created: user.codes_created,
-                                                        availables: user.codes_max - user.codes_used - user.codes_created,
+                                                        used: dealer.codes_used,
+                                                        created: dealer.codes_created,
+                                                        availables: dealer.codes_max - dealer.codes_used - dealer.codes_created,
                                                         created_array: codes_array_unused
                                                     }
                                                     break;
@@ -298,7 +304,7 @@ module.exports = (app, passport) => {
                                             name: assignment.test_name,
                                             link_url_id: assignment.link_url_id,
                                             id: assignment._id,
-                                            average: sumary.test_average,
+                                            average: sumary.knowledge_test_average,
                                             number_of_results: sumary.number_of_results,
                                             codes: codes_temp,
                                             results: results_temp
@@ -867,7 +873,7 @@ module.exports = (app, passport) => {
                 res.sendStatus(502);
             } else {
                 if (req.user.local.email == test_user.local.email || req.user.local.email == test_user.admin_email || req.user.sa == 1) {
-                    Codes.find({ 'assignment_id': req.params.assignment_id, 'user_email': test_user.local.email }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
+                    Codes.find({ 'user_email': test_user.local.email }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
@@ -878,7 +884,7 @@ module.exports = (app, passport) => {
                             codesArray.forEach(code => {
                                 if (code.used == 0) {
                                     data.codes_created_array.push(code.code);
-                                } else {
+                                } else if (code.assignment_id == req.params.assignment_id) {
                                     data.codes_used_array.push(code.code);
                                 }
                             });
@@ -923,7 +929,7 @@ module.exports = (app, passport) => {
                                         if (a.name > b.name) { return 1; }
                                         return 0;
                                     });
-                                    if (test_user.sa == 2) { //->usuario admin
+                                    if (test_user.sa == 2) { //->NSC
                                         Assignments.findOne({ '_id': req.params.assignment_id, 'admin_email': test_user.local.email }, null, (err, assignment) => {
                                             if (err) {
                                                 res.sendStatus(502);
@@ -940,7 +946,7 @@ module.exports = (app, passport) => {
                                                 });
                                             }
                                         });
-                                    } else if (test_user.sa == 0) { //->usuario consultor
+                                    } else if (test_user.sa == 0) { //->Dealer
                                         Assignments.findOne({ '_id': req.params.assignment_id, 'users.id': test_user._id }, null, (err, assignment) => {
                                             if (err) {
                                                 res.sendStatus(502);
@@ -948,14 +954,18 @@ module.exports = (app, passport) => {
                                                 data.test_name = assignment.test_name;
                                                 data.assignment_id = assignment._id;
                                                 data.link_url_id = assignment.link_url_id;
-                                                for (var assignment_user of assignment.users) {
+                                                data.codes_created = data.codes_created_array.length;
+                                                data.codes_max = 0;
+                                                data.codes_used = data.codes_used_array.length;
+
+                                                /* for (var assignment_user of assignment.users) {
                                                     if (assignment_user.id == test_user._id) {
                                                         data.codes_max = assignment_user.codes_max;
                                                         data.codes_created = assignment_user.codes_created;
                                                         data.codes_used = assignment_user.codes_used;
                                                         break;
                                                     }
-                                                }
+                                                } */
                                                 res.render('test_view', {
                                                     user: req.user,
                                                     data: data,

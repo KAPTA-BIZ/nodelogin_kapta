@@ -2,9 +2,9 @@ var Codes = require('../../models/Codes');
 var LinkResults = require('../../models/LinkResults');
 var SummaryResults = require('../../models/SummaryResults');
 
-function UpdateSummary(assignment_id, user_email) {
-    if (assignment_id && user_email) {
-        Codes.find({ 'assignment_id': assignment_id, 'user_email': user_email, 'used': 1 }, null, (err, codes_list) => {
+function UpdateSummary(assignment_id) {
+    if (assignment_id) {
+        Codes.find({ 'assignment_id': assignment_id }, null, (err, codes_list) => {
             if (err) {
                 res.sendStatus(502);
             } else {
@@ -18,6 +18,8 @@ function UpdateSummary(assignment_id, user_email) {
                         res.sendStatus(502);
                     } else {
                         average = 0;
+                        knowledge_points_scored = 0;
+                        knowledge_points_available = 0;
                         categories = [];
                         results_list.forEach(result => {
                             average += Number(result.percentage);
@@ -26,6 +28,7 @@ function UpdateSummary(assignment_id, user_email) {
                                 if (index == -1) {
                                     categories.push({
                                         name: categorie.name,
+                                        id: categorie.id,
                                         average: categorie.percentage,
                                         points_scored: categorie.points_scored,
                                         points_available: categorie.points_available
@@ -35,6 +38,10 @@ function UpdateSummary(assignment_id, user_email) {
                                     categories[index].points_scored += categorie.points_scored;
                                     categories[index].points_available += categorie.points_available;
                                 }
+                                if (categorie.id > 83 && categorie.id < 91) {
+                                    knowledge_points_scored += categorie.points_scored;
+                                    knowledge_points_available += categorie.points_available;
+                                }
                             });
                         });
                         categories.forEach(categorie => {
@@ -42,19 +49,23 @@ function UpdateSummary(assignment_id, user_email) {
                         })
                         data = {
                             assignment_id: assignment_id,
-                            user_email: user_email,
+                            /*  user_email: user_email, */
                             number_of_results: codes.length,
-                            test_average: average / codes.length,
+                            knowledge_test_average: (knowledge_points_scored*100/knowledge_points_available).toFixed(2),
+                            knowledge_points_scored: knowledge_points_scored,
+                            knowledge_points_available: knowledge_points_available,
                             categories: categories
                         };
 
-                        SummaryResults.findOne({ 'assignment_id': assignment_id, 'user_email': user_email }, null, (err, summary) => {
+                        SummaryResults.findOne({ 'assignment_id': assignment_id }, null, (err, summary) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
                                 if (summary) {
                                     summary.number_of_results = data.number_of_results;
-                                    summary.test_average = data.test_average.toFixed(2);
+                                    summary.knowledge_test_average = data.knowledge_test_average;
+                                    summary.knowledge_points_scored = data.knowledge_points_scored;
+                                    summary.knowledge_points_available = data.knowledge_points_available;
                                     summary.categories = data.categories;
                                 } else {
                                     var summary = new SummaryResults(data);

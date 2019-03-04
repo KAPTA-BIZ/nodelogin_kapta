@@ -7,18 +7,18 @@ var Assignments = mongoose.Schema({
     link_id: String,
     link_url_id: String,
     access_list_id: String,
-    admin_email: String,
-    codes_max: Number,
-    codes_created: Number,
-    codes_used: Number,
-    codes_availables: Number,
-    users: [{
+    NSC: String,//admin_email: String,
+    //codes_max: Number,
+    //codes_created: Number,
+    //codes_used: Number,
+    //codes_availables: Number,
+    dealers: [{//users: [{
         id: String,
-        email: String,
-        codes_max: Number,
-        codes_created: Number,
-        codes_used: Number,
-        created_by: String
+        dealer: String,//email: String,
+        //codes_max: Number,
+        //codes_created: Number,
+        //codes_used: Number,
+        //created_by: String
     }]
 });
 

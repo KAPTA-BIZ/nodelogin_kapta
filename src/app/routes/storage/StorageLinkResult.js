@@ -10,34 +10,24 @@ function storeLinkResult(result) {
             res.sendStatus(502);
         } else {
             if (code) {
-                if (code.used == 0) {
-                    code.used = 1;
-                    code.save(err => { if (err) { res.sendStatus(502); } })
-
-                    UserSchema.findOne({ 'local.email': code.user_email }, 'sa', (err, user) => {
+                if (code.assignment_id == 0) {
+                    Assignments.findOne({ 'test_id': result.test.test_id, 'dealers.dealer': code.dealer }, null, (err, assignment) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
-                            if (user.sa == 2) {
-                                Assignments.findByIdAndUpdate(code.assignment_id, { $inc: { 'codes_used': 1, 'codes_created': -1 } }, (err, doc) => {
-                                    if (err) {
-                                        res.sendStatus(502);
-                                    }
-                                });
-                            } else {
-                                Assignments.findOneAndUpdate({ '_id': code.assignment_id, 'users.email': code.user_email }, { $inc: { 'users.$.codes_used': 1, 'users.$.codes_created': -1 } }, (err, doc) => {
-                                    if (err) {
-                                        res.sendStatus(502);
-                                    }
-                                });
-                            }
+                            code.assignment_id = assignment._id;
+                            code.save(err => { if (err) { res.sendStatus(502); } });
                         }
                     });
+                    //////////////////////////////////////////////////////////////////////
                     var linkResult = new LinkResults({
                         test_name: result.test.test_name,
                         percentage: result.result.percentage,
                         points_scored: result.result.points_scored,
                         points_available: result.result.points_available,
+                        knowledge_test_average: 0,
+                        knowledge_points_scored: 0,
+                        knowledge_points_available: 0,
                         time_started: result.result.time_started,
                         time_finished: result.result.time_finished,
                         duration: result.result.duration,
@@ -48,7 +38,12 @@ function storeLinkResult(result) {
                     var categories = {}
                     result.category_results.forEach(category => {
                         categories[category.category_id] = category.name;
+                        if (category.category_id > 83 && category.category_id < 91) {
+                            linkResult.knowledge_points_scored += category.points_scored;
+                            linkResult.knowledge_points_available += category.points_available;
+                        }
                         linkResult.category_results.push({
+                            id: category.category_id,
                             name: category.name,
                             percentage: category.percentage,
                             points_available: category.points_available,
@@ -58,8 +53,10 @@ function storeLinkResult(result) {
 
                     result.questions.forEach(question => {
                         linkResult.questions.push({
+                            question_id: question.question_id,
                             question_type: question.question_type,
                             category: categories[question.category_id],
+                            category_id: question.category_id,
                             question: question.question,
                             options: question.options,
                             correct_option: question.correct_option,
@@ -69,10 +66,12 @@ function storeLinkResult(result) {
                             points_scored: question.points_scored
                         });
                     });
-                    linkResult.save(function(err, testAdded) {
+                    linkResult.knowledge_test_average = (linkResult.knowledge_points_scored * 100 / linkResult.knowledge_points_available).toFixed(2);
+                    linkResult.save(function (err, testAdded) {
                         if (err) { res.sendStatus(502); }
-                        UpdateSummary(code.assignment_id, code.user_email);
+                        UpdateSummary(code.assignment_id);
                     })
+                    /////////////////////////////////////////////////
                 }
             }
         }
