@@ -776,32 +776,35 @@ module.exports = (app, passport) => {
 
     //-------------------- Vista de pruebas de consultores--------------------//
     app.get('/tests_list_cons/:cons_id', isLoggedIn, (req, res) => {
-        UserSchema.findById(req.params.cons_id, null, (err, consultant) => {
+        UserSchema.findById(req.params.cons_id, null, (err, dealer) => {
             if (err) {
                 res.sendStatus(502);
             } else {
-                if (req.user.local.email == consultant.local.email || req.user.local.email == consultant.admin_email || req.user.sa == 1) {
-                    Assignments.find({ 'users.id': consultant._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                console.log(dealer);
+                console.log(req.user);
+                if (req.user.local.user == dealer.local.user || req.user.local.user == dealer.NSC || req.user.sa == 1) {
+                    Assignments.find({ 'dealers.id': dealer._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
-                            var data = {};
-                            data.consultant = {};
-                            data.consultant.email = consultant.local.email;
-                            data.consultant.id = consultant._id;
-                            data.assignments = [];
-                            assignments.forEach(assignment => {
-                                var index = assignment.users.findIndex(x => x.id == consultant._id);
-                                data.assignments.push({
-                                    name: assignment.test_name,
-                                    id: assignment._id,
-                                    codes_used: assignment.users[index].codes_used,
-                                    codes_max: assignment.users[index].codes_max
+                            Codes.find({ 'assignment_id': { $ne: 0 }, 'dealer': dealer.local.user }, ['code', 'assignment_id'], (err, codes) => {
+                                console.log(codes);
+                                var data = {};
+                                data.dealer = {};
+                                data.dealer.user = dealer.local.user;
+                                data.dealer.id = dealer._id;
+                                data.assignments = [];
+                                assignments.forEach(assignment => {
+                                    data.assignments.push({
+                                        name: assignment.test_name,
+                                        id: assignment._id,
+                                        codes_used: codes.reduce((total, currentValue) => (currentValue.assignment_id == assignment._id) ? ++total : total, 0)
+                                    });
                                 });
-                            });
-                            res.render('tests_list_cons', {
-                                user: req.user,
-                                data: data
+                                res.render('tests_list_cons', {
+                                    user: req.user,
+                                    data: data
+                                });
                             });
                         }
                     });
@@ -872,8 +875,8 @@ module.exports = (app, passport) => {
             if (err) {
                 res.sendStatus(502);
             } else {
-                if (req.user.local.email == test_user.local.email || req.user.local.email == test_user.admin_email || req.user.sa == 1) {
-                    Codes.find({ 'user_email': test_user.local.email }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
+                if (req.user.local.user == test_user.local.user || req.user.local.user == test_user.NSC || req.user.sa == 1) {
+                    Codes.find({ 'dealer': test_user.local.user }, null, { sort: { 'code': 1 } }, (err, codesArray) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
@@ -882,7 +885,7 @@ module.exports = (app, passport) => {
                             data.user = test_user;
                             data.codes_used_array = [];
                             codesArray.forEach(code => {
-                                if (code.used == 0) {
+                                if (code.assignment_id == 0) {
                                     data.codes_created_array.push(code.code);
                                 } else if (code.assignment_id == req.params.assignment_id) {
                                     data.codes_used_array.push(code.code);
@@ -892,87 +895,89 @@ module.exports = (app, passport) => {
                                 if (err) {
                                     res.sendStatus(502);
                                 } else {
-                                    data.categories = [];
+                                    /* data.categories = []; */
                                     data.results = [];
                                     var index;
                                     linkresultsArray.forEach(result => {
                                         data.results.push({
                                             access_code_used: result.access_code_used,
                                             passed: result.passed,
-                                            percentage: result.percentage,
-                                            points_scored: result.points_scored,
-                                            points_available: result.points_available,
+                                            percentage: result.knowledge_test_average,
+                                            points_scored: result.knowledge_points_scored,
+                                            points_available: result.knowledge_points_available,
                                             duration: result.duration,
                                             time_finished: result.time_finished,
                                             test_result_id: result._id
                                         });
-                                        result.category_results.forEach(category => {
-                                            index = data.categories.findIndex(doc => doc.name == category.name);
-                                            if (index == -1) {
-                                                data.categories.push({
-                                                    name: category.name,
-                                                    percentage_sum: category.percentage,
-                                                    points_available_sum: category.points_available,
-                                                    points_scored: category.points_scored,
-                                                    answers: 1
-                                                });
-                                            } else {
-                                                data.categories[index].percentage_sum += category.percentage;
-                                                data.categories[index].points_available_sum += category.points_available;
-                                                data.categories[index].points_scored += category.points_scored;
-                                                data.categories[index].answers += 1;
-                                            }
-                                        });
                                     });
-                                    data.categories.sort((a, b) => {
+                                    /* data.categories.sort((a, b) => {
                                         if (a.name < b.name) { return -1; }
                                         if (a.name > b.name) { return 1; }
                                         return 0;
-                                    });
-                                    if (test_user.sa == 2) { //->NSC
-                                        Assignments.findOne({ '_id': req.params.assignment_id, 'admin_email': test_user.local.email }, null, (err, assignment) => {
-                                            if (err) {
-                                                res.sendStatus(502);
-                                            } else {
-                                                data.link_url_id = assignment.link_url_id;
-                                                data.test_name = assignment.test_name;
-                                                data.assignment_id = assignment._id
-                                                data.codes_max = assignment.codes_created + assignment.codes_used + assignment.codes_availables;
-                                                data.codes_created = assignment.codes_created;
-                                                data.codes_used = assignment.codes_used;
-                                                res.render('test_view', {
-                                                    user: req.user,
-                                                    data: data,
-                                                });
-                                            }
-                                        });
-                                    } else if (test_user.sa == 0) { //->Dealer
-                                        Assignments.findOne({ '_id': req.params.assignment_id, 'users.id': test_user._id }, null, (err, assignment) => {
-                                            if (err) {
-                                                res.sendStatus(502);
-                                            } else {
-                                                data.test_name = assignment.test_name;
-                                                data.assignment_id = assignment._id;
-                                                data.link_url_id = assignment.link_url_id;
-                                                data.codes_created = data.codes_created_array.length;
-                                                data.codes_max = 0;
-                                                data.codes_used = data.codes_used_array.length;
-
-                                                /* for (var assignment_user of assignment.users) {
-                                                    if (assignment_user.id == test_user._id) {
-                                                        data.codes_max = assignment_user.codes_max;
-                                                        data.codes_created = assignment_user.codes_created;
-                                                        data.codes_used = assignment_user.codes_used;
-                                                        break;
+                                    }); */
+                                    SummaryResults.findOne({ 'assignment_id': req.params.assignment_id }, null, (err, summary) => {
+                                        if (err) {
+                                            res.sendStatus(502);
+                                        } else {
+                                            console.log(summary);
+                                            data.categories = [];
+                                            summary.categories.forEach(category => {
+                                                if (category.id > 83 && category.id < 91) {
+                                                    data.categories.push({
+                                                        name: category.name.replace("&amp;", "&"),
+                                                        points_scored: category.points_scored,
+                                                        points_available: category.points_available,
+                                                        average: category.average
+                                                    });
+                                                }
+                                            });
+                                            if (test_user.sa == 2) { //->NSC
+                                                Assignments.findOne({ '_id': req.params.assignment_id, 'admin_email': test_user.local.email }, null, (err, assignment) => {
+                                                    if (err) {
+                                                        res.sendStatus(502);
+                                                    } else {
+                                                        data.link_url_id = assignment.link_url_id;
+                                                        data.test_name = assignment.test_name;
+                                                        data.assignment_id = assignment._id
+                                                        data.codes_max = assignment.codes_created + assignment.codes_used + assignment.codes_availables;
+                                                        data.codes_created = assignment.codes_created;
+                                                        data.codes_used = assignment.codes_used;
+                                                        res.render('test_view', {
+                                                            user: req.user,
+                                                            data: data,
+                                                        });
                                                     }
-                                                } */
-                                                res.render('test_view', {
-                                                    user: req.user,
-                                                    data: data,
+                                                });
+                                            } else if (test_user.sa == 0) { //->Dealer
+                                                Assignments.findOne({ '_id': req.params.assignment_id, 'dealers.id': test_user._id }, null, (err, assignment) => {
+                                                    if (err) {
+                                                        res.sendStatus(502);
+                                                    } else {
+                                                        data.test_name = assignment.test_name;
+                                                        data.assignment_id = assignment._id;
+                                                        data.link_url_id = assignment.link_url_id;
+                                                        data.codes_used =
+                                                            data.codes_created = data.codes_created_array.length;
+                                                        //data.codes_max = 0;
+                                                        data.codes_used = data.codes_used_array.length;
+
+                                                        // for (var assignment_user of assignment.users) {
+                                                        //  if (assignment_user.id == test_user._id) {
+                                                        //    data.codes_max = assignment_user.codes_max;
+                                                        //  data.codes_created = assignment_user.codes_created;
+                                                        // data.codes_used = assignment_user.codes_used;
+                                                        // break;
+                                                        //}
+                                                        //} 
+                                                        res.render('test_view', {
+                                                            user: req.user,
+                                                            data: data,
+                                                        });
+                                                    }
                                                 });
                                             }
-                                        });
-                                    }
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -992,37 +997,33 @@ module.exports = (app, passport) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
-                        UserSchema.findOne({ 'local.email': code.user_email }, null, (err, user) => {
+                        UserSchema.findOne({ 'local.user': code.dealer }, null, (err, user) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
-                                SummaryResults.findOne({ 'assignment_id': code.assignment_id, 'user_email': code.user_email }, null, (err, summary) => {
+                                SummaryResults.findOne({ 'assignment_id': code.assignment_id }, null, (err, summary) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
-                                        if (req.user.local.email == user.local.email || req.user.local.email == user.admin_email || req.user.sa == 1) {
+                                        if (req.user.local.user == user.local.user || req.user.local.user == user.NSC || req.user.sa == 1) {
                                             var data = {};
                                             data.test_name = linkResult.test_name;
                                             data.access_code_used = linkResult.access_code_used;
-                                            data.percentage = linkResult.percentage;
-                                            data.points_scored = linkResult.points_scored;
-                                            data.points_available = linkResult.points_available;
+                                            data.percentage = linkResult.knowledge_test_average;
+                                            data.points_scored = linkResult.knowledge_points_scored;
+                                            data.points_available = linkResult.knowledge_points_available;
                                             data.duration = linkResult.duration;
                                             data.time_started = linkResult.time_started;
                                             data.time_finished = linkResult.time_finished;
-                                            data.category_results = linkResult.category_results.sort((a, b) => {
-                                                return (a.name < b.name) ? -1 : 1;
-                                                return 0;
-                                            });
-                                            summary.categories.sort((a, b) => {
-                                                return (a.name < b.name) ? -1 : 1;
-                                                return 0;
-                                            });
+                                            data.category_results = linkResult.category_results.sort((a, b) => (a.name < b.name) ? -1 : 1);
+                                            data.category_results = data.category_results.filter(result => (result.id > 83 && result.id < 91));
+                                            summary.categories = summary.categories.sort((a, b) => (a.name < b.name) ? -1 : 1);
+                                            summary.categories = summary.categories.filter(category => (category.id > 83 && category.id < 91));
                                             data.category_results.labels = [];
                                             data.category_results.data = [];
                                             data.category_results.average = [];
                                             data.category_results.forEach((result, index) => {
-                                                data.category_results.labels.push(JSON.stringify(result.name));
+                                                data.category_results.labels.push(JSON.stringify(result.name).replace("&amp;", "&"));
                                                 data.category_results.data.push(result.percentage);
                                                 if (summary.categories[index].name == result.name) {
                                                     data.category_results.average.push(summary.categories[index].average);
@@ -1030,10 +1031,7 @@ module.exports = (app, passport) => {
                                                     data.category_results.average.push(0);
                                                 }
                                             });
-                                            var questions = linkResult.questions.sort((a, b) => {
-                                                return (a.category < b.category) ? -1 : 1;
-                                                return 0;
-                                            });
+                                            var questions = linkResult.questions.sort((a, b) => (a.category_id < b.category_id) ? -1 : 1);
                                             data.questions = [];
                                             //---formato de las respuestas ---/
                                             questions.forEach((question, index) => {
@@ -1108,6 +1106,7 @@ module.exports = (app, passport) => {
                                                         }
                                                     }
                                                 }
+
                                                 if (result > 0 && question.result == "incorrect") {
                                                     data.questions.push({
                                                         question: question.question,
@@ -1153,14 +1152,15 @@ module.exports = (app, passport) => {
     //------------------------Compare tool--------------------------------//
     app.get('/compare', isLoggedIn, (req, res) => {
         if (req.user.sa == 0 || req.user.sa == 2) {
-            Assignments.find((req.user.sa == 0) ? { 'users.email': req.user.local.email } : { 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+            Assignments.find((req.user.sa == 0) ? { 'dealers.id': req.user._id } : { 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                 if (err) {
                     res.sendStatus(502);
                 } else {
-                    Codes.find({ 'user_email': req.user.local.email, 'used': 1 }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                    Codes.find({ 'dealer': req.user.local.user, 'assignment_id': { $ne: 0 } }, null, { sort: { 'code': 1 } }, (err, codes) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
+                            console.log(codes);
                             var datasets = [];
                             var index = -1;
                             assignments.forEach(assignment => {

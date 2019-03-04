@@ -18,43 +18,41 @@
                                 </h2>
                             </div>
                             <br><br><br><br>
-                            <div class="col-md-2 my-auto">
-                            </div>
+                            
 
-                            <div class="col-md-3 my-auto">
+                            <div class="col-md-4 my-auto">
                                 <div class="card container-fluid text-center mx-auto">
                                     <div class="card-body">
-                                        <h4 class="card-title" lang="es">Código de acceso: <span><%= data.access_code_used%></span></h4>
-                                        <h4 class="card-title" lang="en">Access code: <span><%= data.access_code_used%></span></h4>
+                                        <h2 class="card-title" lang="es">Código de acceso: <span><%= data.access_code_used%></span></h2>
+                                        <h2 class="card-title" lang="en">Access code: <span><%= data.access_code_used%></span></h2>
+                                        <button type="button" class="btn btn-dark btn-lg" lang="es">Descargar informe</button>
+                                        <button type="button" class="btn btn-dark btn-lg" lang="en">Download Report</button>
+                                        
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="col-md-2 my-auto">
                             </div>
 
                             <div class="col-md-4 my-auto">
                                 <div class="card container-fluid mx-auto">
                                     <div class="card-body">
-                                        <h1 class="card-title text-center">
-                                            <%= data.percentage%>%</h1>
+                                        <h3 class="card-title text-center">Overall Knowledge Test Result</h3>
+                                        <h2 class="card-title text-center"><%= data.percentage%>%</h2>
+                                        <br>
+                                        <h3 class="card-title text-center">Country Average</h3>
+                                        <h2 class="card-title text-center"><%= data.percentage%>%</h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 my-auto">
+                                <div class="card container-fluid mx-auto">
+                                    <div class="card-body">
+                                        <h3 class="card-title text-center" lang="en">Assesment Information</h3>
+                                        <h3 class="card-title text-center" lang="es">Información de evaluación</h3>
+                                        <br>
                                         <div class="table-responsive">
                                             <table style="width:100%">
-                                                <tbody>
-                                                    <tr lang="es">
-                                                        <td>Puntos:</td>
-                                                        <td>
-                                                            <%= data.points_scored%> de
-                                                                <%= data.points_available%>
-                                                        </td>
-                                                    </tr>
-                                                    <tr lang="en">
-                                                        <td>Points:</td>
-                                                        <td>
-                                                            <%= data.points_scored%> out of
-                                                                <%= data.points_available%>
-                                                        </td>
-                                                    </tr>
+                                                <tbody>                                                    
                                                     <tr>
                                                         <td lang="es">Duración:</td>
                                                         <td lang="en">Duration:</td>
@@ -66,32 +64,14 @@
                                                         <td lang="es">Fecha de Inicio:</td>
                                                         <td lang="en">Date started:</td>
                                                         <td>
-                                                            <%date=new Date(data.time_started*1000)%>
-                                                                <%=date.getDate()%>/
-                                                                    <%=date.getMonth()+1%>/
-                                                                        <%=date.getFullYear()%>
-                                                                            <% if(date.getHours()<10){%>0
-                                                                                <%}%>
-                                                                                    <%=date.getHours()%>:
-                                                                                        <% if(date.getMinutes()<10){%>0
-                                                                                            <%}%>
-                                                                                                <%=date.getMinutes()%>
+                                                            <%date=new Date(data.time_started*1000)%><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%>   <%if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td lang="es">Fecha de finalización:</td>
                                                         <td lang="en">Date finished:</td>
                                                         <td>
-                                                            <%date=new Date(data.time_finished*1000)%>
-                                                                <%=date.getDate()%>/
-                                                                    <%=date.getMonth()+1%>/
-                                                                        <%=date.getFullYear()%>
-                                                                            <% if(date.getHours()<10){%>0
-                                                                                <%}%>
-                                                                                    <%=date.getHours()%>:
-                                                                                        <% if(date.getMinutes()<10){%>0
-                                                                                            <%}%>
-                                                                                                <%=date.getMinutes()%>
+                                                            <%date=new Date(data.time_finished*1000)%><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%>   <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -104,8 +84,8 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header">
-                                        <h4 class="card-title" lang="es">Categorías</h4>
-                                        <h4 class="card-title" lang="en">Categories</h4>
+                                        <h4 class="card-title" lang="es">Resultados de la Prueba de Conocimiento por Categoría vs. Promedio del País</h4>
+                                        <h4 class="card-title" lang="en">Knowledge Test Results per Category vs. Country Average</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="chart-container responsive" style="position: relative; height: 40vh;">
@@ -583,7 +563,7 @@
         </div>
         <script>
             var ctx = document.getElementById("myChart");
-            var label = (Cookies.get('lang') == 'es') ? 'Promedio' : 'Average';
+            var label = (Cookies.get('lang') == 'es') ? 'Promedio del país' : 'Country Average';
             var myChart = new Chart(ctx, {
                 type: 'horizontalBar',
                 data: {
@@ -636,9 +616,9 @@
             document.getElementById("switch-lang").onclick = function() {
                 document.title = (Cookies.get("lang") == 'en') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
                 if (Cookies.get('lang') == 'en') {
-                    myChart.data.datasets[1].label = 'Promedio'
+                    myChart.data.datasets[1].label = 'Promedio del país'
                 } else {
-                    myChart.data.datasets[1].label = 'Average'
+                    myChart.data.datasets[1].label = 'Country Average'
                 }
                 myChart.update();
             }

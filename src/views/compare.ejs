@@ -15,12 +15,12 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header ">
-                                        <h4 class="card-title" lang="es">Comparar resultados.</h4>
-                                        <h4 class="card-title" lang="en">Compare results.</h4>
+                                        <h4 class="card-title" lang="es">Comparar los resultados de las pruebas de conocimiento.</h4>
+                                        <h4 class="card-title" lang="en">Compare knowledge test results.</h4>
                                     </div>
                                     <div class="card-body">
-                                        <p class="card-text" lang="es">Seleccione los resultados que desea comparar y luego presione en el botón "Comparar"</p>
-                                        <p class="card-text" lang="en">Select the results you want to compare and then click on the "Compare" button.</p>
+                                        <p class="card-text" lang="es">Seleccione hasta cinco (5) resultados que desee comparar y, a continuación, haga clic en el botón "Comparar".</p>
+                                        <p class="card-text" lang="en">Select up to five (5) results that you want to compare and then click the "Compare" button.</p>
                                         <form action="/compare" onsubmit="return validateForm()" method="POST" id="form">
                                             <button type="submit" class="btn btn-primary float-right" lang="es">Comparar</button>
                                             <button type="submit" class="btn btn-primary float-right" lang="en">Compare</button>
@@ -84,7 +84,7 @@
                         codes++;
                 }
                 if (codes < 2) {
-                    alert("Debe seleccionar al menos dos resultados para comparar.")
+                    alert((Cookies.get("lang") == 'es') ? "Debe seleccionar al menos dos pruebas de conocimientos para comparar." : "You must select at least two knowledge tests to compare.");
                     return false
                 } else if (codes > 5) {
                     alert("El número máximo de resultados a comparar debe ser 5.")

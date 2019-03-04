@@ -44,7 +44,7 @@
                                 <h2 class="text-center">
                                     <%= data.test_name%>
                                 </h2>
-                                <a href="https://www.classmarker.com/online-test/start/?quiz=<%=data.link_url_id%>">https://www.classmarker.com/online-test/start/?quiz=<%=data.link_url_id%></a>
+                                <a href="https://www.classmarker.com/online-test/start/?quiz=<%=data.link_url_id%>" target="_blank">https://www.classmarker.com/online-test/start/?quiz=<%=data.link_url_id%></a>
                             </div>
                             <br><br><br><br>
 
@@ -132,22 +132,21 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <% data.categories.forEach(category=>{
-                                                        var percen=(category.percentage_sum/category.answers).toFixed(2)%>
+                                                    <% data.categories.forEach(category=>{%>
                                                         <tr>
                                                             <td>
                                                                 <%=category.name%>
                                                             </td>
                                                             <td class="text-center">
                                                                 <div class="progress">
-                                                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=percen%>%; background-color: #2A627B;" aria-valuenow="<%=percen%>" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                    <div class="progress-value"><b><%=percen%>%</b></div>
+                                                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=category.average%>%; background-color: #2A627B;" aria-valuenow="<%=category.average%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                    <div class="progress-value"><b><%=category.average%>%</b></div>
                                                                 </div>
                                                             </td>
                                                             <td></td>
                                                             <td class="text-center">
                                                                 <%=category.points_scored%>/
-                                                                    <%=category.points_available_sum%>
+                                                                    <%=category.points_available%>
                                                             </td>
                                                         </tr>
                                                         <%})%>
@@ -161,13 +160,21 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header">
-                                        <h4 class="card-title" lang="es">Resultados</h4>
-                                        <h4 class="card-title" lang="en">Results</h4>
+                                        <h4 class="card-title" lang="es">Resumen de la evaluación</h4>
+                                        <h4 class="card-title" lang="en">Assessment Summary</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table table-hover table-striped">
                                                 <thead>
+                                                    <tr>
+                                                        <th style="width: 20%" lang="es"></th>
+                                                        <th style="width: 20%" lang="en"></th>
+                                                        <th style="width: 16%" lang="es" class="text-center" colspan="2">Prueba de conocimientos</th>
+                                                        <th style="width: 16%" lang="en" class="text-center" colspan="2">Knowledge test</th>
+                                                        <th style="width: 16%" lang="es" class="text-center" colspan="2">Evaluación</th>
+                                                        <th style="width: 16%" lang="en" class="text-center" colspan="2">Assessment</th>
+                                                    </tr>
                                                     <tr>
                                                         <th style="width: 20%" lang="es">Código</th>
                                                         <th style="width: 20%" lang="en">Code</th>
@@ -206,8 +213,8 @@
                                                                         <%=date.getMonth()+1%>/
                                                                             <%=date.getFullYear()%>
                                                             </td>
-                                                            <td class="text-center"><a href="/test_result/<%=item.test_result_id%>" lang="es">Respuestas</a>
-                                                                <a href="/test_result/<%=item.test_result_id%>" lang="en">Answers</a>
+                                                            <td class="text-center"><a href="/test_result/<%=item.test_result_id%>" lang="es">Detalles del resultado</a>
+                                                                <a href="/test_result/<%=item.test_result_id%>" lang="en">Result Details</a>
                                                             </td>
                                                         </tr>
                                                         <%})%>
