@@ -187,7 +187,8 @@ module.exports = (app, passport) => {
                 var data = {
                     tests: [],
                     codes_datasets: [],
-                    codes: []
+                    codes: [],
+                    summary: []
                 };
                 var color = ['rgba(  6, 58, 81,1)',
                     'rgba( 42, 98,123,1)',
@@ -201,11 +202,11 @@ module.exports = (app, passport) => {
                     'rgba(  2, 40, 57,0.5)',
                     'rgba(  0, 23, 32,0.5)',
                 ];
-                Assignments.find({ 'admin_email': req.user.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                Assignments.find({ 'NSC': req.user.local.user }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
-                        UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, admin_users) => {
+                        UserSchema.find({ 'NSC': req.user.local.user }, null, { sort: { 'local.user': 1 } }, (err, admin_users) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
@@ -221,7 +222,7 @@ module.exports = (app, passport) => {
         function get_data(i, assignments, admin_users) {
             if (assignments.length > 0) {
                 assignment = assignments[i];
-                SummaryResults.findOne({ 'assignment_id': assignment._id, 'user_email': req.user.local.email }, null, (err, sumary) => {
+                SummaryResults.findOne({ 'assignment_id': assignment._id }, null, (err, sumary) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
@@ -231,19 +232,20 @@ module.exports = (app, passport) => {
                                 number_of_results: 0
                             }
                         }
-                        Codes.find({ 'assignment_id': assignment._id, 'dealer': req.user.local.user }, null, { sort: { 'code': 1 } }, (err, codes) => {
+                        Codes.find({ 'assignment_id': assignment._id }, null, { sort: { 'code': 1 } }, (err, codes) => {
                             if (err) {
                                 res.sendStatus(502);
                             } else {
                                 var codes_array_used = [];
                                 var codes_array_unused = [];
                                 codes.forEach(code => {
-                                    code.assignment_id == 0 ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
+                                    (code.assignment_id == 0 && code.dealer == req.user.local.user) ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
                                 });
                                 LinkResults.find({ 'access_code_used': { $in: codes_array_used } }, ['knowledge_test_average', 'time_finished', 'access_code_used'], { sort: { 'time_finished': -1 }, limit: 3 }, (err, results) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
+                                        console.log(results);
                                         var results_temp = [];
                                         results.forEach(result => {
                                             var date = new Date(result.time_finished * 1000);
@@ -262,31 +264,41 @@ module.exports = (app, passport) => {
                                                 availables: assignment.codes_availables,
                                                 created_array: codes_array_unused
                                             }
-                                            /* if (i == 0) {
-                                                data.codes_datasets.push({
-                                                    label: req.user.local.email,
-                                                    data: [assignment.codes_max],
-                                                    backgroundColor: color[0],
-                                                    hoverBackgroundColor: colorHover[0]
-                                                });
-                                            } else {
-                                                data.codes_datasets[0].data.push(assignment.codes_max);
-                                            } */
+                                            // if (i == 0) {
+                                            //    data.codes_datasets.push({
+                                            //        label: req.user.local.email,
+                                            //        data: [assignment.codes_max],
+                                            //        backgroundColor: color[0],
+                                            //        hoverBackgroundColor: colorHover[0]
+                                            //    });
+                                            //} else {
+                                            //    data.codes_datasets[0].data.push(assignment.codes_max);
+                                            //} 
                                             for (var l = 0; l < admin_users.length; l++) {
                                                 user = admin_users[l];
-                                                k = assignment.users.findIndex(doc => doc.email == user.local.email)
                                                 if (i == 0) {
                                                     data.codes_datasets.push({
-                                                        label: user.local.email,
-                                                        data: (k == -1) ? [0] : [assignment.users[k].codes_max],
+                                                        label: user.local.user,
+                                                        data: [codes.reduce((total, currentValue) => (currentValue.dealer == user.local.user) ? ++total : total, 0)],
                                                         backgroundColor: color[l + 1],
                                                         hoverBackgroundColor: colorHover[l + 1]
                                                     });
                                                 } else {
-                                                    data.codes_datasets[l + 1].data.push((k == -1) ? 0 : assignment.users[k].codes_max);
+                                                    data.codes_datasets[l + 1].data.push(codes.reduce((total, currentValue) => (currentValue.dealer == user.local.user) ? ++total : total, 0));
                                                 }
-                                                data.codes_datasets[0].data[i] -= (k == -1) ? 0 : assignment.users[k].codes_max;
                                             }
+                                            categories_temp = [];
+                                            sumary.categories.forEach(category => {
+                                                if (category.id > 83 && category.id < 91) {
+                                                    categories_temp.push({
+                                                        name: category.name.replace("&amp;", "&"),
+                                                        average: Number(category.average).toFixed(2),
+                                                        points_scored: category.points_scored,
+                                                        points_available: category.points_available
+                                                    });
+                                                }
+                                            });
+                                            data.summary.push(categories_temp);
                                         } else {
                                             for (var dealer of assignment.dealers) {
                                                 if (dealer.email == req.user.local.email) {
@@ -310,6 +322,7 @@ module.exports = (app, passport) => {
                                             results: results_temp
                                         });
                                         if (i + 1 == assignments.length) {
+                                            console.log(data.summary);
                                             res.render('profile_client', {
                                                 user: req.user,
                                                 data: data

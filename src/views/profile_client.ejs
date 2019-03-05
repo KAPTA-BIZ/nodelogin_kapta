@@ -28,6 +28,7 @@
                                     </div>
                                 </div>
                                 <%}%>
+                                <%if(user.sa==0){%>
                                 <div class="col-md-12">
                                     <div class="card container-fluid">
                                         <div class="card-header">
@@ -63,7 +64,7 @@
 
                                     </div>
                                 </div>
-
+                                <%}%>
 
                                     <%if(user.sa==0||user.sa==2){
            data.tests.forEach((test,index)=>{%>
@@ -86,6 +87,7 @@
                                                                 <div class="card-body text-center">
                                                                     <h2 class="card-title">
                                                                         <%=test.average%> %</h2>
+                                                                    <%if(user.sa==0){%>
                                                                     <h5 class="card-subtitle mb-2 text-muted" lang="es">
                                                                         <a href="/test_view/<%=test.id%>/<%=user._id%>">
                                                                             <%=test.number_of_results%> Resultados</a>
@@ -94,6 +96,10 @@
                                                                         <a href="/test_view/<%=test.id%>/<%=user._id%>">
                                                                             <%=test.number_of_results%> Results</a>
                                                                     </h5>
+                                                                    <%} else if(user.sa==2){%>
+                                                                    <h5 class="card-subtitle mb-2 text-muted" lang="es"> <%=test.number_of_results%> Resultados</h5>
+                                                                    <h5 class="card-subtitle mb-2 text-muted" lang="en"> <%=test.number_of_results%> Results</h5>
+                                                                    <%}%>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -111,6 +117,7 @@
                                                             </div>
                                                         </div> -->
                                                         <div class="col-md-6 my-auto">
+                                                            <%if(user.sa==0){%>
                                                             <div class="card container-fluid mx-auto">
                                                                 <div class="card-header">
                                                                     <h4 class="card-title" lang="es">Últimos resultados de la prueba de conocimientos</h4>
@@ -149,6 +156,51 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <%} else if(user.sa==2){%>
+                                                            <div class="card container-fluid">
+                                                                <div class="card-header">
+                                                                    <h4 class="card-title" lang="es">Prueba de Conocimiento, Promedio del País por Categoría</h4>
+                                                                    <h4 class="card-title" lang="en">Knowledge Test Country Average per Category</h4>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-hover table-striped">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th style="width: 40%" lang="es">Categoría</th>
+                                                                                    <th style="width: 40%" lang="en">Category</th>
+                                                                                    <th style="width: 30%" lang="es" class="text-center">Promedio</th>
+                                                                                    <th style="width: 30%" lang="en" class="text-center">Average</th>
+                                                                                    <th style="width: 10%">&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                                                                    <th style="width: 20%" lang="es" class="text-center">Respuestas</th>
+                                                                                    <th style="width: 20%" lang="en" class="text-center">Answers</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <% data.summary[index].forEach(category=>{%>
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <%=category.name%>
+                                                                                        </td>
+                                                                                        <td class="text-center">
+                                                                                            <div class="progress">
+                                                                                                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <%=category.average%>%; background-color: #2A627B;" aria-valuenow="<%=category.average%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                                                <div class="progress-value"><b><%=category.average%>%</b></div>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td></td>
+                                                                                        <td class="text-center">
+                                                                                            <%=category.points_scored%>/
+                                                                                                <%=category.points_available%>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <%})%>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <%}%>
                                                         </div>
                                                         <!-- <div class="col-md-3 my-auto">
                                                             <a class="card container-fluid mx-auto">
@@ -201,7 +253,7 @@
             var codes_datasets = <%- JSON.stringify(data.codes_datasets)%>;
             var charts = [];
             var label = (Cookies.get("lang") == 'es') ? ["Usados", "Disponibles", "Restantes"] : ["Used", "Available", "Left"];
-            for (var i = 0; i < data_used.length; i++) {
+            /* for (var i = 0; i < data_used.length; i++) {
                 var ctx = document.getElementById("myChart" + i);
                 var myChart = new Chart(ctx, {
                     type: 'doughnut',
@@ -238,7 +290,7 @@
                 });
                 charts.push(myChart);
             }
-
+ */
             if (codes_datasets.length > 0) {
                 var ctx_distribution = document.getElementById("codes");
                 var chart_distribution = new Chart(ctx_distribution, {
