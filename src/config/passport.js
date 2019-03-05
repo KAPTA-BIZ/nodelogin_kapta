@@ -23,14 +23,14 @@ module.exports = function (passport) {
         passReqToCallback: true
     },
         function (req, email, password, done) {
-            if (req.body.validatePwd != password) { return done(null, false, req.flash('signupMessage', 'Las contraseñas no coinciden')); }
-            User.findOne({ 'local.email': email }, function (err, user) {
+            if (req.body.validatePwd != password) { return done(null, false, req.flash('signupMessage', 'Passwords do not match')); }
+            User.findOne({ 'local.user': email }, function (err, user) {
                 if (err) { return done(err); }
                 if (user) {
-                    return done(null, false, req.flash('signupMessage', 'Email ya registrado'));
+                    return done(null, false, req.flash('signupMessage', 'Email already registered'));
                 } else {
                     var newUser = new User();
-                    newUser.local.email = email;
+                    newUser.local.user = email;
                     newUser.local.password = newUser.generateHash(password);
                     if (req.user.sa == 1) {
                         if (req.body.userType == 'Administrador')
@@ -39,22 +39,18 @@ module.exports = function (passport) {
                             newUser.sa = '0';
                     } else if (req.user.sa == 2) {
                         newUser.sa = '0';
-                        newUser.admin_email = req.user.local.email
+                        newUser.NSC = req.user.local.user
                     }
                     newUser.save(function (err) {
                         if (err) { res.sendStatus(502); }
 
 
                         //////////////////////////////////////////////////
-                        Assignments.updateMany({ 'admin_email': req.user.local.email }, {
+                        Assignments.updateMany({ 'NSC': req.user.local.user }, {
                             $push: {
-                                'users': {
+                                'dealers': {
                                     id: newUser._id,
-                                    email: newUser.local.email,
-                                    codes_max: 0,
-                                    codes_created: 0,
-                                    codes_used: 0,
-                                    created_by: req.user.local.email
+                                    dealer: newUser.local.user
                                 }
                             }
                         }, err => {

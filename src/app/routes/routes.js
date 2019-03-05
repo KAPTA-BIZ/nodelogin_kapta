@@ -239,8 +239,11 @@ module.exports = (app, passport) => {
                                 var codes_array_used = [];
                                 var codes_array_unused = [];
                                 codes.forEach(code => {
-                                    (code.assignment_id == 0 && code.dealer == req.user.local.user) ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
+                                    if (code.dealer == req.user.local.user) {
+                                        (code.assignment_id == 0) ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
+                                    }
                                 });
+                                console.log('hey!!!', codes_array_used);
                                 LinkResults.find({ 'access_code_used': { $in: codes_array_used } }, ['knowledge_test_average', 'time_finished', 'access_code_used'], { sort: { 'time_finished': -1 }, limit: 3 }, (err, results) => {
                                     if (err) {
                                         res.sendStatus(502);
@@ -583,10 +586,11 @@ module.exports = (app, passport) => {
             if (err) {
                 res.sendStatus(502);
             } else {
-                Assignments.findOne({ 'admin_email': req.user.local.email }, null, (err, assignment) => {
+                Assignments.findOne({ 'NSC': req.user.local.user }, null, (err, assignment) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
+                        console.log(req.body.MaxCodes);
                         generate_code(0, req.body.MaxCodes);
 
                         function generate_code(i, number) {
@@ -624,9 +628,8 @@ module.exports = (app, passport) => {
                                                 } else {
                                                     var new_code_schema = new Codes();
                                                     new_code_schema.code = new_code;
-                                                    new_code_schema.used = 0;
                                                     new_code_schema.assignment_id = 0;
-                                                    new_code_schema.user_email = test_user.local.email;
+                                                    new_code_schema.dealer = test_user.local.user;
                                                     new_code_schema.save(function (err) {
                                                         if (err) {
                                                             res.sendStatus(502);
@@ -647,8 +650,6 @@ module.exports = (app, passport) => {
 
             }
         });
-        console.log(req.body.MaxCodes);
-        console.log(req.params.id);
     });
 
     //---------------- Generar codigos -------------//
@@ -742,7 +743,7 @@ module.exports = (app, passport) => {
     app.get('/users_list', isLoggedIn, (req, res) => {
         var consultants = [];
         if (req.user.sa == 1) {
-            UserSchema.find({}, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+            UserSchema.find({}, null, { sort: { 'local.user': 1 } }, (err, resultArray) => {
                 if (err) {
                     res.sendStatus(502);
                 } else {
@@ -764,7 +765,7 @@ module.exports = (app, passport) => {
                 }
             });
         } else if (req.user.sa == 2) {
-            UserSchema.find({ 'admin_email': req.user.local.email }, null, { sort: { 'local.email': 1 } }, (err, resultArray) => {
+            UserSchema.find({ 'NSC': req.user.local.user }, null, { sort: { 'local.user': 1 } }, (err, resultArray) => {
                 if (err) {
                     res.sendStatus(502);
                 } else {
@@ -772,8 +773,8 @@ module.exports = (app, passport) => {
                         if (result.sa == 0) {
                             consultants.push({
                                 id: result._id,
-                                email: result.local.email,
-                                admin_email: result.admin_email
+                                email: result.local.user,
+                                admin_email: result.NSC
                             });
                         }
                     });

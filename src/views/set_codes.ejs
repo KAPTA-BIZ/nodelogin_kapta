@@ -22,8 +22,8 @@
                         </div>
                         <hr />
                         <div class="col-sm-12" style="margin-top: 20px;">
-                            <h1 lang="es">Asignar prueba</h1>
-                            <h2 lang="en">Assign new assessment codes to dealer <%= user.local.email%></h2>
+                            <h2 lang="es">Asignar nuevos códigos de evaluación al concesionario <%= user.local.user%></h2>
+                            <h2 lang="en">Assign new assessment codes to dealer <%= user.local.user%></h2>
                         </div>
 
                         <!-- Message -->
@@ -48,7 +48,7 @@
                                     <form action="/setCodes/<%= user._id%>" method="post">
                                         <div class="form-group">
                                             <label for="MaxCodes">
-                                                <span lang="es">Indique el número máximo de códigos</span>
+                                                <span lang="es">Especifique el número de códigos a asignar (escriba un número del 1 al 20)</span>
                                                 <span lang="en">Specify the number of codes to be assigned (write a number from 1 to 20)</span>
                                             </label>
                                             <input type="number" name="MaxCodes" id="MaxCodes" class="form-control" min="1" max="20" required/>
