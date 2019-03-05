@@ -927,7 +927,7 @@ module.exports = (app, passport) => {
                                                         name: category.name.replace("&amp;", "&"),
                                                         points_scored: category.points_scored,
                                                         points_available: category.points_available,
-                                                        average: category.average
+                                                        average: Number(category.average).toFixed(2)
                                                     });
                                                 }
                                             });
@@ -1010,6 +1010,7 @@ module.exports = (app, passport) => {
                                             data.test_name = linkResult.test_name;
                                             data.access_code_used = linkResult.access_code_used;
                                             data.percentage = linkResult.knowledge_test_average;
+                                            data.country_average = summary.knowledge_test_average;
                                             data.points_scored = linkResult.knowledge_points_scored;
                                             data.points_available = linkResult.knowledge_points_available;
                                             data.duration = linkResult.duration;
@@ -1026,7 +1027,7 @@ module.exports = (app, passport) => {
                                                 data.category_results.labels.push(JSON.stringify(result.name).replace("&amp;", "&"));
                                                 data.category_results.data.push(result.percentage);
                                                 if (summary.categories[index].name == result.name) {
-                                                    data.category_results.average.push(summary.categories[index].average);
+                                                    data.category_results.average.push(Number(summary.categories[index].average).toFixed(2));
                                                 } else {
                                                     data.category_results.average.push(0);
                                                 }
@@ -1215,20 +1216,22 @@ module.exports = (app, passport) => {
                     }
                 };
                 results.forEach(result => {
-                    data.percentages.push(result.percentage);
+                    data.percentages.push(result.knowledge_test_average);
                     data.labels.push(result.access_code_used);
-                    var time = result.duration.split(':');
-                    data.duration.push(Number(time[0]) * 60 + Number(time[1]));
-                    data.points_scored.push(result.points_scored);
-                    data.points_available.push(result.points_available)
+                    /* var time = result.duration.split(':');
+                    data.duration.push(Number(time[0]) * 60 + Number(time[1])); */
+                    data.points_scored.push(result.knowledge_points_scored);
+                    data.points_available.push(result.knowledge_points_available)
                     var categories_labels = [];
                     var categories_percentage = [];
                     result.category_results.forEach(category => {
-                        categories_labels.push(category.name);
-                        categories_percentage.push(category.percentage);
-                        if (first) {
-                            data.common_categories.labels.push(category.name);
-                            data.common_categories.percentage.push([category.percentage])
+                        if (category.id > 83 && category.id < 91) {
+                            categories_labels.push(category.name.replace("&amp;", "&"));
+                            categories_percentage.push(category.percentage);
+                            if (first) {
+                                data.common_categories.labels.push(category.name.replace("&amp;", "&"));
+                                data.common_categories.percentage.push([category.percentage])
+                            }
                         }
                     });
                     if (first) {

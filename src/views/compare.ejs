@@ -87,7 +87,7 @@
                     alert((Cookies.get("lang") == 'es') ? "Debe seleccionar al menos dos pruebas de conocimientos para comparar." : "You must select at least two knowledge tests to compare.");
                     return false
                 } else if (codes > 5) {
-                    alert("El número máximo de resultados a comparar debe ser 5.")
+                    alert((Cookies.get("lang") == 'es') ? "Sólo se puede comparar un máximo de cinco pruebas de conocimientos." : "You can only compare a maximum of five knowledge tests.");                    
                     return false
                 }
                 return true
