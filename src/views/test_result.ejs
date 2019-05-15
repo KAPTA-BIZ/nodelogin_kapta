@@ -84,6 +84,53 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header">
+                                        <h4 class="card-title" lang="es">Resultados de la Prueba de competencias </h4>
+                                        <h4 class="card-title" lang="en">Competences test results</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <canvas id="competencesCanvas" width="520" height="420"></canvas><!--  style="border:1px solid #000000;" -->
+                                                </div>
+                                                <div class="col">
+                                                    <div style=" width: 100%; height: 420px; overflow: auto;"><!-- background-color: lightblue; -->
+                                                        <h4>Competencias que deben ser mejoradas</h4>
+                                                        <% data.sjt_competences.forEach((competence,index)=>{ 
+                                                            if(competence.total<competence.min){%>
+
+                                                        <h5><%=competence.name%></h5>
+                                                        <div class="progress" style="margin: 3px 10px; height: 20px;">
+                                                            <div class="progress-bar progress-bar-striped" role="progressbar" style="width:<%=competence.total*100/5%>%; background-color: #2A627B; "><%=(competence.total*100/5).toFixed(2)%>%</div>
+                                                            <!-- <div class="progress-value"><b><%=(competence.total*100/5).toFixed(2)%>%</b></div> -->
+                                                        </div>
+                                                        <div class="progress" style="margin: 3px 10px 20px; height: 5px; overflow: visible;">
+                                                            <div class="progress-bar bg-danger" role="progressbar" style="width: <%=competence.min*100/5%>%" ><span><%=(competence.min*100/5).toFixed(0)%>%</span></div>
+                                                            <div class="progress-bar bg-info" role="progressbar" style="width: 0%" ></div>
+                                                            <div class="progress-bar bg-success" role="progressbar" style="width: <%=100-competence.min*100/5%>%" ></div>
+                                                          </div>
+
+                                                          para mejorar se recomienda:
+                                                            <ul>
+                                                                <% competence.habilities.forEach((hability,index)=>{ %>
+                                                                <li><%=hability.hability_name%></li>
+                                                                <% }) %>
+                                                            </ul>
+                                                        <% }}) %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       <!--  <div class="chart-container responsive">
+                                            <canvas id="myChart"></canvas>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <div class="card container-fluid">
+                                    <div class="card-header">
                                         <h4 class="card-title" lang="es">Resultados de la Prueba de Conocimiento por Categoría vs. Promedio del País</h4>
                                         <h4 class="card-title" lang="en">Knowledge Test Results per Category vs. Country Average</h4>
                                     </div>
@@ -612,6 +659,169 @@
                     }
                 }
             });
+            
+            var item_height=40;
+            var canvas = document.getElementById("competencesCanvas");
+            var canvas_ctx = canvas.getContext("2d");
+            var sjt_result=<%- JSON.stringify(data.sjt_competences) %>;
+            // Triángulo rellenado
+            var grd = canvas_ctx.createLinearGradient(275, 0, 500, 0);
+            grd.addColorStop(0, "white");
+            grd.addColorStop(1, "grey");
+            canvas_ctx.fillStyle = grd;
+            
+            canvas_ctx.beginPath();
+            canvas_ctx.moveTo(275,50);
+            canvas_ctx.lineTo(500,50);
+            canvas_ctx.lineTo(500,0);
+            canvas_ctx.fill();
+
+            //items
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fillStyle = "rgba(220, 230, 241, 1)";
+            canvas_ctx.fill();
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fill();
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*2, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fill();
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*3, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fill();
+
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*4, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fillStyle = "rgba(184, 204, 228, 1)";
+            canvas_ctx.fill();
+
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*5, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fillStyle = "rgba(149, 179, 215, 1)";
+            canvas_ctx.fill();
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*6, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fill();
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*7, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fill();
+
+            canvas_ctx.beginPath();
+            canvas_ctx.rect(0, 50+item_height*8, 275, item_height);
+            canvas_ctx.stroke();
+            canvas_ctx.fillStyle = "rgba(54, 96, 146, 1)";
+            canvas_ctx.fill();
+             
+
+            canvas_ctx.fillStyle = "black";
+            canvas_ctx.font = "12px Verdana";
+            canvas_ctx.fillText("Customer & Service Orientation",0,50+item_height-20);
+            canvas_ctx.fillText("Relationship Building",0,50+item_height*2-20);
+            canvas_ctx.fillText("Communication with Impact ",0,50+item_height*3-20);
+            canvas_ctx.fillText("Brand Identification with BMW/ MINI",0,50+item_height*4-20);
+            canvas_ctx.fillText("Problem Solving",0,50+item_height*5-20);
+            canvas_ctx.fillText("Motivation to Perform & Achieve Results",0,50+item_height*6-20);
+            canvas_ctx.fillText("Flexibility & Willingness to Learn",0,50+item_height*7-20);
+            canvas_ctx.fillText("Self-Management & Resilience",0,50+item_height*8-20);
+            canvas_ctx.fillText("Team Orientation & Integrity",0,50+item_height*9-20);
+
+
+            //crear cuadricula
+            canvas_ctx.setLineDash([2,2]);
+            canvas_ctx.beginPath();
+            canvas_ctx.moveTo(320,50);
+            canvas_ctx.lineTo(320,50+item_height*9);
+            canvas_ctx.moveTo(365,50);
+            canvas_ctx.lineTo(365,50+item_height*9);
+            canvas_ctx.moveTo(410,50);
+            canvas_ctx.lineTo(410,50+item_height*9);
+            canvas_ctx.moveTo(455,50);
+            canvas_ctx.lineTo(455,50+item_height*9);
+            canvas_ctx.moveTo(500,50);
+            canvas_ctx.lineTo(500,50+item_height*9);
+
+            canvas_ctx.moveTo(275,50+item_height);
+            canvas_ctx.lineTo(500,50+item_height);
+            canvas_ctx.moveTo(275,50+item_height*2);
+            canvas_ctx.lineTo(500,50+item_height*2);
+            canvas_ctx.moveTo(275,50+item_height*3);
+            canvas_ctx.lineTo(500,50+item_height*3);
+            canvas_ctx.moveTo(275,50+item_height*4);
+            canvas_ctx.lineTo(500,50+item_height*4);
+            canvas_ctx.moveTo(275,50+item_height*5);
+            canvas_ctx.lineTo(500,50+item_height*5);
+            canvas_ctx.moveTo(275,50+item_height*6);
+            canvas_ctx.lineTo(500,50+item_height*6);
+            canvas_ctx.moveTo(275,50+item_height*7);
+            canvas_ctx.lineTo(500,50+item_height*7);
+            canvas_ctx.moveTo(275,50+item_height*8);
+            canvas_ctx.lineTo(500,50+item_height*8);
+
+            canvas_ctx.stroke();
+            canvas_ctx.setLineDash([]);
+
+            //labels
+            canvas_ctx.fillStyle = "black";
+            canvas_ctx.font = "bold 24px Verdana";
+            canvas_ctx.fillText("1",310,45);
+            canvas_ctx.fillText("2",355,45);
+            canvas_ctx.fillText("3",400,45);
+            canvas_ctx.fillText("4",445,45);
+            canvas_ctx.fillText("5",490,45);
+
+            //minimum selection criteria
+            canvas_ctx.strokeStyle = "red";
+            canvas_ctx.lineWidth = 3;
+            canvas_ctx.beginPath();
+            canvas_ctx.moveTo(45*3+275,50+item_height/2);
+            canvas_ctx.lineTo(45*2+275,50+item_height+item_height/2);            
+            canvas_ctx.lineTo(45*2+275,50+2*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*2+275,50+3*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*3+275,50+4*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*3+275,50+5*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*3+275,50+6*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*2+275,50+7*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*4+275,50+8*item_height+item_height/2);          
+            canvas_ctx.stroke();
+
+            //Results
+            canvas_ctx.strokeStyle = "blue";
+            canvas_ctx.beginPath();
+            canvas_ctx.moveTo(45*sjt_result[0].total+275,50+item_height/2);
+            canvas_ctx.lineTo(45*sjt_result[1].total+275,50+item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[2].total+275,50+2*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[3].total+275,50+3*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[4].total+275,50+4*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[5].total+275,50+5*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[6].total+275,50+6*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[7].total+275,50+7*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*sjt_result[8].total+275,50+8*item_height+item_height/2);          
+            canvas_ctx.stroke();
+
+            //target selection criteria
+            canvas_ctx.strokeStyle = "green";
+            canvas_ctx.beginPath();
+            canvas_ctx.moveTo(45*5+275,50+item_height/2);
+            canvas_ctx.lineTo(45*4+275,50+item_height+item_height/2);            
+            canvas_ctx.lineTo(45*4+275,50+2*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*5+275,50+3*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*4+275,50+4*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*4+275,50+5*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*4+275,50+6*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*5+275,50+7*item_height+item_height/2);            
+            canvas_ctx.lineTo(45*5+275,50+8*item_height+item_height/2);          
+            canvas_ctx.stroke();
+
+            
             document.title = (Cookies.get("lang") == 'es') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
             document.getElementById("switch-lang").onclick = function() {
                 document.title = (Cookies.get("lang") == 'en') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";

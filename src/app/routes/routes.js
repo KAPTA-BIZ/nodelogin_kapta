@@ -7,6 +7,7 @@ var UserSchema = require('../models/user.js');
 var API_Test = require('../models/API_Test');
 var Assignments = require('../models/Assignments');
 var Codes = require('../models/Codes');
+var SJT_Competences = require('../models/SJT_Competences');
 var LinkResults = require('../models/LinkResults');
 var SummaryResults = require('../models/SummaryResults');
 var storageLinkResult = require('./storage/StorageLinkResult');
@@ -19,6 +20,43 @@ const { url } = require('../../config/database');
 var forge = require('node-forge');
 
 module.exports = (app, passport) => {
+    //-----------------------------pruebas------------------------------------//
+    app.get('/pruebas2846', (req, res) => {
+
+        var alldata = [{ number: "1", name: "Customer & Service Orientation", questions: ["16494683", "16494714", "16494722", "16509980", "16510008", "16510014", "16510021", "16510063", "16510069"], min: "3", max: "5", habilities: ["Active listening", "Dedication to service", "Identifying Needs", "Empathy", "Resolving requirements", "Excellent verbal expression", "Emotional management", "Negotiation skills"] },
+        { number: "2", name: "Relationship Building", questions: ["16509974", "16509996", "16510053"], min: "2", max: "4", habilities: ["Empathy", "Active listening", "Assertive communication", "Commitment", "Assertive approach"] },
+        { number: "3", name: "Communication with impact ", questions: ["16494697", "16494708", "16510021", "16510035", "16510056"], min: "2", max: "4", habilities: ["Active listening", "Excellent verbal expression", "Argumentation capacity", "Persuasiveness", "Negotiation skills"] },
+        { number: "4", name: "Brand Identification with BMW/MINI", questions: ["16494691", "16494714", "16494731"], min: "2", max: "5", habilities: ["Brand concept", "Ability to generate BMW Premium experiences", "Brand values experience", "Meaning that they give to the brand", "The importance of the brand in his lifestyle", "Commitment"] },
+        { number: "5", name: "Problem Solving", questions: ["16494643", "16494722", "16509980", "16509989", "16509996", "16510010", "16510014", "16510021", "16510069"], min: "3", max: "4", habilities: ["Analytical Skills", "Decision Making", "Negotiation skills", "Emotional management", "Resolving requirements", "Planning"] },
+        { number: "6", name: "Motivation to Perform & Achieve Results", questions: ["16510008", "16510025", "16510030", "16510074"], min: "3", max: "4", habilities: ["Setting Goals", "Planning", "Proactivity", "Analytical ability", "Results-Oriented", "Punctuality"] },
+        { number: "7", name: "Flexibility and willigness to learn ", questions: ["16494731", "16509991", "16510074"], min: "3", max: "4", habilities: ["Adaptation to Change", "Proactivity", "Self-criticism", "Setting Goals", "Learning capacity", "Creativity"] },
+        { number: "8", name: "Self management and resilience ", questions: ["16494688", "16494725", "16509991", "16510027", "16510030", "16510056"], min: "2", max: "5", habilities: ["Coping Capacity", "Frustration tolerance", "Planning", "Efficient", "Emotional management", "Proactivity", "Self-confidence"] },
+        { number: "9", name: "Team orientation", questions: ["16509974", "16509983", "16509989", "16510005"], min: "4", max: "5", habilities: ["Adaptation to Change", "Flexibility", "Active listening", "Negotiation skills", "Assertive communication", "Empathy", "Coping Capacity", "Commitment"] }];
+
+
+        alldata.forEach(element => {
+            var sjt_competences = new SJT_Competences();
+            sjt_competences.number = element.number;
+            sjt_competences.name = element.name;
+            sjt_competences.min = element.min;
+            sjt_competences.max = element.max;
+            element.questions.forEach(question => {
+                sjt_competences.questions.push({ classmarker_question_id: question });
+            });
+            element.habilities.forEach(hability => {
+                sjt_competences.habilities.push({ hability_name: hability });
+            });
+            sjt_competences.save(function (err) {
+                if (err) {
+                    console.log('err');
+                } else {
+                    console.log('ok');
+                }
+            });
+        });
+        res.send('ok');
+    });
+
     //------------------------------- WEBHOOK--------------------------------//
     app.use(bodyParser.json());
 
@@ -1019,141 +1057,183 @@ module.exports = (app, passport) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
-                                        if (req.user.local.user == user.local.user || req.user.local.user == user.NSC || req.user.sa == 1) {
-                                            var data = {};
-                                            data.test_name = linkResult.test_name;
-                                            data.access_code_used = linkResult.access_code_used;
-                                            data.percentage = linkResult.knowledge_test_average;
-                                            data.country_average = summary.knowledge_test_average;
-                                            data.points_scored = linkResult.knowledge_points_scored;
-                                            data.points_available = linkResult.knowledge_points_available;
-                                            data.duration = linkResult.duration;
-                                            data.time_started = linkResult.time_started;
-                                            data.time_finished = linkResult.time_finished;
-                                            data.category_results = linkResult.category_results.sort((a, b) => (a.name < b.name) ? -1 : 1);
-                                            data.category_results = data.category_results.filter(result => (result.id > 83 && result.id < 91));
-                                            summary.categories = summary.categories.sort((a, b) => (a.name < b.name) ? -1 : 1);
-                                            summary.categories = summary.categories.filter(category => (category.id > 83 && category.id < 91));
-                                            data.category_results.labels = [];
-                                            data.category_results.data = [];
-                                            data.category_results.average = [];
-                                            data.category_results.forEach((result, index) => {
-                                                data.category_results.labels.push(JSON.stringify(result.name).replace("&amp;", "&"));
-                                                data.category_results.data.push(result.percentage);
-                                                if (summary.categories[index].name == result.name) {
-                                                    data.category_results.average.push(Number(summary.categories[index].average).toFixed(2));
-                                                } else {
-                                                    data.category_results.average.push(0);
-                                                }
-                                            });
-                                            var questions = linkResult.questions.sort((a, b) => (a.category_id < b.category_id) ? -1 : 1);
-                                            data.questions = [];
-                                            //---formato de las respuestas ---/
-                                            questions.forEach((question, index) => {
-                                                var result = 0;
-                                                if (question.question_type == "multiplechoice" || question.question_type == "truefalse") {
-                                                    var correct_option = question.correct_option.split(",");
-                                                    var user_response = question.user_response.split(",");
-                                                    var options = [];
-                                                    for (var key in question.options) {
-                                                        if (question.options.hasOwnProperty(key)) {
-                                                            if (user_response.indexOf(key) != -1) {
-                                                                if (correct_option.indexOf(key) != -1) {
-                                                                    options.push({
-                                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                                        status: 'correct answer'
-                                                                    });
-                                                                    result++;
-                                                                } else {
-                                                                    options.push({
-                                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                                        status: 'wrong answer'
-                                                                    });
+                                        SJT_Competences.find({}, null, { sort: { 'number': 1 } }, (err, sjt_competences) => {
+                                            if (err) {
+                                                res.sendStatus(502);
+                                            } else {
+                                                /* res.send(sjt_competences); */
+                                                if (req.user.local.user == user.local.user || req.user.local.user == user.NSC || req.user.sa == 1) {
+                                                    var data = {};
+                                                    data.test_name = linkResult.test_name;
+                                                    data.access_code_used = linkResult.access_code_used;
+                                                    data.percentage = linkResult.knowledge_test_average;
+                                                    data.country_average = summary.knowledge_test_average;
+                                                    data.points_scored = linkResult.knowledge_points_scored;
+                                                    data.points_available = linkResult.knowledge_points_available;
+                                                    data.duration = linkResult.duration;
+                                                    data.time_started = linkResult.time_started;
+                                                    data.time_finished = linkResult.time_finished;
+                                                    data.category_results = linkResult.category_results.sort((a, b) => (a.name < b.name) ? -1 : 1);
+                                                    data.category_results = data.category_results.filter(result => (result.id > 83 && result.id < 91));
+                                                    summary.categories = summary.categories.sort((a, b) => (a.name < b.name) ? -1 : 1);
+                                                    summary.categories = summary.categories.filter(category => (category.id > 83 && category.id < 91));
+                                                    data.category_results.labels = [];
+                                                    data.category_results.data = [];
+                                                    data.category_results.average = [];
+                                                    data.category_results.forEach((result, index) => {
+                                                        data.category_results.labels.push(JSON.stringify(result.name).replace("&amp;", "&"));
+                                                        data.category_results.data.push(result.percentage);
+                                                        if (summary.categories[index].name == result.name) {
+                                                            data.category_results.average.push(Number(summary.categories[index].average).toFixed(2));
+                                                        } else {
+                                                            data.category_results.average.push(0);
+                                                        }
+                                                    });
+                                                    var questions = linkResult.questions.sort((a, b) => (a.category_id < b.category_id) ? -1 : 1);
+                                                    data.questions = [];
+                                                    //---formato de las respuestas ---/
+                                                    questions.forEach((question, index) => {
+                                                        var result = 0;
+                                                        if (question.category_id != "99") {
+                                                            if (question.question_type == "multiplechoice" || question.question_type == "truefalse") {
+                                                                var correct_option = question.correct_option.split(",");
+                                                                var user_response = question.user_response.split(",");
+                                                                var options = [];
+                                                                for (var key in question.options) {
+                                                                    if (question.options.hasOwnProperty(key)) {
+                                                                        if (user_response.indexOf(key) != -1) {
+                                                                            if (correct_option.indexOf(key) != -1) {
+                                                                                options.push({
+                                                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                                                    status: 'correct answer'
+                                                                                });
+                                                                                result++;
+                                                                            } else {
+                                                                                options.push({
+                                                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                                                    status: 'wrong answer'
+                                                                                });
+                                                                            }
+                                                                        } else {
+                                                                            if (correct_option.indexOf(key) != -1) {
+                                                                                options.push({
+                                                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                                                    status: 'missed answer'
+                                                                                });
+                                                                            } else {
+                                                                                options.push({
+                                                                                    option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
+                                                                                    status: 'answer'
+                                                                                });
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
-                                                            } else {
-                                                                if (correct_option.indexOf(key) != -1) {
-                                                                    options.push({
-                                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                                        status: 'missed answer'
-                                                                    });
+                                                            } else if (question.question_type == "freetext") {
+                                                                var options = {};
+                                                                options.user_answer = question.user_response;
+                                                                if (question.result == "incorrect") {
+                                                                    options.status = 'wrong answer';
                                                                 } else {
-                                                                    options.push({
-                                                                        option: question.options[key].replace(new RegExp('<br /><br />', 'g'), "<br />"),
-                                                                        status: 'answer'
-                                                                    });
+                                                                    options.status = 'correct answer';
+                                                                    result++;
+                                                                }
+                                                                options.options = '';
+                                                                question.options.exact_match.forEach(option => {
+                                                                    options.options += option.content + ',';
+                                                                });
+                                                                options.options = options.options.substr(0, options.options.length - 1);
+                                                            } else if (question.question_type == "matching") {
+                                                                var options = [];
+                                                                for (var key in question.options) {
+                                                                    if (question.options.hasOwnProperty(key)) {
+                                                                        if (question.options[key].clue) {
+                                                                            var status = '';
+                                                                            if (question.options[key].correct_option == question.options[key].user_response) {
+                                                                                status = 'correct answer';
+                                                                                result++
+                                                                            } else {
+                                                                                status = 'wrong answer';
+                                                                            }
+                                                                            options.push({
+                                                                                clue: question.options[key].clue,
+                                                                                match: question.options[key].match,
+                                                                                user_response: question.options[question.options[key].user_response].match,
+                                                                                status: status
+                                                                            });
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
-                                                        }
-                                                    }
-                                                } else if (question.question_type == "freetext") {
-                                                    var options = {};
-                                                    options.user_answer = question.user_response;
-                                                    if (question.result == "incorrect") {
-                                                        options.status = 'wrong answer';
-                                                    } else {
-                                                        options.status = 'correct answer';
-                                                        result++;
-                                                    }
-                                                    options.options = '';
-                                                    question.options.exact_match.forEach(option => {
-                                                        options.options += option.content + ',';
-                                                    });
-                                                    options.options = options.options.substr(0, options.options.length - 1);
-                                                } else if (question.question_type == "matching") {
-                                                    var options = [];
-                                                    for (var key in question.options) {
-                                                        if (question.options.hasOwnProperty(key)) {
-                                                            if (question.options[key].clue) {
-                                                                var status = '';
-                                                                if (question.options[key].correct_option == question.options[key].user_response) {
-                                                                    status = 'correct answer';
-                                                                    result++
-                                                                } else {
-                                                                    status = 'wrong answer';
-                                                                }
-                                                                options.push({
-                                                                    clue: question.options[key].clue,
-                                                                    match: question.options[key].match,
-                                                                    user_response: question.options[question.options[key].user_response].match,
-                                                                    status: status
+
+                                                            if (result > 0 && question.result == "incorrect") {
+                                                                data.questions.push({
+                                                                    question: question.question,
+                                                                    options: options,
+                                                                    category: question.category,
+                                                                    points_scored: question.points_scored,
+                                                                    points_available: question.points_available,
+                                                                    question_type: question.question_type,
+                                                                    result: 'partial_correct'
+                                                                });
+                                                            } else {
+                                                                data.questions.push({
+                                                                    question: question.question,
+                                                                    options: options,
+                                                                    category: question.category,
+                                                                    points_scored: question.points_scored,
+                                                                    points_available: question.points_available,
+                                                                    question_type: question.question_type,
+                                                                    result: question.result
                                                                 });
                                                             }
                                                         }
-                                                    }
-                                                }
+                                                    });
 
-                                                if (result > 0 && question.result == "incorrect") {
-                                                    data.questions.push({
-                                                        question: question.question,
-                                                        options: options,
-                                                        category: question.category,
-                                                        points_scored: question.points_scored,
-                                                        points_available: question.points_available,
-                                                        question_type: question.question_type,
-                                                        result: 'partial_correct'
+                                                    //--------calculo de puntos competencias---------//
+                                                    data.sjt_competences = [];
+                                                    var SJT_Questions = linkResult.questions.filter(question => question.category_id == "99");
+                                                    sjt_competences.forEach((competence) => {
+                                                        var score = 0;
+                                                        var number_of_questions = 0;
+                                                        competence.questions.forEach((competence_question, index2) => {
+                                                            var index = SJT_Questions.findIndex(question => question.question_id == competence_question.classmarker_question_id);
+                                                            if (index > -1) {
+                                                                number_of_questions = number_of_questions + 1;
+                                                                switch (SJT_Questions[index].user_response) {
+                                                                    case "A":
+                                                                        score = score + 1;
+                                                                        break;
+                                                                    case "B":
+                                                                    case "C":
+                                                                        secore = score + 0.5;
+                                                                        break;
+                                                                }
+                                                            }
+                                                        });
+                                                        data.sjt_competences.push(/* JSON.stringify( */{
+                                                            name: competence.name,
+                                                            score: score,
+                                                            number_of_questions: number_of_questions,
+                                                            total: (score * 5 / number_of_questions).toFixed(2),
+                                                            min: competence.min,
+                                                            max: competence.max,
+                                                            habilities: competence.habilities
+                                                        }/* ) */);
+                                                    });
+                                                    /* res.send(sjt_competences); */
+                                                    res.render('test_result', {
+                                                        data: data,
+                                                        user: req.user
                                                     });
                                                 } else {
-                                                    data.questions.push({
-                                                        question: question.question,
-                                                        options: options,
-                                                        category: question.category,
-                                                        points_scored: question.points_scored,
-                                                        points_available: question.points_available,
-                                                        question_type: question.question_type,
-                                                        result: question.result
-                                                    });
+                                                    res.sendStatus(403);
                                                 }
-
-
-                                            });
-                                            res.render('test_result', {
-                                                data: data,
-                                                user: req.user
-                                            });
-                                        } else {
-                                            res.sendStatus(403);
-                                        }
+                                            }
+                                        })
                                     }
+
+
                                 });
                             }
                         });
