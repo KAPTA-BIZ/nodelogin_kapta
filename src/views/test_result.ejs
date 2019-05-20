@@ -35,10 +35,12 @@
                             <div class="col-md-4 my-auto">
                                 <div class="card container-fluid mx-auto">
                                     <div class="card-body">
-                                        <h3 class="card-title text-center">Overall Knowledge Test Result</h3>
+                                        <h3 class="card-title text-center" lang="en">Overall Knowledge Test Result</h3>
+                                        <h3 class="card-title text-center" lang="es">Resultado general de la prueba de conocimientos</h3>
                                         <h2 class="card-title text-center"><%= data.percentage%>%</h2>
                                         <br>
-                                        <h3 class="card-title text-center">Country Average</h3>
+                                        <h3 class="card-title text-center" lang="en">Country Average</h3>
+                                        <h3 class="card-title text-center" lang="es">Promedio del país</h3>
                                         <h2 class="card-title text-center"><%= data.country_average%>%</h2>
                                     </div>
                                 </div>
@@ -91,30 +93,46 @@
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <div class="col-auto">
-                                                    <canvas id="competencesCanvas" width="520" height="420"></canvas><!--  style="border:1px solid #000000;" -->
+                                                    <canvas id="competencesCanvas" width="520" height="580"></canvas><!--  style="border:1px solid #000000;" -->
                                                 </div>
                                                 <div class="col">
-                                                    <div style=" width: 100%; height: 420px; overflow: auto;"><!-- background-color: lightblue; -->
-                                                        <h4>Competencias que deben ser mejoradas</h4>
+                                                    <div style=" width: 100%; height: 580px; overflow: auto;"><!-- background-color: lightblue; -->
                                                         <% data.sjt_competences.forEach((competence,index)=>{ 
-                                                            if(competence.total<competence.min){%>
+                                                            if(competence.total>=0){%>
 
-                                                        <h5><%=competence.name%></h5>
-                                                        <div class="progress" style="margin: 3px 10px; height: 20px;">
+                                                        <h4 lang="en"><%=index+1 +'. '+ competence.name%></h4>
+                                                        <h4 lang="es"><%=index+1 +'. '+ competence.name_es%></h4>
+                                                        <!-- <div class="progress" style="margin: 3px 10px; height: 20px;">
                                                             <div class="progress-bar progress-bar-striped" role="progressbar" style="width:<%=competence.total*100/5%>%; background-color: #2A627B; "><%=(competence.total*100/5).toFixed(2)%>%</div>
-                                                            <!-- <div class="progress-value"><b><%=(competence.total*100/5).toFixed(2)%>%</b></div> -->
                                                         </div>
                                                         <div class="progress" style="margin: 3px 10px 20px; height: 5px; overflow: visible;">
                                                             <div class="progress-bar bg-danger" role="progressbar" style="width: <%=competence.min*100/5%>%" ><span><%=(competence.min*100/5).toFixed(0)%>%</span></div>
                                                             <div class="progress-bar bg-info" role="progressbar" style="width: 0%" ></div>
                                                             <div class="progress-bar bg-success" role="progressbar" style="width: <%=100-competence.min*100/5%>%" ></div>
-                                                          </div>
-
-                                                          para mejorar se recomienda:
+                                                          </div> -->
                                                             <ul>
-                                                                <% competence.habilities.forEach((hability,index)=>{ %>
-                                                                <li><%=hability.hability_name%></li>
-                                                                <% }) %>
+                                                                <% switch (competence.total) {
+                                                                    case '1':
+                                                                    case '2':
+                                                                        competence.insufficient.forEach((item,index)=>{ %>
+                                                                        <li lang="en"><%=item%></li>
+                                                                        <li lang="es"><%=competence.insufficient_es[index]%></li>
+                                                                        <% }) 
+                                                                        break;
+                                                                    case '3':
+                                                                    case '4':
+                                                                        competence.adequate.forEach((item,index)=>{ %>
+                                                                        <li lang="en"><%=item%></li>
+                                                                        <li lang="es"><%=competence.adequate_es[index]%></li>
+                                                                        <% }) 
+                                                                        break;
+                                                                    case '5':
+                                                                        competence.excellent.forEach((item,index)=>{ %>
+                                                                        <li lang="en"><%=item%></li>
+                                                                        <li lang="es"><%=competence.excellent_es[index]%></li>
+                                                                        <% }) 
+                                                                        break;
+                                                                }%>
                                                             </ul>
                                                         <% }}) %>
                                                     </div>
@@ -659,176 +677,274 @@
                     }
                 }
             });
+
+            createSJTReport(Cookies.get('lang'));
+
+            function createSJTReport(current_lang){
+                console.log(current_lang);
+                var item_height=40;
+                var pointsgap=35;
+                var canvas = document.getElementById("competencesCanvas");
+                var canvas_ctx = canvas.getContext("2d");
+                canvas_ctx.clearRect(0,0,canvas.width,canvas.height);
+                var sjt_result=<%- JSON.stringify(data.sjt_competences) %>;
+                // Triángulo rellenado
+                var grd = canvas_ctx.createLinearGradient(275, 0, 500, 0);
+                grd.addColorStop(0, "white");
+                grd.addColorStop(1, "grey");
+                canvas_ctx.fillStyle = grd;
+                
+                canvas_ctx.beginPath();
+                canvas_ctx.moveTo(275,50);
+                canvas_ctx.lineTo(500,50);
+                canvas_ctx.lineTo(500,0);
+                canvas_ctx.fill();
+
+                //items
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50, 500, item_height);
+                canvas_ctx.strokeStyle="white";
+                canvas_ctx.stroke();
+                canvas_ctx.fillStyle = "rgba(220, 230, 241, 1)";
+                canvas_ctx.fill();
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*2, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*3, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*4, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fillStyle = "rgba(184, 204, 228, 1)";
+                canvas_ctx.fill();
+
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*5, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fillStyle = "rgba(149, 179, 215, 1)";
+                canvas_ctx.fill();
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*6, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*7, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+
+                canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*8, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fillStyle = "rgba(54, 96, 146, 1)";
+                canvas_ctx.fill();
+                
+                canvas_ctx.fillStyle = "black";
+                canvas_ctx.font = "14px Verdana";
+                canvas_ctx.fillText((current_lang == 'es') ? 'Orientación al cliente y al servicio' : 'Customer & Service Orientation',0,50+item_height-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Construcción de relaciones' : 'Relationship Building',0,50+item_height*2-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Comunicación con Impacto' : 'Communication with Impact',0,50+item_height*3-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Identificación de marca con BMW/ MINI' : 'Brand Identification with BMW/ MINI',0,50+item_height*4-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Solución de problemas' : 'Problem Solving',0,50+item_height*5-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Motivación para rendir y lograr resultados' : 'Motivation to Perform & Achieve Results',0,50+item_height*6-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Flexibilidad y voluntad de aprender' : 'Flexibility & Willingness to Learn',0,50+item_height*7-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Autogestión y resiliencia' : 'Self-Management & Resilience',0,50+item_height*8-20);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Orientación e integridad de equipo' : 'Team Orientation & Integrity',0,50+item_height*9-20);
+                
+                //target selection criteria
+                canvas_ctx.strokeStyle = "rgba(0, 0, 0, 1)";
+                canvas_ctx.lineWidth = 2.5;
+                canvas_ctx.beginPath();
+                canvas_ctx.moveTo(342+pointsgap*(sjt_result[0].max-1), 70+40*0);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[1].max-1), 70+40*1);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[2].max-1), 70+40*2);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[3].max-1), 70+40*3);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[4].max-1), 70+40*4);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[5].max-1), 70+40*5);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[6].max-1), 70+40*6);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[7].max-1), 70+40*7);
+                canvas_ctx.lineTo(342+pointsgap*(sjt_result[8].max-1), 70+40*8);
+                canvas_ctx.stroke();
+                /* canvas_ctx.strokeStyle = "green";
+                canvas_ctx.beginPath();
+                canvas_ctx.moveTo(45*5+275,50+item_height/2);
+                canvas_ctx.lineTo(45*4+275,50+item_height+item_height/2);            
+                canvas_ctx.lineTo(45*4+275,50+2*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*5+275,50+3*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*4+275,50+4*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*4+275,50+5*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*4+275,50+6*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*5+275,50+7*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*5+275,50+8*item_height+item_height/2);          
+                canvas_ctx.stroke(); */
+                
+                //crear cuadricula
+                canvas_ctx.strokeStyle="black";
+                canvas_ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                let radius=10;
+                for (let i_column = 0; i_column < 5; i_column++) {
+                    for (let i_row = 0; i_row < 9; i_row++) {
+                        if(sjt_result[i_row].total==i_column+1){
+                            canvas_ctx.fillStyle = "rgba(80,117,133,1)";
+                        }else{
+                            if(sjt_result[i_row].max==i_column+1){
+                                canvas_ctx.fillStyle = "rgba(0, 0, 0, 1)";
+                            }else{
+                                canvas_ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                            }
+                        }
+                        
+                        if(sjt_result[i_row].min==i_column+1){
+                            canvas_ctx.lineWidth = 6;
+                            radius=9;
+                        }else{
+                            canvas_ctx.lineWidth = 1;
+                            radius=10;
+                        }
+
+                        canvas_ctx.beginPath();
+                        canvas_ctx.arc( 342+pointsgap*i_column, 70+40*i_row, radius, 0, 2 * Math.PI);
+                        canvas_ctx.stroke();
+                        canvas_ctx.fill();
+                    }
+                }
+                /*canvas_ctx.strokeStyle="black";
+                canvas_ctx.setLineDash([2,2]);
+                canvas_ctx.beginPath();
+                canvas_ctx.moveTo(320,50);
+                canvas_ctx.lineTo(320,50+item_height*9);
+                canvas_ctx.moveTo(365,50);
+                canvas_ctx.lineTo(365,50+item_height*9);
+                canvas_ctx.moveTo(410,50);
+                canvas_ctx.lineTo(410,50+item_height*9);
+                canvas_ctx.moveTo(455,50);
+                canvas_ctx.lineTo(455,50+item_height*9);
+                canvas_ctx.moveTo(500,50);
+                canvas_ctx.lineTo(500,50+item_height*9);
+
+                canvas_ctx.moveTo(275,50+item_height);
+                canvas_ctx.lineTo(500,50+item_height);
+                canvas_ctx.moveTo(275,50+item_height*2);
+                canvas_ctx.lineTo(500,50+item_height*2);
+                canvas_ctx.moveTo(275,50+item_height*3);
+                canvas_ctx.lineTo(500,50+item_height*3);
+                canvas_ctx.moveTo(275,50+item_height*4);
+                canvas_ctx.lineTo(500,50+item_height*4);
+                canvas_ctx.moveTo(275,50+item_height*5);
+                canvas_ctx.lineTo(500,50+item_height*5);
+                canvas_ctx.moveTo(275,50+item_height*6);
+                canvas_ctx.lineTo(500,50+item_height*6);
+                canvas_ctx.moveTo(275,50+item_height*7);
+                canvas_ctx.lineTo(500,50+item_height*7);
+                canvas_ctx.moveTo(275,50+item_height*8);
+                canvas_ctx.lineTo(500,50+item_height*8);
+
+                canvas_ctx.stroke();
+                canvas_ctx.setLineDash([]); */
+
+                //labels
+                canvas_ctx.fillStyle = "black";
+                canvas_ctx.font = "bold 24px Verdana";
+                canvas_ctx.fillText("1",335,45);
+                canvas_ctx.fillText("2",335+pointsgap,45);
+                canvas_ctx.fillText("3",335+2*pointsgap,45);
+                canvas_ctx.fillText("4",335+3*pointsgap,45);
+                canvas_ctx.fillText("5",335+4*pointsgap,45);
+
+                //minimum selection criteria
+                /* canvas_ctx.strokeStyle = "red";
+                canvas_ctx.lineWidth = 3;
+                canvas_ctx.beginPath();
+                canvas_ctx.moveTo(45*3+275,50+item_height/2);
+                canvas_ctx.lineTo(45*2+275,50+item_height+item_height/2);            
+                canvas_ctx.lineTo(45*2+275,50+2*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*2+275,50+3*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*3+275,50+4*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*3+275,50+5*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*3+275,50+6*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*2+275,50+7*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*4+275,50+8*item_height+item_height/2);          
+                canvas_ctx.stroke(); */
+
+                //Results
+                /* canvas_ctx.strokeStyle = "blue";
+                canvas_ctx.beginPath();
+                canvas_ctx.moveTo(45*sjt_result[0].total+275,50+item_height/2);
+                canvas_ctx.lineTo(45*sjt_result[1].total+275,50+item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[2].total+275,50+2*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[3].total+275,50+3*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[4].total+275,50+4*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[5].total+275,50+5*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[6].total+275,50+6*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[7].total+275,50+7*item_height+item_height/2);            
+                canvas_ctx.lineTo(45*sjt_result[8].total+275,50+8*item_height+item_height/2);          
+                canvas_ctx.stroke(); */
+
+                
+
+                //labels
+
+                canvas_ctx.fillStyle = "black";
+                canvas_ctx.font = "bold 14px Verdana";
+                canvas_ctx.fillText((current_lang == 'es') ? 'Referencias:' : 'Legend:',0, 450);
+                canvas_ctx.lineWidth = 1;
+                canvas_ctx.fillStyle = "rgba(0, 0, 0, 1)";
+                canvas_ctx.beginPath();
+                canvas_ctx.arc( 30, 470, 10, 0, 2 * Math.PI);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.lineWidth = 6;
+                canvas_ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                canvas_ctx.beginPath();
+                canvas_ctx.arc( 30, 495, 9, 0, 2 * Math.PI);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.lineWidth = 1;
+                canvas_ctx.fillStyle = "rgba(6,58,81,0.7)";
+                canvas_ctx.beginPath();
+                canvas_ctx.arc( 30, 520, 10, 0, 2 * Math.PI);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                
+                canvas_ctx.fillStyle = "black";
+                canvas_ctx.font = "14px Verdana";
+                canvas_ctx.fillText((current_lang == 'es') ? '= perfil deseado' : '= target profile',45, 475);
+                canvas_ctx.fillText((current_lang == 'es') ? '= criterio mínimo de selección' : '= minimun criteria for selection',45, 500);
+                canvas_ctx.fillText((current_lang == 'es') ? '= resultado' : '= result',45, 525);
+
+                canvas_ctx.fillStyle = "black";
+                canvas_ctx.font = "bold 13px Verdana";
+                canvas_ctx.fillText((current_lang == 'es') ? 'Escala de 5 puntos:' : '5-point scale:',0, 555);
+                canvas_ctx.font = "13px Verdana";
+                canvas_ctx.fillText((current_lang == 'es') ? '1 = insuficiente, 2 = ampliable, 3 = adecuado, 4 = avanzado, 5 = excelente' : '1 = insufficient, 2 = expandable, 3 = adequate, 4 = advanced, 5 = excellent',8, 570);
+                
+
+                
+               /*  canvas_ctx.beginPath();
+                canvas_ctx.rect(0, 50+item_height*10, 500, item_height);
+                canvas_ctx.stroke();
+                canvas_ctx.fill(); */
+            }
             
-            var item_height=40;
-            var canvas = document.getElementById("competencesCanvas");
-            var canvas_ctx = canvas.getContext("2d");
-            var sjt_result=<%- JSON.stringify(data.sjt_competences) %>;
-            // Triángulo rellenado
-            var grd = canvas_ctx.createLinearGradient(275, 0, 500, 0);
-            grd.addColorStop(0, "white");
-            grd.addColorStop(1, "grey");
-            canvas_ctx.fillStyle = grd;
             
-            canvas_ctx.beginPath();
-            canvas_ctx.moveTo(275,50);
-            canvas_ctx.lineTo(500,50);
-            canvas_ctx.lineTo(500,0);
-            canvas_ctx.fill();
-
-            //items
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fillStyle = "rgba(220, 230, 241, 1)";
-            canvas_ctx.fill();
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fill();
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*2, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fill();
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*3, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fill();
-
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*4, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fillStyle = "rgba(184, 204, 228, 1)";
-            canvas_ctx.fill();
-
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*5, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fillStyle = "rgba(149, 179, 215, 1)";
-            canvas_ctx.fill();
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*6, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fill();
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*7, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fill();
-
-            canvas_ctx.beginPath();
-            canvas_ctx.rect(0, 50+item_height*8, 275, item_height);
-            canvas_ctx.stroke();
-            canvas_ctx.fillStyle = "rgba(54, 96, 146, 1)";
-            canvas_ctx.fill();
-             
-
-            canvas_ctx.fillStyle = "black";
-            canvas_ctx.font = "12px Verdana";
-            canvas_ctx.fillText("Customer & Service Orientation",0,50+item_height-20);
-            canvas_ctx.fillText("Relationship Building",0,50+item_height*2-20);
-            canvas_ctx.fillText("Communication with Impact ",0,50+item_height*3-20);
-            canvas_ctx.fillText("Brand Identification with BMW/ MINI",0,50+item_height*4-20);
-            canvas_ctx.fillText("Problem Solving",0,50+item_height*5-20);
-            canvas_ctx.fillText("Motivation to Perform & Achieve Results",0,50+item_height*6-20);
-            canvas_ctx.fillText("Flexibility & Willingness to Learn",0,50+item_height*7-20);
-            canvas_ctx.fillText("Self-Management & Resilience",0,50+item_height*8-20);
-            canvas_ctx.fillText("Team Orientation & Integrity",0,50+item_height*9-20);
-
-
-            //crear cuadricula
-            canvas_ctx.setLineDash([2,2]);
-            canvas_ctx.beginPath();
-            canvas_ctx.moveTo(320,50);
-            canvas_ctx.lineTo(320,50+item_height*9);
-            canvas_ctx.moveTo(365,50);
-            canvas_ctx.lineTo(365,50+item_height*9);
-            canvas_ctx.moveTo(410,50);
-            canvas_ctx.lineTo(410,50+item_height*9);
-            canvas_ctx.moveTo(455,50);
-            canvas_ctx.lineTo(455,50+item_height*9);
-            canvas_ctx.moveTo(500,50);
-            canvas_ctx.lineTo(500,50+item_height*9);
-
-            canvas_ctx.moveTo(275,50+item_height);
-            canvas_ctx.lineTo(500,50+item_height);
-            canvas_ctx.moveTo(275,50+item_height*2);
-            canvas_ctx.lineTo(500,50+item_height*2);
-            canvas_ctx.moveTo(275,50+item_height*3);
-            canvas_ctx.lineTo(500,50+item_height*3);
-            canvas_ctx.moveTo(275,50+item_height*4);
-            canvas_ctx.lineTo(500,50+item_height*4);
-            canvas_ctx.moveTo(275,50+item_height*5);
-            canvas_ctx.lineTo(500,50+item_height*5);
-            canvas_ctx.moveTo(275,50+item_height*6);
-            canvas_ctx.lineTo(500,50+item_height*6);
-            canvas_ctx.moveTo(275,50+item_height*7);
-            canvas_ctx.lineTo(500,50+item_height*7);
-            canvas_ctx.moveTo(275,50+item_height*8);
-            canvas_ctx.lineTo(500,50+item_height*8);
-
-            canvas_ctx.stroke();
-            canvas_ctx.setLineDash([]);
-
-            //labels
-            canvas_ctx.fillStyle = "black";
-            canvas_ctx.font = "bold 24px Verdana";
-            canvas_ctx.fillText("1",310,45);
-            canvas_ctx.fillText("2",355,45);
-            canvas_ctx.fillText("3",400,45);
-            canvas_ctx.fillText("4",445,45);
-            canvas_ctx.fillText("5",490,45);
-
-            //minimum selection criteria
-            canvas_ctx.strokeStyle = "red";
-            canvas_ctx.lineWidth = 3;
-            canvas_ctx.beginPath();
-            canvas_ctx.moveTo(45*3+275,50+item_height/2);
-            canvas_ctx.lineTo(45*2+275,50+item_height+item_height/2);            
-            canvas_ctx.lineTo(45*2+275,50+2*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*2+275,50+3*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*3+275,50+4*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*3+275,50+5*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*3+275,50+6*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*2+275,50+7*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*4+275,50+8*item_height+item_height/2);          
-            canvas_ctx.stroke();
-
-            //Results
-            canvas_ctx.strokeStyle = "blue";
-            canvas_ctx.beginPath();
-            canvas_ctx.moveTo(45*sjt_result[0].total+275,50+item_height/2);
-            canvas_ctx.lineTo(45*sjt_result[1].total+275,50+item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[2].total+275,50+2*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[3].total+275,50+3*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[4].total+275,50+4*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[5].total+275,50+5*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[6].total+275,50+6*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[7].total+275,50+7*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*sjt_result[8].total+275,50+8*item_height+item_height/2);          
-            canvas_ctx.stroke();
-
-            //target selection criteria
-            canvas_ctx.strokeStyle = "green";
-            canvas_ctx.beginPath();
-            canvas_ctx.moveTo(45*5+275,50+item_height/2);
-            canvas_ctx.lineTo(45*4+275,50+item_height+item_height/2);            
-            canvas_ctx.lineTo(45*4+275,50+2*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*5+275,50+3*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*4+275,50+4*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*4+275,50+5*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*4+275,50+6*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*5+275,50+7*item_height+item_height/2);            
-            canvas_ctx.lineTo(45*5+275,50+8*item_height+item_height/2);          
-            canvas_ctx.stroke();
 
             
             document.title = (Cookies.get("lang") == 'es') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
             document.getElementById("switch-lang").onclick = function() {
                 document.title = (Cookies.get("lang") == 'en') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
                 if (Cookies.get('lang') == 'en') {
-                    myChart.data.datasets[1].label = 'Promedio del país'
+                    myChart.data.datasets[1].label = 'Promedio del país';
+                    createSJTReport('es');
                 } else {
                     myChart.data.datasets[1].label = 'Country Average'
+                    createSJTReport('en');
                 }
                 myChart.update();
             }

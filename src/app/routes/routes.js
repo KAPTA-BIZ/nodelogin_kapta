@@ -1200,28 +1200,50 @@ module.exports = (app, passport) => {
                                                             var index = SJT_Questions.findIndex(question => question.question_id == competence_question.classmarker_question_id);
                                                             if (index > -1) {
                                                                 number_of_questions = number_of_questions + 1;
-                                                                switch (SJT_Questions[index].user_response) {
-                                                                    case "A":
-                                                                        score = score + 1;
-                                                                        break;
-                                                                    case "B":
-                                                                    case "C":
-                                                                        secore = score + 0.5;
-                                                                        break;
+                                                                var MAoption = 0;
+                                                                var LAoption = 0;
+
+                                                                if (SJT_Questions[index].options.A.user_response) {
+                                                                    MAoption = (SJT_Questions[index].options.A.user_response == "A") ? MAoption + 1 : MAoption;
+                                                                    LAoption = (SJT_Questions[index].options.A.user_response == "D") ? LAoption + 1 : LAoption;
+                                                                }
+                                                                if (SJT_Questions[index].options.B.user_response) {
+                                                                    MAoption = (SJT_Questions[index].options.B.user_response == "A") ? MAoption + 1 : MAoption;
+                                                                    LAoption = (SJT_Questions[index].options.B.user_response == "D") ? LAoption + 1 : LAoption;
+                                                                }
+                                                                if (SJT_Questions[index].options.C.user_response) {
+                                                                    MAoption = (SJT_Questions[index].options.C.user_response == "A") ? MAoption + 1 : MAoption;
+                                                                    LAoption = (SJT_Questions[index].options.C.user_response == "D") ? LAoption + 1 : LAoption;
+                                                                }
+                                                                if (SJT_Questions[index].options.D.user_response) {
+                                                                    MAoption = (SJT_Questions[index].options.D.user_response == "A") ? MAoption + 1 : MAoption;
+                                                                    LAoption = (SJT_Questions[index].options.D.user_response == "D") ? LAoption + 1 : LAoption;
+                                                                }
+
+                                                                if (MAoption == 1 && LAoption == 1) {
+                                                                    score = score + Number(SJT_Questions[index].points_scored);
                                                                 }
                                                             }
                                                         });
+                                                        console.log(competence);
                                                         data.sjt_competences.push(/* JSON.stringify( */{
                                                             name: competence.name,
+                                                            name_es: competence.name_es,
                                                             score: score,
                                                             number_of_questions: number_of_questions,
-                                                            total: (score * 5 / number_of_questions).toFixed(2),
+                                                            total: (score / number_of_questions + 1).toFixed(0),
                                                             min: competence.min,
                                                             max: competence.max,
-                                                            habilities: competence.habilities
+                                                            habilities: competence.habilities,
+                                                            insufficient: competence.insufficient,
+                                                            insufficient_es: competence.insufficient_es,
+                                                            adequate: competence.adequate,
+                                                            adequate_es: competence.adequate_es,
+                                                            excellent: competence.excellent,
+                                                            excellent_es: competence.excellent_es
                                                         }/* ) */);
                                                     });
-                                                    /* res.send(sjt_competences); */
+                                                    /* res.send(data.sjt_competences); */
                                                     res.render('test_result', {
                                                         data: data,
                                                         user: req.user
