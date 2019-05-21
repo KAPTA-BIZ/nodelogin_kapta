@@ -20,19 +20,19 @@
                             <br><br><br><br>
                             
 
-                            <div class="col-md-4 my-auto">
+                            <div class="col-xl-4 col-lg-6 my-auto">
                                 <div class="card container-fluid text-center mx-auto">
                                     <div class="card-body">
                                         <h2 class="card-title" lang="es">Código de acceso: <span><%= data.access_code_used%></span></h2>
                                         <h2 class="card-title" lang="en">Access code: <span><%= data.access_code_used%></span></h2>
-                                        <button type="button" class="btn btn-dark btn-lg" lang="es">Descargar informe</button>
-                                        <button type="button" class="btn btn-dark btn-lg" lang="en">Download Report</button>
+                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="es">Descargar informe</button>
+                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="en">Download Report</button>
                                         
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4 my-auto">
+                            <div class="col-xl-4 col-lg-6 my-auto">
                                 <div class="card container-fluid mx-auto">
                                     <div class="card-body">
                                         <h3 class="card-title text-center" lang="en">Overall Knowledge Test Result</h3>
@@ -46,14 +46,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 my-auto">
+                            <div class="col-xl-4 my-auto">
                                 <div class="card container-fluid mx-auto">
                                     <div class="card-body">
                                         <h3 class="card-title text-center" lang="en">Assesment Information</h3>
                                         <h3 class="card-title text-center" lang="es">Información de evaluación</h3>
                                         <br>
                                         <div class="table-responsive">
-                                            <table style="width:100%">
+                                            <table style="width:100%;max-width: 300px;margin: auto;">
                                                 <tbody>                                                    
                                                     <tr>
                                                         <td lang="es">Duración:</td>
@@ -92,10 +92,12 @@
                                     <div class="card-body">
                                         <div class="container-fluid">
                                             <div class="row">
-                                                <div class="col-auto">
-                                                    <canvas id="competencesCanvas" width="520" height="580"></canvas><!--  style="border:1px solid #000000;" -->
+                                                <div class="col-xl-7">
+                                                    <div style=" width: 100%; height: 610px; overflow: auto;">
+                                                            <canvas style="margin: auto; display: block" id="competencesCanvas" width="520" height="580"></canvas><!--  style="border:1px solid #000000;" -->
+                                                    </div>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col-xl-5">
                                                     <div style=" width: 100%; height: 580px; overflow: auto;"><!-- background-color: lightblue; -->
                                                         <% data.sjt_competences.forEach((competence,index)=>{ 
                                                             if(competence.total>=0){%>
@@ -792,7 +794,13 @@
                 for (let i_column = 0; i_column < 5; i_column++) {
                     for (let i_row = 0; i_row < 9; i_row++) {
                         if(sjt_result[i_row].total==i_column+1){
-                            canvas_ctx.fillStyle = "rgba(80,117,133,1)";
+                            if(sjt_result[i_row].total<sjt_result[i_row].min){
+                                canvas_ctx.fillStyle = "rgba(216,12,12,1)";
+                            }else if(sjt_result[i_row].total>sjt_result[i_row].min){
+                                canvas_ctx.fillStyle = "rgba(0,153,51,1)";
+                            }else{
+                                canvas_ctx.fillStyle = "rgba(17,32,236,1)";
+                            }
                         }else{
                             if(sjt_result[i_row].max==i_column+1){
                                 canvas_ctx.fillStyle = "rgba(0, 0, 0, 1)";
@@ -894,6 +902,7 @@
                 canvas_ctx.fillStyle = "black";
                 canvas_ctx.font = "bold 14px Verdana";
                 canvas_ctx.fillText((current_lang == 'es') ? 'Referencias:' : 'Legend:',0, 450);
+                canvas_ctx.fillText((current_lang == 'es') ? 'Resultados:' : 'Results:',280, 450);
                 canvas_ctx.lineWidth = 1;
                 canvas_ctx.fillStyle = "rgba(0, 0, 0, 1)";
                 canvas_ctx.beginPath();
@@ -907,9 +916,19 @@
                 canvas_ctx.stroke();
                 canvas_ctx.fill();
                 canvas_ctx.lineWidth = 1;
-                canvas_ctx.fillStyle = "rgba(6,58,81,0.7)";
+                canvas_ctx.fillStyle = "rgba(216,12,12,1)";
                 canvas_ctx.beginPath();
-                canvas_ctx.arc( 30, 520, 10, 0, 2 * Math.PI);
+                canvas_ctx.arc( 305, 470, 10, 0, 2 * Math.PI);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.fillStyle = "rgba(17,32,236,1)";
+                canvas_ctx.beginPath();
+                canvas_ctx.arc( 305, 495, 10, 0, 2 * Math.PI);
+                canvas_ctx.stroke();
+                canvas_ctx.fill();
+                canvas_ctx.fillStyle = "rgba(0,153,51,1)";
+                canvas_ctx.beginPath();
+                canvas_ctx.arc( 305, 520, 10, 0, 2 * Math.PI);
                 canvas_ctx.stroke();
                 canvas_ctx.fill();
                 
@@ -917,7 +936,9 @@
                 canvas_ctx.font = "14px Verdana";
                 canvas_ctx.fillText((current_lang == 'es') ? '= perfil deseado' : '= target profile',45, 475);
                 canvas_ctx.fillText((current_lang == 'es') ? '= criterio mínimo de selección' : '= minimun criteria for selection',45, 500);
-                canvas_ctx.fillText((current_lang == 'es') ? '= resultado' : '= result',45, 525);
+                canvas_ctx.fillText((current_lang == 'es') ? '= debajo del mínimo' : '= below minimun',320, 475);
+                canvas_ctx.fillText((current_lang == 'es') ? '= exactamente lo mínimo' : '= exactly minimun',320, 500);
+                canvas_ctx.fillText((current_lang == 'es') ? '= encima del mínimo' : '= above minimun',320, 525);
 
                 canvas_ctx.fillStyle = "black";
                 canvas_ctx.font = "bold 13px Verdana";
