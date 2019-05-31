@@ -32,6 +32,7 @@
     "graphql": "0.11.7",
     "graphql-server-express": "1.2.0",
     "graphql-tools": "2.8.0",
+    "html-pdf": "^2.2.0",
     "jade": "1.11.0",
     "mongodb": "2.2.33",
     "mongoose": "5.0.3",

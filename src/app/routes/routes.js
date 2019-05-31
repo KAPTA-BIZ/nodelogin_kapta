@@ -12,6 +12,7 @@ var LinkResults = require('../models/LinkResults');
 var SummaryResults = require('../models/SummaryResults');
 var storageLinkResult = require('./storage/StorageLinkResult');
 var fs = require('fs');
+var pdf = require('html-pdf');
 
 mongoose.Promise = global.Promise;
 
@@ -147,7 +148,6 @@ module.exports = (app, passport) => {
                                         res.sendStatus(502);
                                     } else {
                                         Assignments.find({}, null, { sort: { 'NSC': 1, 'test_name': 1 } }, (err, assignments) => {
-                                            console.log(assignments);
                                             if (err) {
                                                 res.sendStatus(502);
                                             } else {
@@ -281,12 +281,10 @@ module.exports = (app, passport) => {
                                         (code.assignment_id == 0) ? codes_array_unused.push(code.code) : codes_array_used.push(code.code);
                                     }
                                 });
-                                console.log('hey!!!', codes_array_used);
                                 LinkResults.find({ 'access_code_used': { $in: codes_array_used } }, ['knowledge_test_average', 'time_finished', 'access_code_used'], { sort: { 'time_finished': -1 }, limit: 3 }, (err, results) => {
                                     if (err) {
                                         res.sendStatus(502);
                                     } else {
-                                        console.log(results);
                                         var results_temp = [];
                                         results.forEach(result => {
                                             var date = new Date(result.time_finished * 1000);
@@ -363,7 +361,6 @@ module.exports = (app, passport) => {
                                             results: results_temp
                                         });
                                         if (i + 1 == assignments.length) {
-                                            console.log(data.summary);
                                             res.render('profile_client', {
                                                 user: req.user,
                                                 data: data
@@ -449,7 +446,6 @@ module.exports = (app, passport) => {
         request(uri, (error, response, body) => {
             if (!error && response.statusCode === 200) {
                 var cleanBody = JSON.parse(body);
-                console.log(cleanBody);
                 var LinksNumber = cleanBody['links'].length;
                 if (LinksNumber > 0) {
                     var newTest = new Object;
@@ -628,7 +624,6 @@ module.exports = (app, passport) => {
                     if (err) {
                         res.sendStatus(502);
                     } else {
-                        console.log(req.body.MaxCodes);
                         generate_code(0, req.body.MaxCodes);
 
                         function generate_code(i, number) {
@@ -832,15 +827,12 @@ module.exports = (app, passport) => {
             if (err) {
                 res.sendStatus(502);
             } else {
-                console.log(dealer);
-                console.log(req.user);
                 if (req.user.local.user == dealer.local.user || req.user.local.user == dealer.NSC || req.user.sa == 1) {
                     Assignments.find({ 'dealers.id': dealer._id }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
                             Codes.find({ 'assignment_id': { $ne: 0 }, 'dealer': dealer.local.user }, ['code', 'assignment_id'], (err, codes) => {
-                                console.log(codes);
                                 var data = {};
                                 data.dealer = {};
                                 data.dealer.user = dealer.local.user;
@@ -971,7 +963,6 @@ module.exports = (app, passport) => {
                                         if (err) {
                                             res.sendStatus(502);
                                         } else {
-                                            console.log(summary);
                                             data.categories = [];
                                             summary.categories.forEach(category => {
                                                 if (category.id > 83 && category.id < 91) {
@@ -1168,7 +1159,8 @@ module.exports = (app, passport) => {
 
                                                             if (result > 0 && question.result == "incorrect") {
                                                                 data.questions.push({
-                                                                    question: question.question,
+                                                                    question: question.question.replace('<img', '<img id="question_' + index + '"').replace('src="https://', 'src="/test_result_img/'),
+                                                                    img_id: (question.question.indexOf('<img') != -1) ? 'question_' + index : null,
                                                                     options: options,
                                                                     category: question.category,
                                                                     points_scored: question.points_scored,
@@ -1178,7 +1170,8 @@ module.exports = (app, passport) => {
                                                                 });
                                                             } else {
                                                                 data.questions.push({
-                                                                    question: question.question,
+                                                                    question: question.question.replace('<img', '<img id="question_' + index + '"').replace('src="https://', 'src="/test_result_img/'),
+                                                                    img_id: (question.question.indexOf('<img') != -1) ? 'question_' + index : null,
                                                                     options: options,
                                                                     category: question.category,
                                                                     points_scored: question.points_scored,
@@ -1225,7 +1218,6 @@ module.exports = (app, passport) => {
                                                                 }
                                                             }
                                                         });
-                                                        console.log(competence);
                                                         data.sjt_competences.push(/* JSON.stringify( */{
                                                             name: competence.name,
                                                             name_es: competence.name_es,
@@ -1277,7 +1269,6 @@ module.exports = (app, passport) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
-                            console.log(codes);
                             var datasets = [];
                             var index = -1;
                             assignments.forEach(assignment => {
@@ -1393,5 +1384,9 @@ module.exports = (app, passport) => {
             }
         });
 
+    });
+
+    app.get('/test_result_img/:imgURL/:imgpath', isLoggedIn, (req, res) => {
+        request.get('https://' + req.params.imgURL + '/' + req.params.imgpath).pipe(res);
     });
 }

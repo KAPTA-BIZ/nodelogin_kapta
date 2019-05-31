@@ -3,6 +3,7 @@
 
 <head>
     <% include partials/head %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -24,9 +25,9 @@
                                 <div class="card container-fluid text-center mx-auto">
                                     <div class="card-body">
                                         <h2 class="card-title" lang="es">Código de acceso: <span><%= data.access_code_used%></span></h2>
-                                        <h2 class="card-title" lang="en">Access code: <span><%= data.access_code_used%></span></h2>
-                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="es">Descargar informe</button>
-                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="en">Download Report</button>
+                                        <h2 class="card-title" lang="en">Access code: <span id="accessCodeUsed"><%= data.access_code_used%></span></h2>
+                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="es" id="btn_pdf_es">Descargar informe</button>
+                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="en" id="btn_pdf_en">Download Report</button>
                                         
                                     </div>
                                 </div>
@@ -37,11 +38,11 @@
                                     <div class="card-body">
                                         <h3 class="card-title text-center" lang="en">Overall Knowledge Test Result</h3>
                                         <h3 class="card-title text-center" lang="es">Resultado general de la prueba de conocimientos</h3>
-                                        <h2 class="card-title text-center"><%= data.percentage%>%</h2>
+                                        <h2 class="card-title text-center" id="overallResult"><%= data.percentage%>%</h2>
                                         <br>
                                         <h3 class="card-title text-center" lang="en">Country Average</h3>
                                         <h3 class="card-title text-center" lang="es">Promedio del país</h3>
-                                        <h2 class="card-title text-center"><%= data.country_average%>%</h2>
+                                        <h2 class="card-title text-center" id="countryAverage"><%= data.country_average%>%</h2>
                                     </div>
                                 </div>
                             </div>
@@ -53,26 +54,26 @@
                                         <h3 class="card-title text-center" lang="es">Información de evaluación</h3>
                                         <br>
                                         <div class="table-responsive">
-                                            <table style="width:100%;max-width: 300px;margin: auto;">
+                                            <table style="width:100%;max-width: 300px;margin: auto;" id="assesmentInformation">
                                                 <tbody>                                                    
                                                     <tr>
                                                         <td lang="es">Duración:</td>
                                                         <td lang="en">Duration:</td>
-                                                        <td>
+                                                        <td id="testDuration">
                                                             <%= data.duration%>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td lang="es">Fecha de Inicio:</td>
-                                                        <td lang="en">Date started:</td>
-                                                        <td>
+                                                        <td lang="en">Start Date:</td>
+                                                        <td id="testStartDate">
                                                             <%date=new Date(data.time_started*1000)%><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%>   <%if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td lang="es">Fecha de finalización:</td>
-                                                        <td lang="en">Date finished:</td>
-                                                        <td>
+                                                        <td lang="en">End Date:</td>
+                                                        <td id="testEndDate">
                                                             <%date=new Date(data.time_finished*1000)%><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%>   <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
                                                         </td>
                                                     </tr>
@@ -155,7 +156,7 @@
                                         <h4 class="card-title" lang="en">Knowledge Test Results per Category vs. Country Average</h4>
                                     </div>
                                     <div class="card-body">
-                                        <div class="chart-container responsive" style="position: relative; height: 40vh;">
+                                        <div class="chart-container responsive" style="position: relative;min-height:400px; width: 100%; text-align: center">
                                             <canvas id="myChart"></canvas>
                                         </div>
                                     </div>
@@ -207,7 +208,9 @@
                                             <a class="nav-link" id="wrong_question-tab" data-toggle="tab" href="#wrong_question" role="tab" aria-controls="wrong_question" aria-selected="false">Incorrect</a>
                                         </li>
                                     </ul>
-
+                                    <img id="missedIcon" alt="" src="/img/icon/missedAnswer.png" style="display: none"/>
+                                    <img id="correctIcon" alt="" src="/img/icon/correctAnswer.png" style="display: none"/>
+                                    <img id="wrongIcon" alt="" src="/img/icon/wrongAnswer.png" style="display: none"/>
                                     <div class="tab-content" id="myTabContent">
                                         <!--All Answers-->
                                         <div class="tab-pane fade show active" id="all_question" role="tabpanel" aria-labelledby="all_question-tab">
@@ -629,8 +632,9 @@
                 </div>
         </div>
         <script>
+            var current_lang=Cookies.get("lang");
             var ctx = document.getElementById("myChart");
-            var label = (Cookies.get('lang') == 'es') ? 'Promedio del país' : 'Country Average';
+            var label = (current_lang == 'es') ? 'Promedio del país' : 'Country Average';
             var myChart = new Chart(ctx, {
                 type: 'horizontalBar',
                 data: {
@@ -657,7 +661,8 @@
                                 max: 100,
                                 callback: function(value, index, values) {
                                     return value + ' %';
-                                }
+                                },
+                                fontSize: 17
                             }
                         }],
                         yAxes: [{
@@ -667,6 +672,9 @@
                             gridLines: {
                                 display: true,
                                 offsetGridLines: true
+                            },
+                            ticks:{
+                                fontSize:17
                             }
                         }]
                     },
@@ -675,21 +683,22 @@
                     },
                     legend: {
                         display: true,
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {fontSize: 17}
                     }
                 }
             });
+            var canvas = document.getElementById("competencesCanvas");
+            var sjt_result=<%- JSON.stringify(data.sjt_competences) %>;
+            var sjt_questions=<%- JSON.stringify(data.questions) %>;
+            createSJTReport();
 
-            createSJTReport(Cookies.get('lang'));
-
-            function createSJTReport(current_lang){
-                console.log(current_lang);
+            function createSJTReport(){
                 var item_height=40;
                 var pointsgap=35;
-                var canvas = document.getElementById("competencesCanvas");
                 var canvas_ctx = canvas.getContext("2d");
                 canvas_ctx.clearRect(0,0,canvas.width,canvas.height);
-                var sjt_result=<%- JSON.stringify(data.sjt_competences) %>;
+                
                 // Triángulo rellenado
                 var grd = canvas_ctx.createLinearGradient(275, 0, 500, 0);
                 grd.addColorStop(0, "white");
@@ -945,31 +954,27 @@
                 canvas_ctx.fillText((current_lang == 'es') ? 'Escala de 5 puntos:' : '5-point scale:',0, 555);
                 canvas_ctx.font = "13px Verdana";
                 canvas_ctx.fillText((current_lang == 'es') ? '1 = insuficiente, 2 = ampliable, 3 = adecuado, 4 = avanzado, 5 = excelente' : '1 = insufficient, 2 = expandable, 3 = adequate, 4 = advanced, 5 = excellent',8, 570);
-                
-
-                
-               /*  canvas_ctx.beginPath();
-                canvas_ctx.rect(0, 50+item_height*10, 500, item_height);
-                canvas_ctx.stroke();
-                canvas_ctx.fill(); */
             }
-            
-            
+          
 
             
-            document.title = (Cookies.get("lang") == 'es') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
+            document.title = (current_lang == 'es') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
             document.getElementById("switch-lang").onclick = function() {
-                document.title = (Cookies.get("lang") == 'en') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
-                if (Cookies.get('lang') == 'en') {
+                document.title = (current_lang == 'en') ? "Resultado <%= data.access_code_used%>" : "Result <%= data.access_code_used%>";
+                if (current_lang== 'en') {
+                    current_lang='es';
                     myChart.data.datasets[1].label = 'Promedio del país';
-                    createSJTReport('es');
+                    createSJTReport();
                 } else {
+                    current_lang='en';
                     myChart.data.datasets[1].label = 'Country Average'
-                    createSJTReport('en');
+                    createSJTReport();
                 }
                 myChart.update();
             }
         </script>
+        <script src="/js/exportpdfFonts.js"></script>        
+        <script src="/js/exportpdf.js"></script>        
 </body>
 
 </html>
