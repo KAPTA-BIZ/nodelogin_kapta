@@ -14,67 +14,73 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-12">
-                                <h2 class="text-center">
+                                <h1 class="text-center">
                                     <%= data.test_name%>
-                                </h2>
+                                </h1>
                             </div>
-                            <br><br><br><br>
+                            
                             
 
                             <div class="col-xl-4 col-lg-6 my-auto">
                                 <div class="card container-fluid text-center mx-auto">
                                     <div class="card-body">
-                                        <h2 class="card-title" lang="es">Código de acceso: <span><%= data.access_code_used%></span></h2>
-                                        <h2 class="card-title" lang="en">Access code: <span id="accessCodeUsed"><%= data.access_code_used%></span></h2>
-                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="es" id="btn_pdf_es">Descargar informe</button>
-                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 8px 5%!important;" lang="en" id="btn_pdf_en">Download Report</button>
+                                        <h3 class="card-title" lang="es" style="color: #003153!important;">Código de acceso: </h3>
+                                        <h3 class="card-title" lang="en" style="color: #003153!important;">Access code: </h3>
+                                        <h3 class="card-title" lang="es"><span id="accessCodeUsed"><%= data.access_code_used%></span></h3>
+                                        <h3 class="card-title" lang="en"><span id="accessCodeUsed"><%= data.access_code_used%></span></h3>
+                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 10px 5%!important; margin-top:2%!important; margin-bottom:1%!important;" lang="es" id="btn_pdf_es">Descargar informe</button>
+                                        <button type="button" class="btn btn-dark btn-lg" style="max-width: 100%; padding: 10px 5%!important; margin-top:2%!important; margin-bottom:1%!important;" lang="en" id="btn_pdf_en">Download Report</button>
                                         
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-xl-4 col-lg-6 my-auto">
-                                <div class="card container-fluid mx-auto">
-                                    <div class="card-body">
-                                        <h3 class="card-title text-center" lang="en">Overall Knowledge Test Result</h3>
-                                        <h3 class="card-title text-center" lang="es">Resultado general de la prueba de conocimientos</h3>
-                                        <h2 class="card-title text-center" id="overallResult"><%= data.percentage%>%</h2>
+                                <div class="card container-fluid text-center mx-auto">
+                                    <div class="card-body" style="padding-bottom: 3%!important;">
+                                        <h3 class="card-title" lang="en" style="color: #003153!important;">Overall Knowledge Test Result: </h3>
+                                        <h3 class="card-title" lang="es" style="color: #003153!important;">Resultado General de la Prueba de Conocimientos: </h3>
+                                        <h2 class="card-title" id="overallResult"><span><%= data.percentage%>%</span></h2>
+                                        <!--<h3><span id="overallResult"><%= data.percentage%>%</span></h3>-->
                                         <br>
-                                        <h3 class="card-title text-center" lang="en">Country Average</h3>
-                                        <h3 class="card-title text-center" lang="es">Promedio del país</h3>
-                                        <h2 class="card-title text-center" id="countryAverage"><%= data.country_average%>%</h2>
+                                        <h3 class="card-title" lang="en" style="color: #003153!important;">Country Average: </h3>
+                                        <h3 class="card-title" lang="es" style="color: #003153!important;">Promedio del País: </h3>
+                                        <h3 class="card-title" id="countryAverage"><span><%= data.country_average%>%</span></h3>
+                                        <!--<h3><span id="countryAverage"><%= data.country_average%>%</span></h3>-->
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-xl-4 my-auto">
+                            <div class="col-xl-4  col-lg-6 my-auto">
                                 <div class="card container-fluid mx-auto">
                                     <div class="card-body">
-                                        <h3 class="card-title text-center" lang="en">Assesment Information</h3>
-                                        <h3 class="card-title text-center" lang="es">Información de evaluación</h3>
+                                        <h3 class="card-title text-center" lang="en" style="color: #003153!important;">Assesment Information: </h3>
+                                        <h3 class="card-title text-center" lang="es" style="color: #003153!important;">Información de Evaluación: </h3>
                                         <br>
                                         <div class="table-responsive">
                                             <table style="width:100%;max-width: 300px;margin: auto;" id="assesmentInformation">
                                                 <tbody>                                                    
                                                     <tr>
-                                                        <td lang="es">Duración:</td>
-                                                        <td lang="en">Duration:</td>
-                                                        <td id="testDuration">
-                                                            <%= data.duration%>
+                                                        <td lang="es" style="color: #003153!important;"><b>Duración: </b></td>
+                                                        <td lang="en" style="color: #003153!important;"><b>Duration: </b></td>
+                                                        <td id="testDuration"><span>
+                                                            <%= data.duration%></span>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td lang="es">Fecha de Inicio:</td>
-                                                        <td lang="en">Start Date:</td>
-                                                        <td id="testStartDate">
+                                                        <td lang="es" style="color: #003153!important;"><b>Fecha de Inicio: </b></td>
+                                                        <td lang="en" style="color: #003153!important;"><b>Start Date: </b></td>
+                                                        <td id="testStartDate"><span>
                                                             <%date=new Date(data.time_started*1000)%><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%>   <%if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
+                                                            </span>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td lang="es">Fecha de finalización:</td>
-                                                        <td lang="en">End Date:</td>
-                                                        <td id="testEndDate">
+                                                        <td lang="es" style="color: #003153!important;"><b>Fecha de finalización: <b></td>
+                                                        <td lang="en" style="color: #003153!important;"><b>End Date: </b></td>
+                                                        <td id="testEndDate"><span>
                                                             <%date=new Date(data.time_finished*1000)%><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%>   <% if(date.getHours()<10){%>0<%}%><%=date.getHours()%>:<% if(date.getMinutes()<10){%>0<%}%><%=date.getMinutes()%>
+                                                        </span>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -87,8 +93,8 @@
                             <div class="col-md-12">
                                 <div class="card container-fluid">
                                     <div class="card-header">
-                                        <h4 class="card-title" lang="es">Resultados de la Prueba de competencias </h4>
-                                        <h4 class="card-title" lang="en">Competences test results</h4>
+                                        <h3 class="card-title" style="margin-top:1%!important; color: #003153!important;" lang="es">Resultados de la Prueba de Competencias: </h3>
+                                        <h3 class="card-title" style="margin-top:1%!important; color: #003153!important;" lang="en">Competences test results: </h3>
                                     </div>
                                     <div class="card-body">
                                         <div class="container-fluid">
@@ -103,8 +109,8 @@
                                                         <% data.sjt_competences.forEach((competence,index)=>{ 
                                                             if(competence.total>=0){%>
 
-                                                        <h4 lang="en"><%=index+1 +'. '+ competence.name%></h4>
-                                                        <h4 lang="es"><%=index+1 +'. '+ competence.name_es%></h4>
+                                                        <h4 style="color: #003153!important;" lang="en"><%=index+1 +'. '+ competence.name%>: </h4>
+                                                        <h4 style="color: #003153!important;" lang="es"><%=index+1 +'. '+ competence.name_es%>: </h4>
                                                         <!-- <div class="progress" style="margin: 3px 10px; height: 20px;">
                                                             <div class="progress-bar progress-bar-striped" role="progressbar" style="width:<%=competence.total*100/5%>%; background-color: #2A627B; "><%=(competence.total*100/5).toFixed(2)%>%</div>
                                                         </div>
@@ -164,13 +170,13 @@
                             </div>
 
                             <div class="col-md-12">
-                                <div class="card container-fluid">
+                                <div class="card container-fluid" >
                                     <div class="card-header">
-                                        <h4 class="card-title" lang="es">Respuestas</h4>
-                                        <h4 class="card-title" lang="en">Answers</h4>
-                                        <h5 class="card-subtitle mb-2 text-muted" lang="es">
-                                            <i class="fas fa-check-circle" style="color:#009933"> </i> Respuesta correcta
-                                            <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Respuesta incorrecta
+                                        <h4 class="card-title" style="color: #003153!important;" lang="es">Respuestas: </h4>
+                                        <h4 class="card-title" style="color: #003153!important;" lang="en">Answers: </h4>
+                                        <h5 class="card-subtitle mb-2 text-muted" lang="es" style="margin-top:1%!important;">
+                                            <i class="fas fa-check-circle" style="color:#009933"> </i> Respuesta correcta <span style="color:#262a2d !important;"> | </span>
+                                            <i class="fas fa-times-circle" style="color:#d80c0c"> </i> Respuesta incorrecta <span style="color:#262a2d !important;"> | </span>
                                             <i class="fas fa-arrow-alt-circle-right" style="color:#1120ec"> </i> Opción correcta omitida
                                         </h5>
                                         <h5 class="card-subtitle mb-2 text-muted" lang="en">
@@ -217,15 +223,15 @@
                                             <% data.questions.forEach((question,index)=>{%>
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h4 class="card-title" lang="es">Pregunta
+                                                        <h4 class="card-title" lang="es" style="color: #003153!important;">Pregunta
                                                             <%=index+1%> de
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h4 class="card-title" lang="en">Question
+                                                        <h4 class="card-title" lang="en" style="color: #003153!important;">Question
                                                             <%=index+1%> of
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h5 class="card-subtitle mb-2 text-muted">
+                                                        <h5 class="card-subtitle mb-2 text-muted" style="margin-top:0.05%!important; margin-left:0.2%!important;">
                                                             <%=question.category%>
                                                         </h5>
                                                     </div>
@@ -320,15 +326,15 @@
                                             if(question.result=="correct"){%>
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h4 class="card-title" lang="es">Pregunta
+                                                        <h4 class="card-title" style="color: #003153!important;" lang="es">Pregunta
                                                             <%=index+1%> de
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h4 class="card-title" lang="en">Question
+                                                        <h4 class="card-title" style="color: #003153!important;" lang="en">Question
                                                             <%=index+1%> of
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h5 class="card-subtitle mb-2 text-muted">
+                                                        <h5 class="card-subtitle mb-2 text-muted" style="margin-top:0.05%!important; margin-left:0.2%!important;">
                                                             <%=question.category%>
                                                         </h5>
                                                     </div>
@@ -423,15 +429,15 @@
                                             if(question.result=="partial_correct"){%>
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h4 class="card-title" lang="es">Pregunta
+                                                        <h4 class="card-title" style="color: #003153!important;" lang="es">Pregunta
                                                             <%=index+1%> de
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h4 class="card-title" lang="en">Question
+                                                        <h4 class="card-title" style="color: #003153!important;" lang="en">Question
                                                             <%=index+1%> of
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h5 class="card-subtitle mb-2 text-muted">
+                                                        <h5 class="card-subtitle mb-2 text-muted" style="margin-top:0.05%!important; margin-left:0.2%!important;">
                                                             <%=question.category%>
                                                         </h5>
                                                     </div>
@@ -526,15 +532,15 @@
                                             if(question.result=="incorrect"){%>
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h4 class="card-title" lang="es">Pregunta
+                                                        <h4 class="card-title" style="color: #003153!important;" lang="es">Pregunta
                                                             <%=index+1%> de
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h4 class="card-title" lang="en">Question
+                                                        <h4 class="card-title" style="color: #003153!important;" lang="en">Question
                                                             <%=index+1%> of
-                                                                <%=data.questions.length%>
+                                                                <%=data.questions.length%>:
                                                         </h4>
-                                                        <h5 class="card-subtitle mb-2 text-muted">
+                                                        <h5 class="card-subtitle mb-2 text-muted" style="margin-top:0.05%!important; margin-left:0.2%!important;">
                                                             <%=question.category%>
                                                         </h5>
                                                     </div>
@@ -759,15 +765,15 @@
                 
                 canvas_ctx.fillStyle = "black";
                 canvas_ctx.font = "14px Verdana";
-                canvas_ctx.fillText((current_lang == 'es') ? 'Orientación al cliente y al servicio' : 'Customer & Service Orientation',0,50+item_height-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Construcción de relaciones' : 'Relationship Building',0,50+item_height*2-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Comunicación con Impacto' : 'Communication with Impact',0,50+item_height*3-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Identificación de marca con BMW/ MINI' : 'Brand Identification with BMW/ MINI',0,50+item_height*4-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Solución de problemas' : 'Problem Solving',0,50+item_height*5-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Motivación para rendir y lograr resultados' : 'Motivation to Perform & Achieve Results',0,50+item_height*6-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Flexibilidad y voluntad de aprender' : 'Flexibility & Willingness to Learn',0,50+item_height*7-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Autogestión y resiliencia' : 'Self-Management & Resilience',0,50+item_height*8-20);
-                canvas_ctx.fillText((current_lang == 'es') ? 'Orientación e integridad de equipo' : 'Team Orientation & Integrity',0,50+item_height*9-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Orientación al cliente y al servicio' : '  Customer & Service Orientation',0,50+item_height-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Construcción de relaciones' : '  Relationship Building',0,50+item_height*2-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Comunicación con Impacto' : '  Communication with Impact',0,50+item_height*3-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Identificación de marca con BMW/ MINI' : '  Brand Identification with BMW/ MINI',0,50+item_height*4-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Solución de problemas' : '  Problem Solving',0,50+item_height*5-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Motivación para rendir y lograr resultados' : '  Motivation to Perform & Achieve Results',0,50+item_height*6-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Flexibilidad y voluntad de aprender' : '  Flexibility & Willingness to Learn',0,50+item_height*7-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Autogestión y resiliencia' : '  Self-Management & Resilience',0,50+item_height*8-20);
+                canvas_ctx.fillText((current_lang == 'es') ? '  Orientación e integridad de equipo' : '  Team Orientation & Integrity',0,50+item_height*9-20);
                 
                 //target selection criteria
                 canvas_ctx.strokeStyle = "rgba(0, 0, 0, 1)";
@@ -868,12 +874,13 @@
 
                 //labels
                 canvas_ctx.fillStyle = "black";
-                canvas_ctx.font = "bold 24px Verdana";
-                canvas_ctx.fillText("1",335,45);
-                canvas_ctx.fillText("2",335+pointsgap,45);
-                canvas_ctx.fillText("3",335+2*pointsgap,45);
-                canvas_ctx.fillText("4",335+3*pointsgap,45);
-                canvas_ctx.fillText("5",335+4*pointsgap,45);
+                canvas_ctx.font = "bold 20px Verdana";
+                canvas_ctx.fillText((current_lang == 'es') ? 'Competencias' : 'Competencias',10, 40);
+                canvas_ctx.fillText("1",335,40);
+                canvas_ctx.fillText("2",335+pointsgap,40);
+                canvas_ctx.fillText("3",335+2*pointsgap,40);
+                canvas_ctx.fillText("4",335+3*pointsgap,40);
+                canvas_ctx.fillText("5",335+4*pointsgap,40);
 
                 //minimum selection criteria
                 /* canvas_ctx.strokeStyle = "red";
