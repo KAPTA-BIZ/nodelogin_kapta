@@ -869,37 +869,57 @@ module.exports = (app, passport) => {
 
     //-------------------- Vista de pruebas asignadas administradores---------------------//
     app.get('/tests_list_admin/:admin_id', isLoggedIn, (req, res) => {
+        console.log("req admin id es:");
+        console.log(req.params.admin_id);
         UserSchema.findById(req.params.admin_id, null, (err, administrator) => {
             if (err) {
                 res.sendStatus(502);
             } else {
-                if (req.user.local.email == administrator.local.email || req.user.sa == 1) {
+
+                console.log(req.user.local);
+                console.log("espacio");
+                console.log(administrator.local);
+
+
+                if (req.user.local.user == administrator.local.user || req.user.sa == 1) {
                     var data = {};
                     data.administrator = {
-                        email: administrator.local.email
+                        email: administrator.local.user
                     };
-                    Assignments.find({ 'admin_email': administrator.local.email }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
+                    Assignments.find({ 'NSC': administrator.local.user }, null, { sort: { 'test_name': 1 } }, (err, assignments) => {
                         if (err) {
                             res.sendStatus(502);
                         } else {
                             data.assignments = [];
                             assignments.forEach(assignment => {
                                 var users = [];
+                                console.log("assigments:");
+                                console.log(assignment);
+                                var itemObject2 = assignment.toObject();
                                 users.push({
-                                    email: assignment.admin_email,
-                                    codes_used: assignment.codes_used,
-                                    codes_max: assignment.codes_availables + assignment.codes_created + assignment.codes_used,
+                                    email: assignment.NSC,
+                                    codes_used: itemObject2.codes_used,
+                                    codes_max: itemObject2.codes_availables + itemObject2.codes_created + itemObject2.codes_used,
                                     id: administrator._id
                                 });
-                                assignment.users.forEach(assignment_user => {
+                                assignment.dealers.forEach(assignment_user => {
                                     if (req.user.sa == 1) {
-                                        var [email_id, email_domain] = assignment_user.email.split("@");
-                                        email_id = email_id.substring(0, 3);
+                                        //var [email_id, email_domain] = assignment_user.email.split("@");
+                                        var [email_id, email_domain] = [assignment_user.dealer,assignment_user.dealer];
+                                        //email_id = email_id.substring(0, 3);
+                                        email_id = email_id;
                                     }
+                                    var itemObject = assignment_user.toObject();
+                                    console.log("assigment user es:");
+                                    console.log(itemObject);
+                                    console.log(itemObject.codes_used);
+                                    console.log("tipo de dato de code:");
+                                    console.log(typeof assignment_user.codes_used);
+                                    console.log(typeof assignment_user.codes_max);
                                     users.push({
-                                        email: (req.user.sa == 1) ? email_id + '*****@' + email_domain : assignment_user.email,
-                                        codes_used: assignment_user.codes_used,
-                                        codes_max: assignment_user.codes_max,
+                                        email: (req.user.sa == 1) ? email_id + '*****@' + email_domain : assignment_user.dealer,
+                                        codes_used: itemObject.codes_used,
+                                        codes_max: itemObject.codes_max,
                                         id: assignment_user.id
                                     });
                                 });
