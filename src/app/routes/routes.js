@@ -784,10 +784,16 @@ module.exports = (app, passport) => {
                 } else {
                     resultArray.forEach(result => {
                         if (result.sa == 0) {
-                            var [user_id, user_domain] = result.local.email.split("@");
+                            console.log("Result.sa es:");
+                            console.log(result);
+                            console.log("result es:");
+                            console.log(result.local);
+                            //var [user_id, user_domain] = result.local.email.split("@");
+                            var [user_id, user_domain] = [result.local.user,result.local.user];
                             consultants.push({
                                 id: result._id,
-                                email: user_id.substring(0, 3) + '*****@' + user_domain,
+                                //email: user_id.substring(0, 3) + '*****@' + user_domain,
+                                email: user_id + '*****@' + user_domain,
                                 admin_email: result.admin_email
                             });
                         }
