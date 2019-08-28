@@ -155,11 +155,13 @@ module.exports = (app, passport) => {
                                                 var index = -1;
                                                 var credits = [];
                                                 assignments.forEach(assignment => {
+                                                    console.log("Assignment es:");
+                                                    console.log(assignment);
                                                     var assignment_credits = [assignment.codes_max, assignment.codes_created, assignment.codes_used];
-                                                    assignment.users.forEach(user => {
+                                                    /**assignment.users.forEach(user => {
                                                         assignment_credits[1] += user.codes_created;
                                                         assignment_credits[2] += user.codes_used;
-                                                    })
+                                                    }) */
                                                     if (NSC != assignment.NSC) {
                                                         index++;
                                                         NSC = assignment.NSC;
